@@ -519,6 +519,7 @@
             <div class="nav-tab" data-section="attendance" onclick="showSection('attendance')">📊 Attendance</div>
             <div class="nav-tab" data-section="bus" onclick="showSection('bus')">🚌 Bus Routes</div>
             <div class="nav-tab" data-section="teachers" onclick="showSection('teachers')">👨‍🏫 Teachers</div>
+            <div class="nav-tab" data-section="teacher-attendance" onclick="showSection('teacher-attendance')">📋 Teacher Attendance</div>
             <div class="nav-tab" data-section="teacher-fees" onclick="showSection('teacher-fees')">💵 Teacher Salaries</div>
         </div>
 
@@ -692,6 +693,38 @@
             </div>
         </div>
 
+        <!-- Teacher Attendance Section -->
+        <div class="section" id="teacher-attendance-section">
+            <div class="section-header">
+                <h2 class="section-title">Teacher Attendance Management</h2>
+                <button class="btn btn-primary" onclick="recordTeacherAttendance()">+ Record Attendance</button>
+            </div>
+            <div class="filters">
+                <input type="date" class="filter-input" id="attendance-date">
+                <select class="filter-select" id="teacher-filter">
+                    <option value="">All Teachers</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Teacher</th>
+                            <th>Status</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teacher-attendance-table">
+                        <!-- Teacher attendance will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Teacher Fees Section -->
         <div class="section" id="teacher-fees-section">
             <div class="section-header">
@@ -770,6 +803,8 @@
             { id: 3, date: "2024-01-17", teacher: "سارة محمود", subject: "English", amount: 5200, month: "January", status: "unpaid" }
         ];
 
+        let teacherAttendance = [];
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadStudents();
@@ -777,8 +812,10 @@
             loadAttendance();
             loadBusRoutes();
             loadTeachers();
+            loadTeacherAttendance();
             loadTeacherFees();
             updateDashboardStats();
+            populateTeacherFilter();
             
             // Set today's date for filters
             document.getElementById('attendance-date').value = new Date().toISOString().split('T')[0];
@@ -929,6 +966,98 @@
             });
         }
 
+        function loadTeacherAttendance() {
+            const tbody = document.getElementById('teacher-attendance-table');
+            tbody.innerHTML = '';
+            
+            teacherAttendance.forEach(att => {
+                const row = document.createElement('tr');
+                const teacher = teachers.find(t => t.id === att.teacherId);
+                row.innerHTML = `
+                    <td>${att.date}</td>
+                    <td>${teacher ? teacher.name : 'Unknown'}</td>
+                    <td><span class="status-badge ${att.status}">${att.status}</span></td>
+                    <td>${att.checkIn || '—'}</td>
+                    <td>${att.checkOut || '—'}</td>
+                    <td>${att.notes || '—'}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editTeacherAttendance(${att.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteTeacherAttendance(${att.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateTeacherFilter() {
+            const select = document.getElementById('teacher-filter');
+            if (!select) return;
+            select.innerHTML = '<option value="">All Teachers</option>';
+            teachers.forEach(teacher => {
+                const option = document.createElement('option');
+                option.value = teacher.id;
+                option.textContent = teacher.name;
+                select.appendChild(option);
+            });
+        }
+
+        function recordTeacherAttendance() {
+            const date = prompt('Enter date (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
+            if (!date) return;
+            
+            const teacherId = prompt('Enter Teacher ID:', '1');
+            if (!teacherId) return;
+            
+            const status = prompt('Enter status (present/absent/late/half-day):', 'present');
+            if (!status) return;
+            
+            const checkIn = prompt('Enter check-in time (HH:MM):', '') || '';
+            const checkOut = prompt('Enter check-out time (HH:MM):', '') || '';
+            const notes = prompt('Enter notes:', '') || '';
+            
+            const newAttendance = {
+                id: Date.now(),
+                teacherId: Number(teacherId),
+                date,
+                status,
+                checkIn,
+                checkOut,
+                notes
+            };
+            
+            teacherAttendance.push(newAttendance);
+            loadTeacherAttendance();
+            alert('Teacher attendance recorded successfully!');
+        }
+
+        function editTeacherAttendance(id) {
+            const att = teacherAttendance.find(a => a.id === id);
+            if (!att) return;
+            
+            const status = prompt('Enter status (present/absent/late/half-day):', att.status);
+            if (!status) return;
+            
+            const checkIn = prompt('Enter check-in time (HH:MM):', att.checkIn) || '';
+            const checkOut = prompt('Enter check-out time (HH:MM):', att.checkOut) || '';
+            const notes = prompt('Enter notes:', att.notes) || '';
+            
+            att.status = status;
+            att.checkIn = checkIn;
+            att.checkOut = checkOut;
+            att.notes = notes;
+            
+            loadTeacherAttendance();
+            alert('Teacher attendance updated successfully!');
+        }
+
+        function deleteTeacherAttendance(id) {
+            if (!confirm('Are you sure you want to delete this attendance record?')) return;
+            
+            teacherAttendance = teacherAttendance.filter(a => a.id !== id);
+            loadTeacherAttendance();
+            alert('Teacher attendance deleted successfully!');
+        }
+
         function goToMaster() {
             window.location.href = 'master-control.html';
         }
@@ -940,6 +1069,8 @@
                 attendance: attendance,
                 busRoutes: busRoutes,
                 teachers: teachers,
+                teacherAttendance: teacherAttendance,
+                teacherFees: teacherFees,
                 timestamp: new Date().toISOString()
             };
             
@@ -954,6 +1085,8 @@
                 attendance: attendance,
                 busRoutes: busRoutes,
                 teachers: teachers,
+                teacherAttendance: teacherAttendance,
+                teacherFees: teacherFees,
                 timestamp: new Date().toISOString()
             };
             

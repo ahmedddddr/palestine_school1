@@ -59,6 +59,10 @@ async function ensureMongoIndexes() {
         await db.collection('fees').createIndex({ branchId: 1, ...opts });
         await db.collection('fees').createIndex({ studentId: 1, month: 1, year: 1, ...opts });
         await db.collection('busSubscriptions').createIndex({ branchId: 1, ...opts });
+        await db.collection('teacherAttendance').createIndex({ branchId: 1, date: 1, ...opts });
+        await db.collection('teacherAttendance').createIndex({ teacherId: 1, date: 1, ...opts });
+        await db.collection('teacherSalaries').createIndex({ branchId: 1, ...opts });
+        await db.collection('teacherSalaries').createIndex({ teacherId: 1, month: 1, year: 1, ...opts });
         await db.collection('branches').createIndex({ id: 1 }, { unique: true, ...opts });
         await db.collection('branches').createIndex({ branchCode: 1 }, { unique: true, ...opts });
         clearTimeout(t);
@@ -862,6 +866,139 @@ app.delete('/api/attendance/:id', requireAnyRole(['super_admin', 'branch_admin']
     res.json({ success: true });
 });
 
+// Teacher Attendance API
+app.get('/api/teacher-attendance', async (req, res) => {
+    res.json(filteredByScope(await getCollection('teacherAttendance'), req.branchScope));
+});
+
+app.post('/api/teacher-attendance', async (req, res) => {
+    const all = await getCollection('teacherAttendance');
+    const body = req.body;
+    const branchId = req.branchScope || Number(body.branchId) || 1;
+    const nextId = all.reduce((m, s) => Math.max(m, Number(s.id) || 0), 0) + 1;
+    const record = {
+        id: nextId,
+        teacherId: Number(body.teacherId),
+        date: sanitizeString(body.date, 30),
+        status: ['present', 'absent', 'late', 'half-day'].includes(body.status) ? body.status : 'present',
+        checkIn: sanitizeString(body.checkIn || '', 10),
+        checkOut: sanitizeString(body.checkOut || '', 10),
+        notes: sanitizeString(body.notes || '', 250),
+        branchId: Number(body.branchId || branchId),
+        createdAt: new Date().toISOString()
+    };
+    all.push(record);
+    await saveCollection('teacherAttendance', all);
+    res.json({ success: true, data: record });
+});
+
+app.put('/api/teacher-attendance/:id', async (req, res) => {
+    const id = Number(req.params.id);
+    const all = await getCollection('teacherAttendance');
+    const idx = all.findIndex(a => Number(a.id) === id);
+    if (idx < 0) return res.status(404).json({ error: 'Not found' });
+    if (req.branchScope !== null && String(all[idx].branchId) !== String(req.branchScope)) {
+        return res.status(403).json({ error: 'Not your branch' });
+    }
+    const body = req.body;
+    all[idx] = {
+        ...all[idx],
+        date: body.date !== undefined ? sanitizeString(body.date, 30) : all[idx].date,
+        status: body.status !== undefined && ['present', 'absent', 'late', 'half-day'].includes(body.status) ? body.status : all[idx].status,
+        checkIn: body.checkIn !== undefined ? sanitizeString(body.checkIn, 10) : all[idx].checkIn,
+        checkOut: body.checkOut !== undefined ? sanitizeString(body.checkOut, 10) : all[idx].checkOut,
+        notes: body.notes !== undefined ? sanitizeString(body.notes, 250) : all[idx].notes,
+        updatedAt: new Date().toISOString()
+    };
+    await saveCollection('teacherAttendance', all);
+    res.json({ success: true, data: all[idx] });
+});
+
+app.delete('/api/teacher-attendance/:id', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
+    const id = Number(req.params.id);
+    const all = await getCollection('teacherAttendance');
+    const idx = all.findIndex(a => Number(a.id) === id);
+    if (idx < 0) return res.status(404).json({ error: 'Not found' });
+    if (req.branchScope !== null && String(all[idx].branchId) !== String(req.branchScope)) {
+        return res.status(403).json({ error: 'Not your branch' });
+    }
+    all.splice(idx, 1);
+    await saveCollection('teacherAttendance', all);
+    res.json({ success: true });
+});
+
+// Teacher Salaries API
+app.get('/api/teacher-salaries', async (req, res) => {
+    res.json(filteredByScope(await getCollection('teacherSalaries'), req.branchScope));
+});
+
+app.post('/api/teacher-salaries', async (req, res) => {
+    const all = await getCollection('teacherSalaries');
+    const body = req.body;
+    const branchId = req.branchScope || Number(body.branchId) || 1;
+    const nextId = all.reduce((m, s) => Math.max(m, Number(s.id) || 0), 0) + 1;
+    const record = {
+        id: nextId,
+        teacherId: Number(body.teacherId),
+        baseSalary: Number(body.baseSalary) || 0,
+        bonus: Number(body.bonus) || 0,
+        deductions: Number(body.deductions) || 0,
+        totalSalary: (Number(body.baseSalary) || 0) + (Number(body.bonus) || 0) - (Number(body.deductions) || 0),
+        month: sanitizeString(body.month, 20),
+        year: Number(body.year) || new Date().getFullYear(),
+        paymentStatus: ['pending', 'paid', 'partial'].includes(body.paymentStatus) ? body.paymentStatus : 'pending',
+        paymentDate: body.paymentDate ? sanitizeString(body.paymentDate, 30) : null,
+        notes: sanitizeString(body.notes || '', 250),
+        branchId: Number(body.branchId || branchId),
+        createdAt: new Date().toISOString()
+    };
+    all.push(record);
+    await saveCollection('teacherSalaries', all);
+    res.json({ success: true, data: record });
+});
+
+app.put('/api/teacher-salaries/:id', async (req, res) => {
+    const id = Number(req.params.id);
+    const all = await getCollection('teacherSalaries');
+    const idx = all.findIndex(s => Number(s.id) === id);
+    if (idx < 0) return res.status(404).json({ error: 'Not found' });
+    if (req.branchScope !== null && String(all[idx].branchId) !== String(req.branchScope)) {
+        return res.status(403).json({ error: 'Not your branch' });
+    }
+    const body = req.body;
+    const baseSalary = body.baseSalary !== undefined ? Number(body.baseSalary) : all[idx].baseSalary;
+    const bonus = body.bonus !== undefined ? Number(body.bonus) : all[idx].bonus;
+    const deductions = body.deductions !== undefined ? Number(body.deductions) : all[idx].deductions;
+    all[idx] = {
+        ...all[idx],
+        baseSalary,
+        bonus,
+        deductions,
+        totalSalary: baseSalary + bonus - deductions,
+        month: body.month !== undefined ? sanitizeString(body.month, 20) : all[idx].month,
+        year: body.year !== undefined ? Number(body.year) : all[idx].year,
+        paymentStatus: body.paymentStatus !== undefined && ['pending', 'paid', 'partial'].includes(body.paymentStatus) ? body.paymentStatus : all[idx].paymentStatus,
+        paymentDate: body.paymentDate !== undefined ? sanitizeString(body.paymentDate, 30) : all[idx].paymentDate,
+        notes: body.notes !== undefined ? sanitizeString(body.notes, 250) : all[idx].notes,
+        updatedAt: new Date().toISOString()
+    };
+    await saveCollection('teacherSalaries', all);
+    res.json({ success: true, data: all[idx] });
+});
+
+app.delete('/api/teacher-salaries/:id', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
+    const id = Number(req.params.id);
+    const all = await getCollection('teacherSalaries');
+    const idx = all.findIndex(s => Number(s.id) === id);
+    if (idx < 0) return res.status(404).json({ error: 'Not found' });
+    if (req.branchScope !== null && String(all[idx].branchId) !== String(req.branchScope)) {
+        return res.status(403).json({ error: 'Not your branch' });
+    }
+    all.splice(idx, 1);
+    await saveCollection('teacherSalaries', all);
+    res.json({ success: true });
+});
+
 app.get('/api/fees', async (req, res) => {
     res.json(filteredByScope(await getCollection('fees'), req.branchScope));
 });
@@ -984,9 +1121,14 @@ app.delete('/api/bus/:id', requireAnyRole(['super_admin', 'branch_admin']), asyn
 
 app.post('/api/save', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
     const { type, data } = req.body;
-    const validTypes = ['students', 'attendance', 'bus', 'fees', 'teachers', 'branches'];
+    const validTypes = ['students', 'attendance', 'bus', 'fees', 'teachers', 'branches', 'teacher-attendance', 'teacher-salaries'];
     if (!validTypes.includes(type)) return res.status(400).json({ error: 'Invalid type' });
-    const colName = type === 'bus' ? 'busSubscriptions' : type;
+    const colNameMap = {
+        'bus': 'busSubscriptions',
+        'teacher-attendance': 'teacherAttendance',
+        'teacher-salaries': 'teacherSalaries'
+    };
+    const colName = colNameMap[type] || type;
     const raw = Array.isArray(data) ? data : [];
     const scoped = req.branchScope === null ? raw : raw.map(item => ({ ...item, branchId: req.branchScope }));
     await saveCollection(colName, scoped);

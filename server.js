@@ -286,6 +286,17 @@ async function initializeDefaults() {
         console.log('   ⚠️  Branch Admin:', process.env.BRANCH_ADMIN_USERNAME || 'branchadmin', ' / branchId=1');
     }
 
+    const busSubscriptions = await getCollection('busSubscriptions');
+    if (!Array.isArray(busSubscriptions) || busSubscriptions.length === 0) {
+        const defaultBusRoutes = [
+            { id: 1, route: 'Route A - Downtown', studentId: null, fee: 500, paid: 0, month: 'January', year: 2026, branchId: 1, createdAt: new Date().toISOString() },
+            { id: 2, route: 'Route B - Suburbs', studentId: null, fee: 600, paid: 0, month: 'January', year: 2026, branchId: 1, createdAt: new Date().toISOString() },
+            { id: 3, route: 'Route C - Airport Road', studentId: null, fee: 700, paid: 0, month: 'January', year: 2026, branchId: 2, createdAt: new Date().toISOString() }
+        ];
+        await saveCollection('busSubscriptions', defaultBusRoutes);
+        console.log('✅ Initialized default bus routes');
+    }
+
     const students = await getCollection('students');
     if (students.length > 0 && students[0].branchId === undefined) {
         const migrated = students.map(s => ({ ...s, branchId: s.branchId || 1 }));

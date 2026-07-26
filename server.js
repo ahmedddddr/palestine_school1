@@ -17,7 +17,9 @@ const FORCE_FILE_STORAGE = process.env.FORCE_FILE_STORAGE === '1' || process.env
 const STORAGE_MODE = (MONGODB_URI && !FORCE_FILE_STORAGE) ? 'mongo' : 'file';
 
 const DATA_DIR = path.join(__dirname, 'data');
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!process.env.VERCEL && !fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+}
 
 let db;
 let mongoClient;

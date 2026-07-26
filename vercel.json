@@ -2,7 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "name": "seeds-palestine-schools",
-  "description": "Seeds Palestine Schools - Multi-Branch Management System",
   "framework": null,
   "installCommand": "npm install",
   "buildCommand": "npm run vercel-build",

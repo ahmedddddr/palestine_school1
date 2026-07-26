@@ -1173,13 +1173,21 @@ async function boot() {
 }
 
 const IS_VERCEL_HANDLER = !!process.env.VERCEL || !!process.env.NOW_BUILDER;
+let bootPromise;
+
 if (!IS_VERCEL_HANDLER && require.main === module) {
     boot().catch(err => {
         console.error('Boot failed:', err);
         process.exit(1);
     });
 } else {
-    boot().catch(err => console.error('Handler boot warning:', err));
+    bootPromise = boot().catch(err => console.error('Handler boot warning:', err));
 }
 
-module.exports = app;
+// Export for Vercel with boot completion
+module.exports = async (req, res) => {
+    if (bootPromise) {
+        await bootPromise;
+    }
+    return app(req, res);
+};

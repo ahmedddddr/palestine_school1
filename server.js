@@ -13,25 +13,14 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const MONGODB_URI = (process.env.MONGODB_URI || '').trim();
-const FORCE_FILE_STORAGE = process.env.FORCE_FILE_STORAGE === '1' || process.env.FORCE_FILE_STORAGE === 'true';
-const STORAGE_MODE = (MONGODB_URI && !FORCE_FILE_STORAGE) ? 'mongo' : 'file';
-
-const DATA_DIR = path.join(__dirname, 'data');
-if (!process.env.VERCEL && !fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-}
 
 let db;
 let mongoClient;
 
 async function connectToMongoDB() {
-    if (FORCE_FILE_STORAGE) {
-        console.log('📁 FORCE_FILE_STORAGE=true: using local JSON files (MONGODB_URI ignored).');
-        return false;
-    }
-    if (STORAGE_MODE !== 'mongo') {
-        console.log('📁 Storage mode: local JSON files (data/). Set MONGODB_URI in .env to use MongoDB.');
-        return false;
+    if (!MONGODB_URI) {
+        console.error('❌ MONGODB_URI is required. Please set MONGODB_URI environment variable.');
+        throw new Error('MONGODB_URI is required');
     }
     try {
         mongoClient = new MongoClient(MONGODB_URI);
@@ -51,10 +40,7 @@ async function connectToMongoDB() {
         return true;
     } catch (err) {
         console.error('❌ MongoDB connection failed:', err.message);
-        console.log('⚠️  Falling back to file-based storage.');
-        db = null;
-        mongoClient = null;
-        return false;
+        throw new Error('MongoDB connection failed');
     }
 }
 
@@ -81,79 +67,50 @@ async function ensureMongoIndexes() {
     }
 }
 
-const readJSON = (name, fallback = []) => {
-    const fp = path.join(DATA_DIR, `${name}.json`);
-    try {
-        if (fs.existsSync(fp)) return JSON.parse(fs.readFileSync(fp, 'utf8'));
-    } catch (_) {}
-    return fallback;
-};
-
-const writeJSON = (name, data) => {
-    const fp = path.join(DATA_DIR, `${name}.json`);
-    fs.writeFileSync(fp, JSON.stringify(data, null, 2));
-    return true;
-};
-
 async function getCollection(name, query = {}) {
-    if (db) {
-        try {
-            return await db.collection(name).find(query).toArray();
-        } catch (e) {
-            console.error(`Mongo read ${name}:`, e.message);
-        }
+    if (!db) throw new Error('Database not connected');
+    try {
+        return await db.collection(name).find(query).toArray();
+    } catch (e) {
+        console.error(`Mongo read ${name}:`, e.message);
+        throw e;
     }
-    const all = readJSON(name, []);
-    if (Object.keys(query).length === 0) return all;
-    return all.filter(item => Object.entries(query).every(([k, v]) => item[k] === v));
 }
 
 async function saveCollection(name, data) {
-    if (db) {
-        try {
-            const col = db.collection(name);
-            await col.deleteMany({});
-            if (data.length > 0) await col.insertMany(data);
-            return true;
-        } catch (e) {
-            console.error(`Mongo write ${name}:`, e.message);
-            return false;
-        }
+    if (!db) throw new Error('Database not connected');
+    try {
+        const col = db.collection(name);
+        await col.deleteMany({});
+        if (data.length > 0) await col.insertMany(data);
+        return true;
+    } catch (e) {
+        console.error(`Mongo write ${name}:`, e.message);
+        throw e;
     }
-    return writeJSON(name, data);
 }
 
 async function upsertInCollection(name, query, doc) {
-    if (db) {
-        try {
-            const col = db.collection(name);
-            const res = await col.updateOne(query, { $set: doc }, { upsert: true });
-            return res.upsertedCount > 0 || res.modifiedCount > 0;
-        } catch (e) {
-            console.error(`Mongo upsert ${name}:`, e.message);
-            return false;
-        }
+    if (!db) throw new Error('Database not connected');
+    try {
+        const col = db.collection(name);
+        const res = await col.updateOne(query, { $set: doc }, { upsert: true });
+        return res.upsertedCount > 0 || res.modifiedCount > 0;
+    } catch (e) {
+        console.error(`Mongo upsert ${name}:`, e.message);
+        throw e;
     }
-    const all = readJSON(name, []);
-    const idx = all.findIndex(x => Object.entries(query).every(([k, v]) => x[k] === v));
-    if (idx >= 0) {
-        all[idx] = { ...all[idx], ...doc };
-    } else {
-        all.push(doc);
-    }
-    return writeJSON(name, all);
 }
 
 async function removeFromCollection(name, query) {
-    if (db) {
-        try {
-            await db.collection(name).deleteMany(query);
-            return true;
-        } catch (e) { return false; }
+    if (!db) throw new Error('Database not connected');
+    try {
+        await db.collection(name).deleteMany(query);
+        return true;
+    } catch (e) {
+        console.error(`Mongo delete ${name}:`, e.message);
+        throw e;
     }
-    const all = readJSON(name, []);
-    const filtered = all.filter(x => !Object.entries(query).every(([k, v]) => x[k] === v));
-    return writeJSON(name, filtered);
 }
 
 app.set('trust proxy', process.env.TRUST_PROXY === 'true' ? 1 : 0);

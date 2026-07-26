@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palestinian School Management System</title>
+    <link rel="stylesheet" href="styles.css?v=8000-20240204-2">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="palestine-flag">🇵🇸</span>
+                    <h1>Palestinian School Management System</h1>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+                    <button class="nav-btn" data-section="students">Students</button>
+                    <button class="nav-btn" data-section="attendance">Attendance</button>
+                    <button class="nav-btn" data-section="bus">Bus</button>
+                    <button class="nav-btn" data-section="fees">Fees</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <h2>Dashboard Overview</h2>
+                <div class="dashboard-grid">
+                    <!-- Quick Statistics -->
+                    <div class="stats-section">
+                        <h3>📊 Today's Overview</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-info">
+                                    <h4 id="total-students">0</h4>
+                                    <p>Total Students</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">✅</div>
+                                <div class="stat-info">
+                                    <h4 id="attendance-today">0</h4>
+                                    <p>Present Today</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">❌</div>
+                                <div class="stat-info">
+                                    <h4 id="absent-today">0</h4>
+                                    <p>Absent Today</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💰</div>
+                                <div class="stat-info">
+                                    <h4 id="fee-collection">$0</h4>
+                                    <p>Monthly Fees</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🚌</div>
+                                <div class="stat-info">
+                                    <h4 id="bus-subscriptions">0</h4>
+                                    <p>Bus Subscriptions</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📈</div>
+                                <div class="stat-info">
+                                    <h4 id="attendance-rate">0%</h4>
+                                    <p>Attendance Rate</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions-section">
+                        <h3>⚡ Quick Actions</h3>
+                        <div class="quick-actions-grid">
+                            <button class="quick-action-btn" onclick="sms.markTodayAttendance()">
+                                <span class="action-icon">📝</span>
+                                <span>Mark Today's Attendance</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="sms.quickFeePayment()">
+                                <span class="action-icon">💰</span>
+                                <span>Record Fee Payment</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="sms.openStudentModal()">
+                                <span class="action-icon">➕</span>
+                                <span>Add New Student</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="sms.generateMonthlyReport()">
+                                <span class="action-icon">📊</span>
+                                <span>Monthly Report</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="sms.exportAllData()" style="background: linear-gradient(135deg, #2196F3, #1976D2);">
+                                <span class="action-icon">💾</span>
+                                <span>Export All Data</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="sms.emergencyDataRestore()" style="background: linear-gradient(135deg, #FF9800, #F57C00);">
+                                <span class="action-icon">🔄</span>
+                                <span>Emergency Restore</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="confirmDeleteAllStudents()" style="background: linear-gradient(135deg, #f44336, #d32f2f);">
+                                <span class="action-icon">⚠️</span>
+                                <span>Delete All Students</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="sms.sendFeeReminders()">
+                                <span class="action-icon">📧</span>
+                                <span>Send Fee Reminders</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-section">
+                        <div class="chart-container">
+                            <h3>📈 Attendance Trend (Last 7 Days)</h3>
+                            <canvas id="attendance-chart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>💰 Fee Collection Progress</h3>
+                            <div class="progress-bar-container">
+                                <div class="progress-label">
+                                    <span id="fees-collected-text">$0 collected</span>
+                                    <span id="fees-total-text">$0 total</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="fees-progress" class="progress-fill"></div>
+                                </div>
+                                <div class="progress-percentage" id="fees-percentage">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Distribution -->
+                    <div class="class-distribution-section">
+                        <h3>📚 Class Distribution</h3>
+                        <div class="class-grid" id="class-distribution">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Important Alerts -->
+                    <div class="alerts-section">
+                        <h3>🔔 Important Alerts</h3>
+                        <div class="alerts-container" id="alerts-container">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Today's Tasks -->
+                    <div class="tasks-section">
+                        <h3>📅 Today's Tasks</h3>
+                        <div class="tasks-container">
+                            <div class="task-item">
+                                <input type="checkbox" id="attendance-marked" onchange="sms.toggleTask('attendance')">
+                                <label for="attendance-marked">Mark attendance for all classes</label>
+                            </div>
+                            <div class="task-item">
+                                <input type="checkbox" id="fees-recorded" onchange="sms.toggleTask('fees')">
+                                <label for="fees-recorded">Record today's fee payments</label>
+                            </div>
+                            <div class="task-item">
+                                <input type="checkbox" id="bus-checked" onchange="sms.toggleTask('bus')">
+                                <label for="bus-checked">Check bus route issues</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="activity-section">
+                        <h3>🕐 Recent Activity</h3>
+                        <div class="activity-list" id="recent-activity">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Students Section -->
+            <section id="students" class="section">
+                <div class="section-header">
+                    <h2>Student Management</h2>
+                    <button class="btn btn-primary" onclick="openStudentModal()">Add New Student</button>
+                </div>
+                
+                <div class="filters">
+                    <input type="text" id="student-search" placeholder="Search by name..." class="search-input">
+                    <select id="class-filter" class="filter-select">
+                        <option value="">All Classes</option>
+                        <option value="KG1">KG1</option>
+                        <option value="KG2">KG2</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4 Boys">Grade 4 Boys</option>
+                        <option value="4 Girls">Grade 4 Girls</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6 Boys">Grade 6 Boys</option>
+                        <option value="6 Girls">Grade 6 Girls</option>
+                        <option value="7 Boys">Grade 7 Boys</option>
+                        <option value="7 Girls">Grade 7 Girls</option>
+                        <option value="8 Boys">Grade 8 Boys</option>
+                        <option value="8 Girls">Grade 8 Girls</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                    </select>
+                    <select id="fee-status-filter" class="filter-select">
+                        <option value="">All Fee Status</option>
+                        <option value="paid">Paid</option>
+                        <option value="unpaid">Unpaid</option>
+                    </select>
+                    <div class="quick-actions">
+                        <button class="btn btn-sm btn-secondary" onclick="sms.exportStudents()">📥 Export</button>
+                        <button class="btn btn-sm btn-secondary" onclick="document.getElementById('import-csv').click()">📤 Import</button>
+                        <button class="btn btn-sm btn-danger" onclick="sms.deleteSelectedStudents()">🗑️ Delete Selected</button>
+                        <input type="file" id="import-csv" accept=".csv" style="display:none" onchange="sms.importStudents(event)">
+                    </div>
+                </div>
+                <div class="table-info">
+                    <span id="student-count">0 students</span> | 
+                    <span id="page-info">Page 1 of 1</span>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="select-all" onchange="sms.toggleSelectAll()"></th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Phone</th>
+                                <th>Bus Subscriber</th>
+                                <th>Fee Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table">
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="students-pagination">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance Section -->
+            <section id="attendance" class="section">
+                <div class="section-header">
+                    <h2>Attendance Tracking</h2>
+                    <div class="header-actions">
+                        <butto  n class="btn btn-secondary" onclick="window.sms.exportAttendance()">📥 Export</button>
+                        <button class="btn btn-primary" onclick="markTodayAttendance()">Mark Today's Attendance</button>
+                    </div>
+                </div>
+                
+                <div class="filters">
+                    <input type="date" id="attendance-date" class="date-input">
+                    <input type="text" id="attendance-search" placeholder="Search by student name..." class="search-input">
+                    <select id="attendance-class-filter" class="filter-select">
+                        <option value="">All Classes</option>
+                        <option value="KG1">KG1</option>
+                        <option value="KG2">KG2</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4">Grade 4 (All)</option>
+                        <option value="4 Boys">Grade 4 Boys</option>
+                        <option value="4 Girls">Grade 4 Girls</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6">Grade 6 (All)</option>
+                        <option value="6 Boys">Grade 6 Boys</option>
+                        <option value="6 Girls">Grade 6 Girls</option>
+                        <option value="7">Grade 7 (All)</option>
+                        <option value="7 Boys">Grade 7 Boys</option>
+                        <option value="7 Girls">Grade 7 Girls</option>
+                        <option value="8">Grade 8 (All)</option>
+                        <option value="8 Boys">Grade 8 Boys</option>
+                        <option value="8 Girls">Grade 8 Girls</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                    </select>
+                    <div class="bulk-actions">
+                        <button class="btn btn-sm btn-success" onclick="window.sms.markAllPresent()">✅ All Present</button>
+                        <button class="btn btn-sm btn-danger" onclick="window.sms.markAllAbsent()">❌ All Absent</button>
+                        <button class="btn btn-sm btn-primary" onclick="window.sms.exportAttendance()">📊 Export</button>
+                        <button class="btn btn-sm btn-warning" onclick="testExportButton()">🔧 Test Export</button>
+                        <button class="btn btn-sm btn-secondary" onclick="testIndividualButton()">🧪 Test</button>
+                    </div>
+                </div>
+
+                <div class="attendance-header">
+                    <div class="attendance-summary">
+                        <span id="attendance-summary-text">0 students loaded</span>
+                        <div class="attendance-stats" id="attendance-stats">
+                            <span class="stat-badge present-badge">Present: <span id="present-count">0</span></span>
+                            <span class="stat-badge absent-badge">Absent: <span id="absent-count">0</span></span>
+                            <span class="stat-badge unmarked-badge">Unmarked: <span id="unmarked-count">0</span></span>
+                        </div>
+                    </div>
+                    <div class="attendance-view-toggle">
+                        <button class="btn btn-sm btn-secondary" onclick="sms.toggleAttendanceView()">🔄 Toggle View</button>
+                    </div>
+                </div>
+                <div class="attendance-grid" id="attendance-grid">
+                </div>
+            </section>
+
+            <!-- Bus Section -->
+            <section id="bus" class="section">
+                <div class="section-header">
+                    <h2>Bus Subscriptions Management</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="openBusModal()">Add Bus Subscription</button>
+                        <button class="btn btn-secondary" onclick="openRouteModal()">Manage Routes</button>
+                    </div>
+                </div>
+                
+                <div class="filters">
+                    <select id="bus-month-filter" class="filter-select">
+                        <option value="">All Months</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <select id="bus-class-filter" class="filter-select">
+                        <option value="">All Classes</option>
+                        <option value="KG1">KG1</option>
+                        <option value="KG2">KG2</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4 Boys">Grade 4 Boys</option>
+                        <option value="4 Girls">Grade 4 Girls</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6 Boys">Grade 6 Boys</option>
+                        <option value="6 Girls">Grade 6 Girls</option>
+                        <option value="7 Boys">Grade 7 Boys</option>
+                        <option value="7 Girls">Grade 7 Girls</option>
+                        <option value="8 Boys">Grade 8 Boys</option>
+                        <option value="8 Girls">Grade 8 Girls</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                    </select>
+                </div>
+
+                <div id="bus-routes-tables"></div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Route</th>
+                                <th>Monthly Fee</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bus-table">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Fees Section -->
+            <section id="fees" class="section">
+                <div class="section-header">
+                    <h2>Monthly Fees Management</h2>
+                    <button class="btn btn-primary" onclick="openFeeModal()">Record Payment</button>
+                </div>
+                
+                <div class="filters">
+                    <select id="fees-month" class="filter-select">
+                        <option value="">All Months</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <select id="fees-class-filter" class="filter-select">
+                        <option value="">All Classes</option>
+                        <option value="KG1">KG1</option>
+                        <option value="KG2">KG2</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4 Boys">Grade 4 Boys</option>
+                        <option value="4 Girls">Grade 4 Girls</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6 Boys">Grade 6 Boys</option>
+                        <option value="6 Girls">Grade 6 Girls</option>
+                        <option value="7 Boys">Grade 7 Boys</option>
+                        <option value="7 Girls">Grade 7 Girls</option>
+                        <option value="8 Boys">Grade 8 Boys</option>
+                        <option value="8 Girls">Grade 8 Girls</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Month</th>
+                                <th>Tuition Fee</th>
+                                <th>Bus Fee</th>
+                                <th>Total</th>
+                                <th>Payment Date</th>
+                                <th>Validity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fees-table">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Student Modal -->
+    <div id="student-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('student-modal')">&times;</span>
+            <h3>Add/Edit Student</h3>
+            <form id="student-form">
+                <div class="form-group">
+                    <label for="student-name">Full Name</label>
+                    <input type="text" id="student-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-class">Class</label>
+                    <select id="student-class" required>
+                        <option value="">Select Class</option>
+                        <option value="KG1">KG1</option>
+                        <option value="KG2">KG2</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4 Boys">Grade 4 Boys</option>
+                        <option value="4 Girls">Grade 4 Girls</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6 Boys">Grade 6 Boys</option>
+                        <option value="6 Girls">Grade 6 Girls</option>
+                        <option value="7 Boys">Grade 7 Boys</option>
+                        <option value="7 Girls">Grade 7 Girls</option>
+                        <option value="8 Boys">Grade 8 Boys</option>
+                        <option value="8 Girls">Grade 8 Girls</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="student-route">Bus Route (Optional)</label>
+                    <select id="student-route">
+                        <option value="">No Bus</option>
+                        <!-- Routes will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="student-phone">Parent Phone (Optional)</label>
+                    <input type="tel" id="student-phone">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Student</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('student-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student Details Modal -->
+    <div id="student-details-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('student-details-modal')">&times;</span>
+            <h3>Student Details</h3>
+            <div id="student-details-content"></div>
+            <div class="form-actions" style="margin-top: 16px;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('student-details-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bus Modal -->
+    <div id="bus-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bus-modal')">&times;</span>
+            <h3>Add/Edit Bus Subscription</h3>
+            <form id="bus-form">
+                <div class="form-group">
+                    <label for="bus-student">Select Student</label>
+                    <select id="bus-student" required>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bus-route">Bus Route</label>
+                    <select id="bus-route" required>
+                        <option value="">Select Route</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bus-fee">Monthly Bus Fee ($)</label>
+                    <input type="number" id="bus-fee" min="0" step="0.01" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Subscription</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('bus-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Route Modal -->
+    <div id="route-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('route-modal')">&times;</span>
+            <h3>Manage Routes</h3>
+            
+            <!-- Current Routes List -->
+            <div class="routes-list-container">
+                <h4>Current Routes</h4>
+                <div class="routes-list" id="current-routes-list">
+                    <!-- Routes will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Add/Edit Form -->
+            <div class="route-form-container">
+                <h4>Add New Route</h4>
+                <form id="route-form">
+                    <div class="form-group">
+                        <label for="route-name">Route Name</label>
+                        <input type="text" id="route-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="route-area">Area Covered</label>
+                        <input type="text" id="route-area" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Route</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('route-modal')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fee Modal -->
+    <div id="fee-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('fee-modal')">&times;</span>
+            <h3>Record Fee Payment</h3>
+            <form id="fee-form">
+                <div class="form-group">
+                    <label for="fee-student">Select Student</label>
+                    <select id="fee-student" required>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fee-month">Month</label>
+                    <select id="fee-month" required>
+                        <option value="">Select Month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fee-tuition">Tuition Fee ($)</label>
+                    <input type="number" id="fee-tuition" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="fee-bus">Bus Fee ($)</label>
+                    <input type="number" id="fee-bus" min="0" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="fee-date">Payment Date</label>
+                    <input type="date" id="fee-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="fee-validity-days">Fee Validity (Days)</label>
+                    <input type="number" id="fee-validity-days" min="1" step="1" value="20" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Record Payment</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('fee-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="data-sync.js?v=20250220-1715"></script>
+    <script src="script.js?v=20250220-1715"></script>
+    <script>
+        // Debug script to check routes
+        setTimeout(() => {
+            console.log('=== ROUTE DEBUG ===');
+            if (typeof routeManager !== 'undefined') {
+                const routes = routeManager.getRoutes();
+                console.log('Routes found:', routes);
+                console.log('Routes count:', routes.length);
+                routes.forEach((route, index) => {
+                    console.log(`Route ${index}: ${route.name} - ${route.area}`);
+                });
+            } else {
+                console.log('routeManager not defined');
+            }
+            console.log('=== END ROUTE DEBUG ===');
+        }, 2000);
+        
+        function confirmDeleteAllStudents() {
+            const password = prompt('Enter admin password to delete all students:');
+            if (password) {
+                sms.deleteAllStudents(password);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Admin - Palestine Schools Egypt</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --pal-black: #111111;
+            --pal-white: #ffffff;
+            --pal-green: #007a3d;
+            --pal-red: #ce1126;
+            --text: #0f172a;
+            --muted: #64748b;
+            --card: rgba(255, 255, 255, 0.95);
+            --border: rgba(15, 23, 42, 0.12);
+            --shadow: 0 18px 45px rgba(2, 6, 23, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(1200px 700px at 15% 10%, rgba(0, 122, 61, 0.25), transparent 60%),
+                radial-gradient(900px 600px at 85% 15%, rgba(206, 17, 38, 0.22), transparent 55%),
+                linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+            min-height: 100vh;
+            color: var(--text);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(17, 17, 17, 0.35) 0%, rgba(17, 17, 17, 0.05) 45%, rgba(255, 255, 255, 0.06) 100%),
+                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0, rgba(255, 255, 255, 0.03) 6px, rgba(255, 255, 255, 0.00) 6px, rgba(255, 255, 255, 0.00) 12px);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            color: var(--pal-white);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .branch-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .flag-icon {
+            font-size: 40px;
+        }
+
+        .branch-title h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .branch-title p {
+            margin: 4px 0 0 0;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 13px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--pal-green), #0b8a46);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, var(--pal-red), #b01020);
+            color: white;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-icon.students { background: rgba(0, 122, 61, 0.15); }
+        .stat-icon.revenue { background: rgba(206, 17, 38, 0.15); }
+        .stat-icon.attendance { background: rgba(17, 17, 17, 0.15); }
+        .stat-icon.fees { background: rgba(0, 122, 61, 0.15); }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-change {
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .stat-change.positive { color: var(--pal-green); }
+        .stat-change.negative { color: var(--pal-red); }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(90deg, var(--pal-green), #0b8a46);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: var(--pal-white);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--pal-green), var(--pal-red));
+            border-radius: 2px;
+        }
+
+        .table-container {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(248, 250, 252, 0.8);
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.paid {
+            background: rgba(0, 122, 61, 0.15);
+            color: var(--pal-green);
+        }
+
+        .status-badge.unpaid {
+            background: rgba(206, 17, 38, 0.15);
+            color: var(--pal-red);
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 4px;
+        }
+
+        .action-btn.edit {
+            background: rgba(0, 122, 61, 0.15);
+            color: var(--pal-green);
+        }
+
+        .action-btn.delete {
+            background: rgba(206, 17, 38, 0.15);
+            color: var(--pal-red);
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            min-width: 200px;
+        }
+
+        .filter-select {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            min-width: 150px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--muted);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--pal-green);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(90deg, var(--pal-green), #0b8a46);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: rgba(15, 23, 42, 0.1);
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="branch-info">
+                    <div class="flag-icon">🇵🇸</div>
+                    <div class="branch-title">
+                        <h1 id="branch-name">Cairo Main Branch - Admin Panel</h1>
+                        <p id="branch-location">Nasr City, Cairo</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goToMaster()">← Back to Master</button>
+                    <button class="btn btn-primary" onclick="saveData()">💾 Save Data</button>
+                    <button class="btn btn-danger" onclick="backupData()">📥 Backup</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon students">👥</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-value" id="total-students">156</div>
+                <div class="stat-change positive">↑ 12% from last month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon revenue">💰</div>
+                    <div class="stat-label">Monthly Revenue</div>
+                </div>
+                <div class="stat-value" id="monthly-revenue">$45,600</div>
+                <div class="stat-change positive">↑ 8% from last month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon attendance">📊</div>
+                    <div class="stat-label">Today's Attendance</div>
+                </div>
+                <div class="stat-value" id="today-attendance">92%</div>
+                <div class="stat-change positive">↑ 3% from yesterday</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon fees">💵</div>
+                    <div class="stat-label">Pending Fees</div>
+                </div>
+                <div class="stat-value" id="pending-fees">$8,400</div>
+                <div class="stat-change negative">↓ 5% from last month</div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-section="students" onclick="showSection('students')">👥 Students</div>
+            <div class="nav-tab" data-section="fees" onclick="showSection('fees')">💰 Fees & Payments</div>
+            <div class="nav-tab" data-section="attendance" onclick="showSection('attendance')">📊 Attendance</div>
+            <div class="nav-tab" data-section="bus" onclick="showSection('bus')">🚌 Bus Routes</div>
+            <div class="nav-tab" data-section="teachers" onclick="showSection('teachers')">👨‍🏫 Teachers</div>
+            <div class="nav-tab" data-section="teacher-fees" onclick="showSection('teacher-fees')">💵 Teacher Salaries</div>
+        </div>
+
+        <!-- Students Section -->
+        <div class="section active" id="students-section">
+            <div class="section-header">
+                <h2 class="section-title">Student Management</h2>
+                <button class="btn btn-primary" onclick="addStudent()">+ Add Student</button>
+            </div>
+            <div class="filters">
+                <input type="text" class="filter-input" placeholder="Search students..." id="student-search">
+                <select class="filter-select" id="class-filter">
+                    <option value="">All Classes</option>
+                    <option value="KG1">KG1</option>
+                    <option value="KG2">KG2</option>
+                    <option value="1">Grade 1</option>
+                    <option value="2">Grade 2</option>
+                    <option value="3">Grade 3</option>
+                    <option value="4">Grade 4</option>
+                    <option value="5">Grade 5</option>
+                    <option value="6">Grade 6</option>
+                </select>
+                <select class="filter-select" id="payment-filter">
+                    <option value="">All Payment Status</option>
+                    <option value="paid">Paid</option>
+                    <option value="unpaid">Unpaid</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Class</th>
+                            <th>Phone</th>
+                            <th>Payment Status</th>
+                            <th>Bus</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-table">
+                        <!-- Students will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Fees Section -->
+        <div class="section" id="fees-section">
+            <div class="section-header">
+                <h2 class="section-title">Fee Payment History</h2>
+                <button class="btn btn-primary" onclick="recordPayment()">+ Record Payment</button>
+            </div>
+            <div class="filters">
+                <input type="date" class="filter-input" id="date-filter">
+                <select class="filter-select" id="month-filter">
+                    <option value="">All Months</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Student</th>
+                            <th>Class</th>
+                            <th>Amount</th>
+                            <th>Month</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fees-table">
+                        <!-- Fees will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Attendance Section -->
+        <div class="section" id="attendance-section">
+            <div class="section-header">
+                <h2 class="section-title">Attendance Records</h2>
+                <button class="btn btn-primary" onclick="exportAttendance()">📥 Export</button>
+            </div>
+            <div class="filters">
+                <input type="date" class="filter-input" id="attendance-date">
+                <select class="filter-select" id="attendance-class-filter">
+                    <option value="">All Classes</option>
+                    <option value="KG1">KG1</option>
+                    <option value="KG2">KG2</option>
+                    <option value="1">Grade 1</option>
+                    <option value="2">Grade 2</option>
+                    <option value="3">Grade 3</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Student</th>
+                            <th>Class</th>
+                            <th>Status</th>
+                            <th>Marked By</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendance-table">
+                        <!-- Attendance will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bus Section -->
+        <div class="section" id="bus-section">
+            <div class="section-header">
+                <h2 class="section-title">Bus Route Management</h2>
+                <button class="btn btn-primary" onclick="addRoute()">+ Add Route</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Route Name</th>
+                            <th>Area</th>
+                            <th>Students</th>
+                            <th>Driver</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bus-table">
+                        <!-- Bus routes will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Teachers Section -->
+        <div class="section" id="teachers-section">
+            <div class="section-header">
+                <h2 class="section-title">Teacher Management</h2>
+                <button class="btn btn-primary" onclick="addTeacher()">+ Add Teacher</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Subject</th>
+                            <th>Classes</th>
+                            <th>Phone</th>
+                            <th>Salary</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachers-table">
+                        <!-- Teachers will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Teacher Fees Section -->
+        <div class="section" id="teacher-fees-section">
+            <div class="section-header">
+                <h2 class="section-title">Teacher Salary Management</h2>
+                <button class="btn btn-primary" onclick="recordTeacherSalary()">+ Record Salary Payment</button>
+            </div>
+            <div class="filters">
+                <input type="date" class="filter-input" id="salary-date">
+                <select class="filter-select" id="salary-month-filter">
+                    <option value="">All Months</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Teacher</th>
+                            <th>Subject</th>
+                            <th>Amount</th>
+                            <th>Month</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teacher-fees-table">
+                        <!-- Teacher fees will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let students = [
+            { id: 1, name: "محمود أنور عايش", class: "KG1", phone: "01044201902", paymentStatus: "paid", bus: false },
+            { id: 2, name: "مريم ياسر أحمد", class: "KG1", phone: "01035859119", paymentStatus: "unpaid", bus: true },
+            { id: 3, name: "ماجد أنور بسام", class: "KG2", phone: "1099362026", paymentStatus: "paid", bus: false },
+            { id: 4, name: "سارة صابر عدنان", class: "1", phone: "01505656757", paymentStatus: "paid", bus: true },
+            { id: 5, name: "زايد محمد سكيك", class: "1", phone: "01034339876", paymentStatus: "unpaid", bus: false }
+        ];
+
+        let fees = [
+            { id: 1, date: "2024-01-15", student: "محمود أنور عايش", class: "KG1", amount: 500, month: "January", status: "paid" },
+            { id: 2, date: "2024-01-16", student: "سارة صابر عدنان", class: "1", amount: 600, month: "January", status: "paid" },
+            { id: 3, date: "2024-01-17", student: "مريم ياسر أحمد", class: "KG1", amount: 500, month: "January", status: "unpaid" }
+        ];
+
+        let attendance = [
+            { id: 1, date: "2024-01-20", student: "محمود أنور عايش", class: "KG1", status: "present", markedBy: "teacher1", time: "08:30" },
+            { id: 2, date: "2024-01-20", student: "سارة صابر عدنان", class: "1", status: "present", markedBy: "teacher2", time: "08:35" },
+            { id: 3, date: "2024-01-20", student: "مريم ياسر أحمد", class: "KG1", status: "absent", markedBy: "teacher1", time: "08:30" }
+        ];
+
+        let busRoutes = [
+            { id: 1, name: "Route 1 - Nasr City", area: "Nasr City", students: 25, driver: "Ahmed Mohamed", phone: "01012345678" },
+            { id: 2, name: "Route 2 - Heliopolis", area: "Heliopolis", students: 18, driver: "Sami Ali", phone: "01023456789" }
+        ];
+
+        let teachers = [
+            { id: 1, name: "فاطمة أحمد", subject: "Arabic", classes: "KG1, KG2", phone: "01034567890", salary: 5000 },
+            { id: 2, name: "محمد علي", subject: "Math", classes: "1, 2", phone: "01045678901", salary: 5500 },
+            { id: 3, name: "سارة محمود", subject: "English", classes: "KG1, 1", phone: "01056789012", salary: 5200 }
+        ];
+
+        let teacherFees = [
+            { id: 1, date: "2024-01-15", teacher: "فاطمة أحمد", subject: "Arabic", amount: 5000, month: "January", status: "paid" },
+            { id: 2, date: "2024-01-16", teacher: "محمد علي", subject: "Math", amount: 5500, month: "January", status: "paid" },
+            { id: 3, date: "2024-01-17", teacher: "سارة محمود", subject: "English", amount: 5200, month: "January", status: "unpaid" }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStudents();
+            loadFees();
+            loadAttendance();
+            loadBusRoutes();
+            loadTeachers();
+            loadTeacherFees();
+            updateDashboardStats();
+            
+            // Set today's date for filters
+            document.getElementById('attendance-date').value = new Date().toISOString().split('T')[0];
+        });
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.add('active');
+            
+            // Add active class to clicked tab
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+        }
+
+        function loadStudents() {
+            const tbody = document.getElementById('students-table');
+            tbody.innerHTML = '';
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.class}</td>
+                    <td>${student.phone}</td>
+                    <td><span class="status-badge ${student.paymentStatus}">${student.paymentStatus}</span></td>
+                    <td>${student.bus ? '✅' : '❌'}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editStudent(${student.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteStudent(${student.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadFees() {
+            const tbody = document.getElementById('fees-table');
+            tbody.innerHTML = '';
+            
+            fees.forEach(fee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${fee.date}</td>
+                    <td>${fee.student}</td>
+                    <td>${fee.class}</td>
+                    <td>$${fee.amount}</td>
+                    <td>${fee.month}</td>
+                    <td><span class="status-badge ${fee.status}">${fee.status}</span></td>
+                    <td>
+                        <button class="action-btn edit" onclick="editFee(${fee.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteFee(${fee.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadAttendance() {
+            const tbody = document.getElementById('attendance-table');
+            tbody.innerHTML = '';
+            
+            attendance.forEach(att => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${att.date}</td>
+                    <td>${att.student}</td>
+                    <td>${att.class}</td>
+                    <td><span class="status-badge ${att.status === 'present' ? 'paid' : 'unpaid'}">${att.status}</span></td>
+                    <td>${att.markedBy}</td>
+                    <td>${att.time}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadBusRoutes() {
+            const tbody = document.getElementById('bus-table');
+            tbody.innerHTML = '';
+            
+            busRoutes.forEach(route => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${route.name}</td>
+                    <td>${route.area}</td>
+                    <td>${route.students}</td>
+                    <td>${route.driver}</td>
+                    <td>${route.phone}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editRoute(${route.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteRoute(${route.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadTeachers() {
+            const tbody = document.getElementById('teachers-table');
+            tbody.innerHTML = '';
+            
+            teachers.forEach(teacher => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${teacher.id}</td>
+                    <td>${teacher.name}</td>
+                    <td>${teacher.subject}</td>
+                    <td>${teacher.classes}</td>
+                    <td>${teacher.phone}</td>
+                    <td>$${teacher.salary}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editTeacher(${teacher.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteTeacher(${teacher.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadTeacherFees() {
+            const tbody = document.getElementById('teacher-fees-table');
+            tbody.innerHTML = '';
+            
+            teacherFees.forEach(fee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${fee.date}</td>
+                    <td>${fee.teacher}</td>
+                    <td>${fee.subject}</td>
+                    <td>$${fee.amount}</td>
+                    <td>${fee.month}</td>
+                    <td><span class="status-badge ${fee.status}">${fee.status}</span></td>
+                    <td>
+                        <button class="action-btn edit" onclick="editTeacherFee(${fee.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteTeacherFee(${fee.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function goToMaster() {
+            window.location.href = 'master-control.html';
+        }
+
+        function saveData() {
+            const data = {
+                students: students,
+                fees: fees,
+                attendance: attendance,
+                busRoutes: busRoutes,
+                teachers: teachers,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('branchData', JSON.stringify(data));
+            alert('Data saved successfully!');
+        }
+
+        function backupData() {
+            const data = {
+                students: students,
+                fees: fees,
+                attendance: attendance,
+                busRoutes: busRoutes,
+                teachers: teachers,
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `branch-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Backup downloaded successfully!');
+        }
+
+        function addStudent() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add New Student</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <form id="add-student-form">
+                        <div class="form-group">
+                            <label class="form-label">Student Name</label>
+                            <input type="text" class="form-input" id="new-student-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Class</label>
+                            <select class="form-input" id="new-student-class" required>
+                                <option value="">Select Class</option>
+                                <option value="KG1">KG1</option>
+                                <option value="KG2">KG2</option>
+                                <option value="1">Grade 1</option>
+                                <option value="2">Grade 2</option>
+                                <option value="3">Grade 3</option>
+                                <option value="4">Grade 4</option>
+                                <option value="5">Grade 5</option>
+                                <option value="6">Grade 6</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-input" id="new-student-phone">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Status</label>
+                            <select class="form-input" id="new-student-payment">
+                                <option value="unpaid">Unpaid</option>
+                                <option value="paid">Paid</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="new-student-bus"> Bus Subscriber
+                            </label>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                            <button type="submit" class="modal-btn primary">Add Student</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('add-student-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newStudent = {
+                    id: students.length + 1,
+                    name: document.getElementById('new-student-name').value,
+                    class: document.getElementById('new-student-class').value,
+                    phone: document.getElementById('new-student-phone').value,
+                    paymentStatus: document.getElementById('new-student-payment').value,
+                    bus: document.getElementById('new-student-bus').checked
+                };
+                students.push(newStudent);
+                loadStudents();
+                modal.remove();
+                updateDashboardStats();
+            });
+        }
+
+        function recordPayment() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Record Fee Payment</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <form id="add-payment-form">
+                        <div class="form-group">
+                            <label class="form-label">Student</label>
+                            <select class="form-input" id="payment-student" required>
+                                ${students.map(s => `<option value="${s.id}">${s.name} (${s.class})</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount ($)</label>
+                            <input type="number" class="form-input" id="payment-amount" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Month</label>
+                            <select class="form-input" id="payment-month" required>
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Status</label>
+                            <select class="form-input" id="payment-status">
+                                <option value="paid">Paid</option>
+                                <option value="unpaid">Unpaid</option>
+                            </select>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                            <button type="submit" class="modal-btn primary">Record Payment</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('add-payment-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const studentId = parseInt(document.getElementById('payment-student').value);
+                const student = students.find(s => s.id === studentId);
+                
+                const newPayment = {
+                    id: fees.length + 1,
+                    date: new Date().toISOString().split('T')[0],
+                    student: student.name,
+                    class: student.class,
+                    amount: parseFloat(document.getElementById('payment-amount').value),
+                    month: document.getElementById('payment-month').value,
+                    status: document.getElementById('payment-status').value
+                };
+                fees.push(newPayment);
+                loadFees();
+                modal.remove();
+                updateDashboardStats();
+            });
+        }
+
+        function addRoute() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add Bus Route</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <form id="add-route-form">
+                        <div class="form-group">
+                            <label class="form-label">Route Name</label>
+                            <input type="text" class="form-input" id="route-name" required placeholder="e.g., Route 3 - Maadi">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Area Covered</label>
+                            <input type="text" class="form-input" id="route-area" required placeholder="e.g., Maadi, Cairo">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Driver Name</label>
+                            <input type="text" class="form-input" id="route-driver" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Driver Phone</label>
+                            <input type="tel" class="form-input" id="route-phone" required>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                            <button type="submit" class="modal-btn primary">Add Route</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('add-route-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newRoute = {
+                    id: busRoutes.length + 1,
+                    name: document.getElementById('route-name').value,
+                    area: document.getElementById('route-area').value,
+                    students: 0,
+                    driver: document.getElementById('route-driver').value,
+                    phone: document.getElementById('route-phone').value
+                };
+                busRoutes.push(newRoute);
+                loadBusRoutes();
+                modal.remove();
+            });
+        }
+
+        function addTeacher() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add Teacher</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <form id="add-teacher-form">
+                        <div class="form-group">
+                            <label class="form-label">Teacher Name</label>
+                            <input type="text" class="form-input" id="teacher-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <input type="text" class="form-input" id="teacher-subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Classes (comma separated)</label>
+                            <input type="text" class="form-input" id="teacher-classes" required placeholder="e.g., KG1, KG2, 1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-input" id="teacher-phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Monthly Salary ($)</label>
+                            <input type="number" class="form-input" id="teacher-salary" required min="0">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                            <button type="submit" class="modal-btn primary">Add Teacher</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('add-teacher-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newTeacher = {
+                    id: teachers.length + 1,
+                    name: document.getElementById('teacher-name').value,
+                    subject: document.getElementById('teacher-subject').value,
+                    classes: document.getElementById('teacher-classes').value,
+                    phone: document.getElementById('teacher-phone').value,
+                    salary: parseFloat(document.getElementById('teacher-salary').value)
+                };
+                teachers.push(newTeacher);
+                loadTeachers();
+                modal.remove();
+                updateDashboardStats();
+            });
+        }
+
+        function editStudent(id) {
+            alert('Edit student ' + id + ' - To be implemented');
+        }
+
+        function deleteStudent(id) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                students = students.filter(s => s.id !== id);
+                loadStudents();
+            }
+        }
+
+        function editFee(id) {
+            alert('Edit fee ' + id + ' - To be implemented');
+        }
+
+        function deleteFee(id) {
+            if (confirm('Are you sure you want to delete this fee record?')) {
+                fees = fees.filter(f => f.id !== id);
+                loadFees();
+            }
+        }
+
+        function editRoute(id) {
+            alert('Edit route ' + id + ' - To be implemented');
+        }
+
+        function deleteRoute(id) {
+            if (confirm('Are you sure you want to delete this route?')) {
+                busRoutes = busRoutes.filter(r => r.id !== id);
+                loadBusRoutes();
+            }
+        }
+
+        function editTeacher(id) {
+            alert('Edit teacher ' + id + ' - To be implemented');
+        }
+
+        function deleteTeacher(id) {
+            if (confirm('Are you sure you want to delete this teacher?')) {
+                teachers = teachers.filter(t => t.id !== id);
+                loadTeachers();
+            }
+        }
+
+        function exportAttendance() {
+            const data = {
+                attendance: attendance,
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `attendance-export-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Attendance data exported successfully!');
+        }
+
+        function recordTeacherSalary() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Record Teacher Salary Payment</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <form id="add-teacher-salary-form">
+                        <div class="form-group">
+                            <label class="form-label">Teacher</label>
+                            <select class="form-input" id="salary-teacher" required>
+                                ${teachers.map(t => `<option value="${t.id}">${t.name} (${t.subject})</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount ($)</label>
+                            <input type="number" class="form-input" id="salary-amount" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Month</label>
+                            <select class="form-input" id="salary-month" required>
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Status</label>
+                            <select class="form-input" id="salary-status">
+                                <option value="paid">Paid</option>
+                                <option value="unpaid">Unpaid</option>
+                            </select>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                            <button type="submit" class="modal-btn primary">Record Payment</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('add-teacher-salary-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const teacherId = parseInt(document.getElementById('salary-teacher').value);
+                const teacher = teachers.find(t => t.id === teacherId);
+                
+                const newSalaryPayment = {
+                    id: teacherFees.length + 1,
+                    date: new Date().toISOString().split('T')[0],
+                    teacher: teacher.name,
+                    subject: teacher.subject,
+                    amount: parseFloat(document.getElementById('salary-amount').value),
+                    month: document.getElementById('salary-month').value,
+                    status: document.getElementById('salary-status').value
+                };
+                teacherFees.push(newSalaryPayment);
+                loadTeacherFees();
+                modal.remove();
+            });
+        }
+
+        function editTeacherFee(id) {
+            alert('Edit teacher fee ' + id + ' - To be implemented');
+        }
+
+        function deleteTeacherFee(id) {
+            if (confirm('Are you sure you want to delete this salary record?')) {
+                teacherFees = teacherFees.filter(f => f.id !== id);
+                loadTeacherFees();
+            }
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('total-students').textContent = students.length;
+            
+            const totalRevenue = fees
+                .filter(f => f.status === 'paid')
+                .reduce((sum, f) => sum + f.amount, 0);
+            document.getElementById('monthly-revenue').textContent = '$' + totalRevenue.toLocaleString();
+            
+            const todayAttendance = attendance.filter(a => a.date === new Date().toISOString().split('T')[0]);
+            const presentCount = todayAttendance.filter(a => a.status === 'present').length;
+            const attendanceRate = todayAttendance.length > 0 
+                ? Math.round((presentCount / todayAttendance.length) * 100) 
+                : 0;
+            document.getElementById('today-attendance').textContent = attendanceRate + '%';
+            
+            const pendingFees = fees
+                .filter(f => f.status === 'unpaid')
+                .reduce((sum, f) => sum + f.amount, 0);
+            document.getElementById('pending-fees').textContent = '$' + pendingFees.toLocaleString();
+        }
+    </script>
+</body>
+</html>

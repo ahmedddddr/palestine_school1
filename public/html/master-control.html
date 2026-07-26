@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Control - Palestine Schools Egypt</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --pal-black: #111111;
+            --pal-white: #ffffff;
+            --pal-green: #007a3d;
+            --pal-red: #ce1126;
+            --text: #0f172a;
+            --muted: #64748b;
+            --card: rgba(255, 255, 255, 0.95);
+            --border: rgba(15, 23, 42, 0.12);
+            --shadow: 0 18px 45px rgba(2, 6, 23, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(1200px 700px at 15% 10%, rgba(0, 122, 61, 0.25), transparent 60%),
+                radial-gradient(900px 600px at 85% 15%, rgba(206, 17, 38, 0.22), transparent 55%),
+                linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+            min-height: 100vh;
+            color: var(--text);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(17, 17, 17, 0.35) 0%, rgba(17, 17, 17, 0.05) 45%, rgba(255, 255, 255, 0.06) 100%),
+                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0, rgba(255, 255, 255, 0.03) 6px, rgba(255, 255, 255, 0.00) 6px, rgba(255, 255, 255, 0.00) 12px);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 28px;
+            color: var(--pal-white);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .flag-icon {
+            font-size: 48px;
+        }
+
+        .title-section h1 {
+            font-size: 28px;
+            margin: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .title-section p {
+            margin: 8px 0 0 0;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+        }
+
+        .flag-bar {
+            display: flex;
+            gap: 2px;
+            margin-top: 12px;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .flag-bar span {
+            height: 8px;
+            flex: 1;
+        }
+
+        .flag-bar span:nth-child(1) { background: var(--pal-black); }
+        .flag-bar span:nth-child(2) { background: var(--pal-white); }
+        .flag-bar span:nth-child(3) { background: var(--pal-green); }
+        .flag-bar span:nth-child(4) { background: var(--pal-red); }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--pal-green), #0b8a46);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.students { background: rgba(0, 122, 61, 0.15); }
+        .stat-icon.revenue { background: rgba(206, 17, 38, 0.15); }
+        .stat-icon.branches { background: rgba(17, 17, 17, 0.15); }
+        .stat-icon.teachers { background: rgba(0, 122, 61, 0.15); }
+
+        .stat-info h3 {
+            font-size: 28px;
+            margin: 0;
+            color: var(--text);
+        }
+
+        .stat-info p {
+            margin: 4px 0 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .section-title {
+            color: var(--pal-white);
+            font-size: 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, var(--pal-green), var(--pal-red));
+            border-radius: 2px;
+        }
+
+        .branches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .branch-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .branch-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 55px rgba(2, 6, 23, 0.25);
+        }
+
+        .branch-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .branch-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .branch-location {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .branch-status {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .branch-status.active {
+            background: rgba(0, 122, 61, 0.15);
+            color: var(--pal-green);
+        }
+
+        .branch-status.inactive {
+            background: rgba(206, 17, 38, 0.15);
+            color: var(--pal-red);
+        }
+
+        .branch-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .branch-stat {
+            background: rgba(248, 250, 252, 0.8);
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .branch-stat-label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .branch-stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .branch-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .branch-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .branch-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .branch-btn.manage {
+            background: linear-gradient(90deg, var(--pal-green), #0b8a46);
+            color: white;
+        }
+
+        .branch-btn.edit {
+            background: rgba(15, 23, 42, 0.1);
+            color: var(--text);
+        }
+
+        .branch-btn.disable {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        }
+
+        .branch-btn.delete {
+            background: rgba(206, 17, 38, 0.15);
+            color: var(--pal-red);
+        }
+
+        .add-branch-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .add-branch-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .add-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .add-text {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--muted);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--pal-green);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(90deg, var(--pal-green), #0b8a46);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: rgba(15, 23, 42, 0.1);
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .branches-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="flag-icon">🇵🇸</div>
+                    <div class="title-section">
+                        <h1>Palestine Schools Egypt - Master Control</h1>
+                        <p>Central Management System for All Branches</p>
+                        <div class="flag-bar">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openAddBranchModal()">+ Add New Branch</button>
+                    <button class="btn btn-secondary" onclick="seedDatabase()">🌱 Seed Database</button>
+                    <button class="btn btn-secondary" onclick="backupAllData()">💾 Backup All Data</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon students">👥</div>
+                <div class="stat-info">
+                    <h3 id="total-students">0</h3>
+                    <p>Total Students</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon revenue">💰</div>
+                <div class="stat-info">
+                    <h3 id="total-revenue">$0</h3>
+                    <p>Total Revenue</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon branches">🏫</div>
+                <div class="stat-info">
+                    <h3 id="total-branches">0</h3>
+                    <p>Active Branches</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon teachers">👨‍🏫</div>
+                <div class="stat-info">
+                    <h3 id="total-teachers">0</h3>
+                    <p>Total Teachers</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Branch Management</h2>
+        <div class="branches-grid" id="branches-grid">
+            <!-- Branch cards will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Add Branch Modal -->
+    <div class="modal" id="add-branch-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Branch</h3>
+                <button class="close-btn" onclick="closeModal('add-branch-modal')">&times;</button>
+            </div>
+            <form id="add-branch-form">
+                <div class="form-group">
+                    <label class="form-label">Branch Name</label>
+                    <input type="text" class="form-input" id="branch-name" required placeholder="e.g., Cairo Main Branch">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" id="branch-location" required placeholder="e.g., Nasr City, Cairo">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Admin Username</label>
+                    <input type="text" class="form-input" id="branch-admin" required placeholder="Admin username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Admin Password</label>
+                    <input type="password" class="form-input" id="branch-password" required placeholder="Admin password">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn secondary" onclick="closeModal('add-branch-modal')">Cancel</button>
+                    <button type="submit" class="modal-btn primary">Create Branch</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let branches = [];
+        let fullData = {
+            students: [],
+            teachers: [],
+            fees: [],
+            busSubscriptions: [],
+            attendance: []
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshAll();
+        });
+
+        async function refreshAll() {
+            try {
+                const res = await fetch('/api/data', { credentials: 'include' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                fullData.students = Array.isArray(data.students) ? data.students : [];
+                fullData.teachers = Array.isArray(data.teachers) ? data.teachers : [];
+                fullData.fees = Array.isArray(data.fees) ? data.fees : [];
+                fullData.busSubscriptions = Array.isArray(data.busSubscriptions) ? data.busSubscriptions : [];
+                fullData.attendance = Array.isArray(data.attendance) ? data.attendance : [];
+                branches = Array.isArray(data.branches) ? data.branches : [];
+                if (branches.length === 0) {
+                    const bRes = await fetch('/api/branches', { credentials: 'include' });
+                    if (bRes.ok) branches = await bRes.json() || [];
+                }
+                loadBranches();
+                updateStats();
+            } catch (e) {
+                console.error('Failed to load data:', e);
+                if (!branches.length) {
+                    const grid = document.getElementById('branches-grid');
+                    if (grid) grid.innerHTML = '<div style="color:#fff;padding:16px;">Failed to load data. Please refresh and login again.</div>';
+                }
+            }
+        }
+
+        function computeBranchStats(branchId) {
+            const bid = String(branchId);
+            const students = fullData.students.filter(s => String(s.branchId) === bid);
+            const teachers = fullData.teachers.filter(t => String(t.branchId) === bid);
+            const fees = fullData.fees.filter(f => String(f.branchId) === bid);
+            const bus = fullData.busSubscriptions.filter(b => String(b.branchId) === bid);
+            let revenue = 0;
+            fees.forEach(f => { revenue += Number(f.paid) || 0; });
+            bus.forEach(b => { revenue += Number(b.paid) || 0; });
+            return {
+                students: students.length,
+                teachers: teachers.length,
+                revenue: revenue
+            };
+        }
+
+        function loadBranches() {
+            const grid = document.getElementById('branches-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            branches.forEach(branch => {
+                const stats = computeBranchStats(branch.id);
+                const card = document.createElement('div');
+                card.className = 'branch-card';
+                card.innerHTML = `
+                    <div class="branch-header">
+                        <div>
+                            <div class="branch-name">${escapeHtml(branch.name)}</div>
+                            <div class="branch-location">${escapeHtml(branch.location || '')}</div>
+                        </div>
+                        <span class="branch-status ${branch.status === 'inactive' ? 'inactive' : 'active'}">${escapeHtml(branch.status || 'active')}</span>
+                    </div>
+                    <div class="branch-stats">
+                        <div class="branch-stat">
+                            <div class="branch-stat-label">Students</div>
+                            <div class="branch-stat-value">${stats.students}</div>
+                        </div>
+                        <div class="branch-stat">
+                            <div class="branch-stat-label">Revenue</div>
+                            <div class="branch-stat-value">$${stats.revenue.toLocaleString()}</div>
+                        </div>
+                        <div class="branch-stat">
+                            <div class="branch-stat-label">Teachers</div>
+                            <div class="branch-stat-value">${stats.teachers}</div>
+                        </div>
+                        <div class="branch-stat">
+                            <div class="branch-stat-label">Admin</div>
+                            <div class="branch-stat-value">${escapeHtml(branch.admin || '—')}</div>
+                        </div>
+                    </div>
+                    <div class="branch-actions">
+                        <button class="branch-btn manage" onclick="manageBranch(${branch.id})">Manage Branch</button>
+                        <button class="branch-btn edit" onclick="editBranch(${branch.id})">Edit</button>
+                        <button class="branch-btn disable" onclick="toggleBranchStatus(${branch.id})">${branch.status === 'inactive' ? 'Enable' : 'Disable'}</button>
+                        <button class="branch-btn delete" onclick="deleteBranch(${branch.id})">Delete</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            const addCard = document.createElement('div');
+            addCard.className = 'add-branch-card';
+            addCard.onclick = openAddBranchModal;
+            addCard.innerHTML = `
+                <div class="add-icon">➕</div>
+                <div class="add-text">Add New Branch</div>
+            `;
+            grid.appendChild(addCard);
+        }
+
+        function updateStats() {
+            const totalStudents = fullData.students.length;
+            let totalRevenue = 0;
+            fullData.fees.forEach(f => { totalRevenue += Number(f.paid) || 0; });
+            fullData.busSubscriptions.forEach(b => { totalRevenue += Number(b.paid) || 0; });
+            const totalTeachers = fullData.teachers.length;
+            const totalBranches = branches.filter(b => !b.status || b.status !== 'inactive').length;
+
+            const ts = document.getElementById('total-students');
+            const tr = document.getElementById('total-revenue');
+            const tb = document.getElementById('total-branches');
+            const tt = document.getElementById('total-teachers');
+            if (ts) ts.textContent = totalStudents;
+            if (tr) tr.textContent = '$' + totalRevenue.toLocaleString();
+            if (tb) tb.textContent = totalBranches;
+            if (tt) tt.textContent = totalTeachers;
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function openAddBranchModal() {
+            const modal = document.getElementById('add-branch-modal');
+            if (modal) modal.classList.add('active');
+            const form = document.getElementById('add-branch-form');
+            if (form) form.reset();
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.remove('active');
+        }
+
+        document.getElementById('add-branch-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn ? btn.textContent : '';
+            if (btn) { btn.disabled = true; btn.textContent = 'Creating...'; }
+
+            const name = document.getElementById('branch-name').value.trim();
+            const location = document.getElementById('branch-location').value.trim();
+            const admin = document.getElementById('branch-admin').value.trim();
+            const password = document.getElementById('branch-password').value;
+
+            if (!name) { alert('Branch name is required'); if (btn) { btn.disabled=false; btn.textContent=originalText; } return; }
+            if (admin && password && password.length < 8) { alert('Admin password must be at least 8 characters'); if (btn) { btn.disabled=false; btn.textContent=originalText; } return; }
+
+            try {
+                const res = await fetch('/api/branches', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name, location, admin,
+                        adminPassword: password,
+                        adminDisplayName: `${name} Admin`,
+                        branchCode: 'branch_' + (name.toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 20) || Date.now().toString(36)),
+                        status: 'active'
+                    })
+                });
+                const body = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(body.error || 'HTTP ' + res.status);
+                e.target.reset();
+                closeModal('add-branch-modal');
+                await refreshAll();
+                alert('Branch created successfully!');
+            } catch (err) {
+                alert('Failed to create branch: ' + (err.message || err));
+            } finally {
+                if (btn) { btn.disabled = false; btn.textContent = originalText; }
+            }
+        });
+
+        function manageBranch(branchId) {
+            const branch = branches.find(b => Number(b.id) === Number(branchId));
+            if (!branch) return;
+            window.location.href = '/branch-admin?branch=' + encodeURIComponent(branchId);
+        }
+
+        function editBranch(branchId) {
+            const branch = branches.find(b => Number(b.id) === Number(branchId));
+            if (!branch) return;
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Branch</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <form id="edit-branch-form">
+                        <div class="form-group">
+                            <label class="form-label">Branch Name</label>
+                            <input type="text" class="form-input" id="edit-branch-name" value="${escapeAttr(branch.name)}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-input" id="edit-branch-location" value="${escapeAttr(branch.location || '')}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Admin Username</label>
+                            <input type="text" class="form-input" id="edit-branch-admin" value="${escapeAttr(branch.admin || '')}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Admin Password</label>
+                            <input type="password" class="form-input" id="edit-branch-password" placeholder="Leave blank to keep current">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" data-close>Cancel</button>
+                            <button type="submit" class="modal-btn primary">Update Branch</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', () => modal.remove());
+            });
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal) modal.remove();
+            });
+
+            document.getElementById('edit-branch-form').addEventListener('submit', async (e2) => {
+                e2.preventDefault();
+                const submitBtn = e2.target.querySelector('button[type="submit"]');
+                const origBtn = submitBtn ? submitBtn.textContent : '';
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Updating...'; }
+
+                const payload = {
+                    name: document.getElementById('edit-branch-name').value.trim(),
+                    location: document.getElementById('edit-branch-location').value.trim(),
+                    admin: document.getElementById('edit-branch-admin').value.trim()
+                };
+                const newPassword = document.getElementById('edit-branch-password').value;
+                if (newPassword) {
+                    if (newPassword.length < 8) { alert('Password must be at least 8 characters'); if (submitBtn){submitBtn.disabled=false;submitBtn.textContent=origBtn;} return; }
+                    payload.adminPassword = newPassword;
+                }
+                try {
+                    const r = await fetch('/api/branches/' + encodeURIComponent(branchId), {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const body = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                    modal.remove();
+                    await refreshAll();
+                    alert('Branch updated successfully!');
+                } catch (err2) {
+                    alert('Failed to update branch: ' + (err2.message || err2));
+                } finally {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origBtn; }
+                }
+            });
+        }
+
+        function escapeAttr(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replaceAll('&', '&amp;')
+                .replaceAll('"', '&quot;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;');
+        }
+
+        async function toggleBranchStatus(branchId) {
+            const branch = branches.find(b => Number(b.id) === Number(branchId));
+            if (!branch) return;
+            const newStatus = branch.status === 'inactive' ? 'active' : 'inactive';
+            if (!confirm(`Are you sure you want to ${newStatus === 'active' ? 'enable' : 'disable'} this branch?`)) return;
+            try {
+                const r = await fetch('/api/branches/' + encodeURIComponent(branchId), {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                const body = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                await refreshAll();
+                alert(`Branch ${newStatus === 'active' ? 'enabled' : 'disabled'} successfully!`);
+            } catch (err) {
+                alert('Failed to update status: ' + (err.message || err));
+            }
+        }
+
+        async function deleteBranch(branchId) {
+            const branch = branches.find(b => Number(b.id) === Number(branchId));
+            if (!branch) return;
+            if (!confirm(`Are you sure you want to delete "${branch.name}"? This action cannot be undone.`)) return;
+            if (!confirm('This will permanently delete the branch and its admin user. Continue?')) return;
+            try {
+                const r = await fetch('/api/branches/' + encodeURIComponent(branchId), {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const body = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                await refreshAll();
+                alert('Branch deleted successfully!');
+            } catch (err) {
+                alert('Failed to delete branch: ' + (err.message || err));
+            }
+        }
+
+        async function backupAllData() {
+            try {
+                const dataRes = await fetch('/api/data', { credentials: 'include' });
+                if (!dataRes.ok) throw new Error('HTTP ' + dataRes.status);
+                const data = await dataRes.json();
+                const payload = {
+                    ...data,
+                    exportVersion: 1,
+                    timestamp: new Date().toISOString()
+                };
+                const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `palestine-schools-backup-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                alert('Backup downloaded successfully!');
+            } catch (e) {
+                alert('Backup failed: ' + (e.message || e));
+            }
+        }
+
+        async function seedDatabase() {
+            if (!confirm('This will seed 253 students, 5 branches, 3 teachers, and 6 users into the connected database.\n\nIf collections already have data they will be SKIPPED. Continue?')) return;
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width:620px">
+                    <div class="modal-header">
+                        <h3 class="modal-title">🌱 Seeding Database...</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <div id="seed-output" style="font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:#0f172a;color:#e2e8f0;border-radius:12px;padding:16px;max-height:360px;overflow:auto;white-space:pre-wrap"></div>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-btn secondary" data-close>Close</button>
+                        <button id="seed-force" type="button" class="modal-btn primary" style="display:none">🔁 Re-Run & Overwrite</button>
+                    </div>
+                </div>`;
+            document.body.appendChild(modal);
+            const out = modal.querySelector('#seed-output');
+            const forceBtn = modal.querySelector('#seed-force');
+            modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', () => modal.remove()));
+            modal.addEventListener('click', ev => { if (ev.target === modal) modal.remove(); });
+            const run = async (force) => {
+                out.textContent = 'Connecting to server storage...\n';
+                try {
+                    const res = await fetch('/api/admin/seed-from-json', {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ force: !!force })
+                    });
+                    const body = await res.json().catch(() => ({}));
+                    if (!res.ok) throw new Error(body.error || ('HTTP ' + res.status));
+                    out.textContent += 'Storage backend: ' + (body.storage || '?') + '\n\n';
+                    let totalInserted = 0, totalDup = 0, totalErr = 0, totalSkip = 0;
+                    for (const r of body.results || []) {
+                        const bits = [];
+                        if (r.inserted) bits.push(`inserted=${r.inserted}`);
+                        if (r.duplicates) bits.push(`dup-skip=${r.duplicates}`);
+                        if (r.errors) bits.push(`errors=${r.errors}`);
+                        if (r.skipped) bits.push(r.note ? `skipped (${r.note})` : 'skipped');
+                        if (r.error) bits.push(r.error);
+                        out.textContent += String(r.collection).padEnd(18) + ' ' + (bits.length ? bits.join(', ') : 'ok') + '\n';
+                        totalInserted += r.inserted || 0;
+                        totalDup += r.duplicates || 0;
+                        totalErr += r.errors || 0;
+                        totalSkip += r.skipped || 0;
+                    }
+                    out.textContent += `\n✅ DONE — inserted ${totalInserted}, duplicates ${totalDup}, errors ${totalErr}, skipped ${totalSkip}\n`;
+                    out.textContent += 'Click Close, then refresh the page to load seeded stats.\n';
+                    forceBtn.style.display = 'inline-block';
+                    forceBtn.onclick = () => { if (confirm('This will OVERWRITE existing collections. Continue?')) run(true); };
+                    refreshAll();
+                } catch (e) {
+                    out.textContent += '\n❌ FAILED: ' + (e.message || e) + '\n';
+                    if (String(e.message || '').includes('MongoDB') || String(e.message || '').includes('auth')) {
+                        out.textContent += '\nTroubleshooting:\n 1. Verify in Render/Vercel env vars: MONGODB_URI (password correct, @ URL-encoded?)\n 2. In Atlas dashboard → Network Access → confirm 0.0.0.0/0 is allowed.\n 3. In Atlas → Database Access → confirm user has atlasAdmin / readWriteAnyDatabase role.\n';
+                    }
+                }
+            };
+            run(false);
+        }
+    </script>
+</body>
+</html>

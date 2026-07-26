@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Seeds Palestine Schools - Login</title>
+    <style>
+        :root {
+            --pal-black: #111111;
+            --pal-white: #ffffff;
+            --pal-green: #007a3d;
+            --pal-red: #ce1126;
+            --text: #0f172a;
+            --muted: #64748b;
+            --card: rgba(255, 255, 255, 0.92);
+            --border: rgba(15, 23, 42, 0.12);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            background:
+                radial-gradient(1200px 700px at 15% 10%, rgba(0, 122, 61, 0.25), transparent 60%),
+                radial-gradient(900px 600px at 85% 15%, rgba(206, 17, 38, 0.22), transparent 55%),
+                linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(17, 17, 17, 0.35) 0%, rgba(17, 17, 17, 0.05) 45%, rgba(255, 255, 255, 0.06) 100%),
+                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0, rgba(255, 255, 255, 0.03) 6px, rgba(255, 255, 255, 0.00) 6px, rgba(255, 255, 255, 0.00) 12px);
+            pointer-events: none;
+        }
+        .login-shell {
+            width: min(980px, 92vw);
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+            padding: 18px;
+        }
+        .brand-panel {
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 16px;
+            padding: 28px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            color: var(--pal-white);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.30);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 420px;
+        }
+        .brand-title {
+            margin: 0;
+            font-size: 30px;
+            letter-spacing: 0.3px;
+        }
+        .brand-sub {
+            margin: 10px 0 0 0;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.5;
+        }
+        .flag-bar {
+            margin-top: 18px;
+            height: 10px;
+            border-radius: 999px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+        .flag-bar span:nth-child(1) { background: var(--pal-black); }
+        .flag-bar span:nth-child(2) { background: var(--pal-white); }
+        .flag-bar span:nth-child(3) { background: var(--pal-green); }
+        .flag-bar span:nth-child(4) { background: var(--pal-red); }
+        .brand-footer {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.16);
+            display: grid;
+            gap: 8px;
+            color: rgba(255,255,255,0.80);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .login-container {
+            background: var(--card);
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.30);
+            width: 100%;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+        }
+        .login-header {
+            margin-bottom: 22px;
+        }
+        .login-header h1 {
+            color: var(--text);
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.2px;
+        }
+        .login-header p {
+            color: var(--muted);
+            margin: 8px 0 0 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 12px;
+            border: 1px solid rgba(15, 23, 42, 0.18);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: rgba(255,255,255,0.92);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(0, 122, 61, 0.70);
+            box-shadow: 0 0 0 4px rgba(0, 122, 61, 0.15);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, var(--pal-green), #0b8a46);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.12s, filter 0.12s;
+        }
+        .login-btn:hover { filter: brightness(1.03); transform: translateY(-1px); }
+        .login-btn:active { transform: translateY(0); }
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .error-message {
+            background: rgba(206, 17, 38, 0.12);
+            color: #7f1d1d;
+            padding: 10px 12px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(206, 17, 38, 0.25);
+            text-align: center;
+            display: none;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .info-message {
+            background: rgba(0, 122, 61, 0.10);
+            color: #14532d;
+            padding: 10px 12px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(0, 122, 61, 0.25);
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .school-info {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(15, 23, 42, 0.10);
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            background: rgba(255,255,255,0.70);
+            color: rgba(15, 23, 42, 0.85);
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 880px) {
+            .login-shell { grid-template-columns: 1fr; }
+            .brand-panel { min-height: auto; }
+        }
+        @media (max-width: 520px) {
+            body { align-items: flex-start; justify-content: flex-start; }
+            .login-shell { width: 100%; padding: calc(14px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left)); gap: 14px; }
+            .brand-panel { padding: 18px; border-radius: 14px; }
+            .brand-title { font-size: 24px; }
+            .login-container { padding: 18px; border-radius: 14px; }
+            .login-header h1 { font-size: 20px; }
+            .form-group input { font-size: 16px; padding: 12px; }
+            .login-btn { padding: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-shell">
+        <div class="brand-panel">
+            <div>
+                <h1 class="brand-title">Seeds Palestine Schools</h1>
+                <p class="brand-sub">Multi-branch school management system for students, attendance, fees, and transportation.</p>
+                <div class="flag-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                <div class="pill">🔒 Secure staff-only access</div>
+            </div>
+            <div class="brand-footer">
+                <div><strong>Super Admin</strong>: Manage all branches, users, and system-wide settings</div>
+                <div><strong>Branch Admin</strong>: Manage one branch - students, fees, teachers</div>
+                <div><strong>Teacher</strong>: Mark attendance and manage bus routes</div>
+            </div>
+        </div>
+
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Sign in</h1>
+                <p>Enter your staff account details to continue.</p>
+            </div>
+
+            <div class="error-message" id="error-message">Invalid username or password</div>
+
+            <form id="login-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username" autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="login-btn" id="login-btn">
+                    Login to System
+                </button>
+            </form>
+
+            <div class="school-info">
+                <div><strong>Tip:</strong> If you have trouble signing in, contact your system administrator.</div>
+                <div style="margin-top:8px;"><strong>Security:</strong> All connections are secured with HTTPS, sessions expire after 8 hours.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const form = document.getElementById('login-form');
+            const errorEl = document.getElementById('error-message');
+            const btn = document.getElementById('login-btn');
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('loggedout') === '1') {
+                const info = document.createElement('div');
+                info.className = 'info-message';
+                info.textContent = 'You have been logged out successfully.';
+                form.parentNode.insertBefore(info, form);
+            }
+            if (params.get('error') === '1') {
+                errorEl.style.display = 'block';
+                errorEl.textContent = 'Session expired or access denied. Please login again.';
+            }
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                errorEl.style.display = 'none';
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span>Signing in...';
+
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                try {
+                    const res = await fetch('/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ username, password })
+                    });
+                    let data = {};
+                    try { data = await res.json(); } catch (_) {}
+                    if (res.ok && data.success) {
+                        window.location.href = data.redirect || '/';
+                    } else {
+                        errorEl.textContent = (data && data.error) ? data.error : 'Invalid username or password.';
+                        errorEl.style.display = 'block';
+                        document.getElementById('password').value = '';
+                        btn.disabled = false;
+                        btn.textContent = 'Login to System';
+                    }
+                } catch (err) {
+                    errorEl.textContent = 'Network error. Please try again.';
+                    errorEl.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Login to System';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

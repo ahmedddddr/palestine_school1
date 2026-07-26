@@ -1,0 +1,39 @@
+# Seeds Palestine Schools — Local MongoDB (Docker)
+# --------------------------------------------------
+# Start MongoDB locally without installing it:
+#
+#   1. Install Docker Desktop (https://www.docker.com/products/docker-desktop/)
+#   2. In this project folder run:   docker compose up -d
+#   3. Set in your .env file:
+#
+# MONGODB_URI=mongodb://seeds:seeds_palestine_db_password@localhost:27017/school-management?authSource=admin&directConnection=true
+#
+#   4. Migrate your JSON data:   node migrate-files-to-mongodb.js
+#   5. Start the server:         npm start
+#
+# Stop:  docker compose down
+# Data is persisted in the ./mongo-data folder next to this file.
+# --------------------------------------------------
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: seeds-palestine-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: seeds
+      MONGO_INITDB_ROOT_PASSWORD: seeds_palestine_db_password
+      MONGO_INITDB_DATABASE: school-management
+    volumes:
+      - ./mongo-data:/data/db
+    healthcheck:
+      test: ["CMD","mongosh","--eval","db.adminCommand('ping')","-u","seeds","-p","seeds_palestine_db_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  mongo-data:

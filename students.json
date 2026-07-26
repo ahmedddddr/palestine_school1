@@ -1,0 +1,2532 @@
+[
+  {
+    "id": 1,
+    "name": "محمود أنور عايش",
+    "class": "KG1",
+    "phone": "01044201902",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 2,
+    "name": "مريم ياسر أحمد العموري",
+    "class": "KG1",
+    "phone": "01035859119 01036645411",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 3,
+    "name": "ماجد أنور بسام أبو ناصر",
+    "class": "KG1",
+    "phone": "1099362026",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 4,
+    "name": "سارة صابر عدنان ناجي",
+    "class": "KG1",
+    "phone": "01505656757 01505959044",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 5,
+    "name": "زايد محمد سكيك",
+    "class": "KG1",
+    "phone": "01034339876 01055622457",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 6,
+    "name": "محمد مؤمن عزام الديراوي",
+    "class": "KG1",
+    "phone": "01067056171",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 7,
+    "name": "لينا سعيد محمد بشارات",
+    "class": "KG1",
+    "phone": "01027963283",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 8,
+    "name": "وتين شادي طلعت بلوَنة",
+    "class": "KG1",
+    "phone": "01555678657",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 9,
+    "name": "آية عبد الرؤوف محمود إنجاص",
+    "class": "KG1",
+    "phone": "01005123074",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 10,
+    "name": "وفاء أحمد إياد جواد",
+    "class": "KG1",
+    "phone": "1011896286",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 11,
+    "name": "لايا عبد العزيز يوسف صالح",
+    "class": "KG1",
+    "phone": "155164068",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 12,
+    "name": "خطاب خالد طه",
+    "class": "KG1",
+    "phone": "1024315872",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 13,
+    "name": "أمير مراد عوض الرجوب",
+    "class": "KG1",
+    "phone": "1063408059",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 14,
+    "name": "بركة خالد راجح طه",
+    "class": "KG1",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 15,
+    "name": "كنعان محمود إبراهيم حجي",
+    "class": "KG1",
+    "phone": "1066975980",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 16,
+    "name": "جوان شاكيب باهر العواوي",
+    "class": "KG1",
+    "phone": "1044011480",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 17,
+    "name": "ميمون حسن هاني النيرب",
+    "class": "KG2",
+    "phone": "1069273916",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 18,
+    "name": "يمان أحمد عبد الجواد",
+    "class": "KG2",
+    "phone": "1011896286",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 19,
+    "name": "عمر علاء محمد قفيشة",
+    "class": "1",
+    "phone": "1113236089",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 20,
+    "name": "سلمى مؤيد سليمان الوسامة",
+    "class": "1",
+    "phone": "1003628915",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 21,
+    "name": "جوليا رجائي سعدي الكركي",
+    "class": "1",
+    "phone": "1019717370",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 22,
+    "name": "دانية نمر راقي حميدة",
+    "class": "1",
+    "phone": "1066801254",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 23,
+    "name": "ياسين طه عادل شخشير",
+    "class": "1",
+    "phone": "1289591233",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 24,
+    "name": "يوسف طه عادل شخشير",
+    "class": "1",
+    "phone": "1289591233",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 25,
+    "name": "محمد بركة راجح طه",
+    "class": "1",
+    "phone": "1002390092",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 26,
+    "name": "سيلا حمودة سعيد صلاح",
+    "class": "1",
+    "phone": "1044192515",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 27,
+    "name": "محمد ساهر نبيل اشتية",
+    "class": "1",
+    "phone": "1066076808",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 28,
+    "name": "سوار خالد طه",
+    "class": "1",
+    "phone": "1024315827",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 29,
+    "name": "يسرى أحمد عبد الناصر أبو شاهلة",
+    "class": "1",
+    "phone": "01026923595   01093171264",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 30,
+    "name": "ماجد وائل الخليلي",
+    "class": "1",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 31,
+    "name": "زكريا بكر زكريا التركماني",
+    "class": "1",
+    "phone": "01022988244 01095445499",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.414Z",
+    "branchId": 1
+  },
+  {
+    "id": 32,
+    "name": "فرح أبو حصنين",
+    "class": "1",
+    "phone": "1156234801",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 33,
+    "name": "جودي مكي",
+    "class": "1",
+    "phone": "01021058136 01050326682",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 34,
+    "name": "آدم عبد القادر النخالة",
+    "class": "1",
+    "phone": "01004498211   01010408388",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 35,
+    "name": "يوسف مازن الدحدوح",
+    "class": "1",
+    "phone": "01198940568  01031652250",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 36,
+    "name": "هشام عوض",
+    "class": "1",
+    "phone": "1055398300",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 37,
+    "name": "نور مازن سليمان السيد",
+    "class": "2",
+    "phone": "01025401024  01034575052",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 38,
+    "name": "سعاد حمادة العشي",
+    "class": "2",
+    "phone": "01015513562 01040966389",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 39,
+    "name": "هاني عطا حسن النيرب",
+    "class": "2",
+    "phone": "01094183305 01095006089",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 40,
+    "name": "أحمد وائل أبو شمالة",
+    "class": "2",
+    "phone": "01095965751   01019577876",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 41,
+    "name": "أسامة زايد عرسان الكيلاني",
+    "class": "2",
+    "phone": "1080047383",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 42,
+    "name": "نشأت فادي محمد الجعبة",
+    "class": "2",
+    "phone": "1091104147",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 43,
+    "name": "ريتال أمجد أحمد أبو عرقوب",
+    "class": "2",
+    "phone": "1040588683",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 44,
+    "name": "ندى أيمن يوسف أبو داوود",
+    "class": "2",
+    "phone": "1026708916",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 45,
+    "name": "عمر حاتم محمد حمود",
+    "class": "2",
+    "phone": "1080772743",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 46,
+    "name": "لانا محمود إبراهيم دحبور",
+    "class": "2",
+    "phone": "1018099320",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 47,
+    "name": "يوسف رياض زكريا عسيلة",
+    "class": "2",
+    "phone": "1040577611",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 48,
+    "name": "سلمى محمود عبد الله أبو سرية",
+    "class": "2",
+    "phone": "1097640763",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 49,
+    "name": "عمرو كفاح أحمد نواهضة",
+    "class": "3",
+    "phone": "1555678836",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 50,
+    "name": "تاليا رجائي سعدي الكركي",
+    "class": "3",
+    "phone": "1019717370",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 51,
+    "name": "محمد نمر راقي حميدة",
+    "class": "3",
+    "phone": "1066801254",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 52,
+    "name": "البراء عبد العزيز يوسف صالح",
+    "class": "3",
+    "phone": "1055164068",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 53,
+    "name": "رزان علي محمد عسافرة",
+    "class": "3",
+    "phone": "1103676740",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 54,
+    "name": "عائشة ظاهر رابح قبحا",
+    "class": "3",
+    "phone": "102202667",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 55,
+    "name": "نايا حمودة سعيد صلاح",
+    "class": "3",
+    "phone": "1044192515",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 56,
+    "name": "الحسن وائل كامل الجعبري",
+    "class": "3",
+    "phone": "1067017643",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 57,
+    "name": "تميم باسل هشام الهيموني",
+    "class": "3",
+    "phone": "1067418564",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 58,
+    "name": "أمير حسن يوسف زايد",
+    "class": "3",
+    "phone": "1021701925",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 59,
+    "name": "هيثم عبد الرؤوف محمود إنجاص",
+    "class": "3",
+    "phone": "1005123074",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 60,
+    "name": "عدنان ناجي جمال الخضري",
+    "class": "3",
+    "phone": "01018232485    01080125082",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 61,
+    "name": "ميرا علي عصام المدون",
+    "class": "3",
+    "phone": "01013015140 01019918786",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 62,
+    "name": "زينة بكر زكريا التركماني",
+    "class": "3",
+    "phone": "01095445499 01022988344",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 63,
+    "name": "ناي عبد الله جابر شقليه",
+    "class": "3",
+    "phone": "01117388874 01117236740",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 64,
+    "name": "يوسف محمد عبد القادر الأمصي",
+    "class": "3",
+    "phone": "01055770195  01027960909",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 65,
+    "name": "كريم محمد جودة",
+    "class": "3",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 66,
+    "name": "دانية رجائي سعدي الكركي",
+    "class": "5",
+    "phone": "1019717370",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 67,
+    "name": "ليان علي محمد عسافرة",
+    "class": "5",
+    "phone": "1103676740",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 68,
+    "name": "ماجد حاتم محمد حمود",
+    "class": "5",
+    "phone": "1080772743",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 69,
+    "name": "أصيل سعيد محمد بشارات",
+    "class": "5",
+    "phone": "1027963283",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 70,
+    "name": "صهيب ظاهر رابح قبحا",
+    "class": "5",
+    "phone": "1062202667",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 71,
+    "name": "إبراهيم بركة راجح طه",
+    "class": "5",
+    "phone": "1002390092",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 72,
+    "name": "تولين حمودة سعيد صلاح",
+    "class": "5",
+    "phone": "1044192515",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 73,
+    "name": "ميار خالد طه",
+    "class": "5",
+    "phone": "1024315872",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 74,
+    "name": "تالا وائل كامل الجعبري",
+    "class": "5",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 75,
+    "name": "آدم منصور البيض",
+    "class": "5",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 76,
+    "name": "الحسن علي عصام المدون",
+    "class": "5",
+    "phone": "01013015140 01019918786",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 77,
+    "name": "عبد الفتاح حمدان قشطة",
+    "class": "5",
+    "phone": "0109822838 0109254551",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 78,
+    "name": "أمل عطا حسن النيرب",
+    "class": "5",
+    "phone": "01095006089   01094183305",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 79,
+    "name": "سلمى وائل أحمد أبو شمالة",
+    "class": "5",
+    "phone": "01100427516  01064510682",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 80,
+    "name": "عزام محمد عزام عرفات",
+    "class": "5",
+    "phone": "01157156473  01224000894",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 81,
+    "name": "نهلة محمد ماجد النونو",
+    "class": "5",
+    "phone": "1157156473",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 82,
+    "name": "محمد ساجي عبيد",
+    "class": "5",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 83,
+    "name": "عمر محمد عبد القادر الأمصي",
+    "class": "5",
+    "phone": "01055771095 01027960909",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 84,
+    "name": "جنى الطويل",
+    "class": "5",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 85,
+    "name": "لين الغلاييني",
+    "class": "5",
+    "phone": "1020938238",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 86,
+    "name": "عمر عماد سيد عابد",
+    "class": "6 Boys",
+    "phone": "01019734736 01098770794",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 87,
+    "name": "كريم نائل محمود الحليس",
+    "class": "6 Boys",
+    "phone": "01014241197 01014291206",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 88,
+    "name": "محمد مهدي",
+    "class": "6 Boys",
+    "phone": "1069522674",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 89,
+    "name": "زين مهدي",
+    "class": "6 Boys",
+    "phone": "1069522674",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 90,
+    "name": "محمد وائل محمد الشيخ خليل",
+    "class": "6 Boys",
+    "phone": "1050912713",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 91,
+    "name": "عز الدين مؤيد سليمان قواسمي",
+    "class": "6 Boys",
+    "phone": "1003628415",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 92,
+    "name": "نصر نمر راقي حميدة",
+    "class": "6 Boys",
+    "phone": "1066801254",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 93,
+    "name": "البراء راتب عبد الله زيدان",
+    "class": "6 Boys",
+    "phone": "1015810524",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 94,
+    "name": "نور الدين مراد عوض الرجوب",
+    "class": "6 Boys",
+    "phone": "1063408059",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 95,
+    "name": "تالين شادي طلعت بلوَنة",
+    "class": "6 Girls",
+    "phone": "1555678657",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 96,
+    "name": "عبيدة أحمد إياد جواد",
+    "class": "6 Girls",
+    "phone": "101189628",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 97,
+    "name": "إيليا ساهر نبيل اشتية",
+    "class": "6 Girls",
+    "phone": "1066076808",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 98,
+    "name": "تالا حمودة سعيد صلاح",
+    "class": "6 Girls",
+    "phone": "1044192515",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 99,
+    "name": "أبرار طه عادل شخشير",
+    "class": "6 Girls",
+    "phone": "1289591233",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 100,
+    "name": "رغد رياض زكريا عسيلة",
+    "class": "6 Girls",
+    "phone": "1040577611",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 101,
+    "name": "نجود محمود إبراهيم دحبور",
+    "class": "6 Girls",
+    "phone": "1018099320",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 102,
+    "name": "ليان محمود عبد الله أبو سرية",
+    "class": "6 Girls",
+    "phone": "1097640763",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 103,
+    "name": "جنى نضال عبد الرزاق زلوم",
+    "class": "6 Girls",
+    "phone": "1019890913",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 104,
+    "name": "أميمة أيمن يوسف أبو داوود",
+    "class": "6 Girls",
+    "phone": "1026708916",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 105,
+    "name": "آية حسن يوسف زايد",
+    "class": "6 Girls",
+    "phone": "1021701925",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 106,
+    "name": "آية عطا حسن النيرب",
+    "class": "6 Girls",
+    "phone": "01094183305 01095006089",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 107,
+    "name": "نايا محمد عزام عرفات",
+    "class": "6 Girls",
+    "phone": "01064510682 01100427516",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 108,
+    "name": "مسك طارق فروانة",
+    "class": "6 Girls",
+    "phone": "1080622070",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 109,
+    "name": "عبد الرحمن علاء محمد قفيشة",
+    "class": "7 Boys",
+    "phone": "1113236089",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 110,
+    "name": "عبد الله محمود عبد الله أبو سرية",
+    "class": "7 Boys",
+    "phone": "1097640763",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 111,
+    "name": "محمد علي محمد عسافرة",
+    "class": "7 Boys",
+    "phone": "1103676740",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 112,
+    "name": "عبد الرحمن ناصر عبد الفتاح نزال",
+    "class": "7 Boys",
+    "phone": "1096770956",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 113,
+    "name": "عز الدين حاتم محمد حمود",
+    "class": "7 Boys",
+    "phone": "1080772743",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 114,
+    "name": "محمد سعيد محمد بشارات",
+    "class": "7 Boys",
+    "phone": "1027963283",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 115,
+    "name": "هاشم باسل هشام الهيموني",
+    "class": "7 Boys",
+    "phone": "1067418564",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 116,
+    "name": "سليمان خضر سليمان راضي",
+    "class": "7 Boys",
+    "phone": "1150307534",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 117,
+    "name": "أسامة مازن سليمان السيد",
+    "class": "7 Boys",
+    "phone": "01034525052 01025401024",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 118,
+    "name": "جمال ناجي جمال الخضري",
+    "class": "7 Boys",
+    "phone": "01080125082 01018232485",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 119,
+    "name": "عبد الله أحمد عبد الله أبو عساكر",
+    "class": "7 Boys",
+    "phone": "01146305813 01010851602",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 120,
+    "name": "رغد محمد سكيك",
+    "class": "7 Girls",
+    "phone": "0105562245 01034339876",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 121,
+    "name": "جود عبد القادر إسماعيل النخالة",
+    "class": "7 Boys",
+    "phone": "01040834088 01004498211",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 122,
+    "name": "ليان عبد الرؤوف محمود إنجاص",
+    "class": "7 Girls",
+    "phone": "1005123074",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 123,
+    "name": "جنى حسن يوسف زايد",
+    "class": "7 Girls",
+    "phone": "1021701925",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 124,
+    "name": "منة الله محمد سالم عوض",
+    "class": "7 Girls",
+    "phone": "1055398300",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 125,
+    "name": "ديمة نائل سعدي السخل",
+    "class": "7 Girls",
+    "phone": "1112459628",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 126,
+    "name": "لمار خالد طه",
+    "class": "7 Girls",
+    "phone": "1024315872",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 127,
+    "name": "أحرار طه عادل شخشير",
+    "class": "7 Girls",
+    "phone": "1289591233",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 128,
+    "name": "هالة عبد العزيز يوسف صالح",
+    "class": "7 Girls",
+    "phone": "1055164068",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 129,
+    "name": "أسماء ناجي محمد العبيات",
+    "class": "7 Girls",
+    "phone": "1032703989",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 130,
+    "name": "ماريا محمود غصوب سعد",
+    "class": "7 Girls",
+    "phone": "1055225792",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 131,
+    "name": "جهاد كفاح أحمد نواهضة",
+    "class": "7 Girls",
+    "phone": "11555678836",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 132,
+    "name": "يحيى مراد عوض الرجوب",
+    "class": "8 Boys",
+    "phone": "1063408059",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 133,
+    "name": "نبيل ساهر نبيل اشتية",
+    "class": "8 Boys",
+    "phone": "1066076808",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 134,
+    "name": "عبد الرحمن نمر راقي حميدة",
+    "class": "8 Boys",
+    "phone": "1066801254",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 135,
+    "name": "عمر ناجي محمد العبيات",
+    "class": "8 Boys",
+    "phone": "1032703989",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 136,
+    "name": "محمود عبد الرؤوف محمود إنجاص",
+    "class": "8 Boys",
+    "phone": "1005123074",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 137,
+    "name": "إسماعيل عبد القادر إسماعيل النخالة",
+    "class": "8 Boys",
+    "phone": "1040834088",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 138,
+    "name": "محمد خالد محمد عيسى",
+    "class": "8 Boys",
+    "phone": "1080665461",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 139,
+    "name": "قتيبة أيمن يوسف أبو داوود",
+    "class": "8 Boys",
+    "phone": "1026708916",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 140,
+    "name": "سارة أحمد عبد الله أبو عساكر",
+    "class": "8 Girls",
+    "phone": "1010651602",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 141,
+    "name": "هيام عطا حسن النيرب",
+    "class": "8 Girls",
+    "phone": "01095006086 01094183305",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 142,
+    "name": "فرح مازن سليمان السيد",
+    "class": "8 Girls",
+    "phone": "01034525052 010125401024",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 143,
+    "name": "ليان مهدي",
+    "class": "8 Girls",
+    "phone": "1069522674",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 144,
+    "name": "فدوى نضال عبد الرزاق زلوم",
+    "class": "8 Girls",
+    "phone": "1019890913",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 145,
+    "name": "ألما مؤيد سليمان قواسمي",
+    "class": "8 Girls",
+    "phone": "10036288415",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 146,
+    "name": "لمار محمود إبراهيم دحبور",
+    "class": "8 Girls",
+    "phone": "1018099320",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 147,
+    "name": "علياء علي محمد عسافرة",
+    "class": "8 Girls",
+    "phone": "1103676740",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 148,
+    "name": "رهف رياض زكريا عسيلة",
+    "class": "8 Girls",
+    "phone": "1040577611",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.415Z",
+    "branchId": 1
+  },
+  {
+    "id": 149,
+    "name": "جود محمود إبراهيم حجي",
+    "class": "8 Girls",
+    "phone": "1091608332",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 150,
+    "name": "ملكة ظاهر رابح قبحا",
+    "class": "8 Girls",
+    "phone": "1062202667",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 151,
+    "name": "نور الهدى أحمد إياد جواد",
+    "class": "8 Girls",
+    "phone": "1011896286",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 152,
+    "name": "سارة وائل كامل الجعبري",
+    "class": "8 Girls",
+    "phone": "1067017643",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 153,
+    "name": "لانا فادي محمد الجعبة",
+    "class": "8 Girls",
+    "phone": "1091104147",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 154,
+    "name": "ليان شادي طلعت بلوَنة",
+    "class": "8 Girls",
+    "phone": "1555678657",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 155,
+    "name": "ميرال عماد سعيد عابد",
+    "class": "9",
+    "phone": "1014734736",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 156,
+    "name": "علياء هشام بدر الدين الخزندار",
+    "class": "9",
+    "phone": "1559553201",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 157,
+    "name": "مهند أحمد عبد الفتاح الشوا",
+    "class": "9",
+    "phone": "1009330172",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 158,
+    "name": "عمر محمد خميس جودة",
+    "class": "9",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 159,
+    "name": "عبد الله ساجي عبيد",
+    "class": "9",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 160,
+    "name": "محمد حرب",
+    "class": "9",
+    "phone": "1013713178",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 161,
+    "name": "عبد الرحمن حاتم محمد حمود",
+    "class": "10",
+    "phone": "1080772743",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 162,
+    "name": "يوسف ناجي محمد العبيات",
+    "class": "10",
+    "phone": "1032703989",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 163,
+    "name": "زينة حسين محمد زكي النبيه",
+    "class": "10",
+    "phone": "1044834392",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 164,
+    "name": "فائدة هشام بدر الدين الخزندار",
+    "class": "10",
+    "phone": "1559553201",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 165,
+    "name": "علي جميل سرحان",
+    "class": "10",
+    "phone": "1004701443",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 166,
+    "name": "شهد أيمن ماضي",
+    "class": "10",
+    "phone": "10918855285",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 167,
+    "name": "يزن مهند إبراهيم خيال",
+    "class": "10",
+    "phone": "1080754783",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 168,
+    "name": "وسيم ماضي",
+    "class": "10",
+    "phone": "1069522674",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 169,
+    "name": "محمد حمدان قشطة",
+    "class": "10",
+    "phone": "0109822838",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 170,
+    "name": "دانا حاتم سعيد أبو القرعة",
+    "class": "11",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 171,
+    "name": "بانا وسيم نمر شهابي",
+    "class": "11",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 172,
+    "name": "محمد الطويل",
+    "class": "11",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 173,
+    "name": "كريم دواص",
+    "class": "11",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 174,
+    "name": "يزن ميسرة الحنافي",
+    "class": "11",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 175,
+    "name": "معاذ العامودى",
+    "class": "1",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 176,
+    "name": "يوسف شقليه",
+    "class": "1",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 177,
+    "name": "سامى لايثم",
+    "class": "1",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 178,
+    "name": "زين سالم",
+    "class": "1",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 179,
+    "name": "نرجس اقشطه",
+    "class": "1",
+    "phone": "0109822838",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 180,
+    "name": "ميسر حسون",
+    "class": "1",
+    "phone": "1021701925",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 181,
+    "name": "محمد أبو الحسن",
+    "class": "2",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 182,
+    "name": "محمد العاصي",
+    "class": "3",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 183,
+    "name": "مصطفى الشيخ خليل",
+    "class": "4 Boys",
+    "phone": "1050912713",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 184,
+    "name": "كرم الحديد",
+    "class": "3",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 185,
+    "name": "محمود مؤمن الديراوي",
+    "class": "4 Boys",
+    "phone": "1067056171",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 186,
+    "name": "مجد الديراوي",
+    "class": "4 Boys",
+    "phone": "1090363539",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 187,
+    "name": "منير محمد مناع",
+    "class": "4 Boys",
+    "phone": "10682707680",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 188,
+    "name": "يوسف ناجى الخضرى",
+    "class": "4 Boys",
+    "phone": "01080125082  01018232485",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 189,
+    "name": "سراج احمد ابو عساكر",
+    "class": "4 Boys",
+    "phone": "01010851602 01146305813",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 190,
+    "name": "عزات مازن الدحدوح",
+    "class": "4 Boys",
+    "phone": "01114940568  01031652256",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 191,
+    "name": "محمد زيد الكلانى",
+    "class": "4 Boys",
+    "phone": "1080047833",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 192,
+    "name": "هشام باسل الهيمونى",
+    "class": "4 Boys",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 193,
+    "name": "عمر احمد جواد",
+    "class": "4 Boys",
+    "phone": "1011896286",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 194,
+    "name": "عبدالرحمن مراد نجوب",
+    "class": "4 Boys",
+    "phone": "1063408059",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 195,
+    "name": "موسى ماهر اشتيه",
+    "class": "4 Boys",
+    "phone": "1066076808",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 196,
+    "name": "حمزه رياض عسيله",
+    "class": "4 Boys",
+    "phone": "1040577611",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 197,
+    "name": "ابراهيم محمود ابو سريه",
+    "class": "4 Boys",
+    "phone": "1097640763",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 198,
+    "name": "محمود احمد محمو اليزجى",
+    "class": "4 Boys",
+    "phone": "1030647363",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 199,
+    "name": "مريم مكى",
+    "class": "4 Girls",
+    "phone": "1021058136",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 200,
+    "name": "مسك محمد عوض",
+    "class": "4 Girls",
+    "phone": "1055398380",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 201,
+    "name": "ايلين شادى تلوانا",
+    "class": "4 Girls",
+    "phone": "1555678657",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 202,
+    "name": "جوان فادى محمد الجعبه",
+    "class": "4 Girls",
+    "phone": "1091104147",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 203,
+    "name": "اميره امجد ابو عرقوب",
+    "class": "4 Girls",
+    "phone": "140588683",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 204,
+    "name": "تالا نائل السخل",
+    "class": "4 Girls",
+    "phone": "1112459628",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 205,
+    "name": "لانا وائل الجعبرى",
+    "class": "4 Girls",
+    "phone": "1067017643",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 206,
+    "name": "المى حاتم محمود",
+    "class": "4 Girls",
+    "phone": "1080772743",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 207,
+    "name": "نايا محمود حجى",
+    "class": "4 Girls",
+    "phone": "1091608332",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 208,
+    "name": "شام عبدالعزيز صالحه",
+    "class": "4 Girls",
+    "phone": "1055164068",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 209,
+    "name": "هبه نضال زلوم",
+    "class": "4 Girls",
+    "phone": "1019890913",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 210,
+    "name": "رائده محمد سعد",
+    "class": "4 Girls",
+    "phone": "1055225792",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 211,
+    "name": "روعه نعيم حرب",
+    "class": "4 Girls",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 212,
+    "name": "لونا حجازى حجازى",
+    "class": "4 Girls",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 213,
+    "name": "جنان عكيله",
+    "class": "4 Girls",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 214,
+    "name": "جنان علاء قفشي",
+    "class": "5",
+    "phone": "1113236089",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 215,
+    "name": "زينة النهوضة",
+    "class": "5",
+    "phone": "1555678836",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 216,
+    "name": "زينيا أبو الحسن",
+    "class": "5",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 217,
+    "name": "حمّام فادي الجباي",
+    "class": "6 Boys",
+    "phone": "1091104147",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 218,
+    "name": "فراس السخل",
+    "class": "6 Boys",
+    "phone": "1112459628",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 219,
+    "name": "محمد حمد",
+    "class": "6 Boys",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 220,
+    "name": "هلا نعيم حرب",
+    "class": "6 Girls",
+    "phone": "1013713178",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 221,
+    "name": "جهاد كفاح النهوضة",
+    "class": "7 Boys",
+    "phone": "1555678836",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 222,
+    "name": "عبد القادر الأُميصي",
+    "class": "7 Boys",
+    "phone": "1055770195",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 223,
+    "name": "ماهر مطر",
+    "class": "7 Boys",
+    "phone": "1148942082",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 224,
+    "name": "زينة عكيله",
+    "class": "8 Girls",
+    "phone": "1003556915",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 225,
+    "name": "عليا القزندر",
+    "class": "8 Girls",
+    "phone": "1553625597",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 226,
+    "name": "هبة أبو الحسن",
+    "class": "8 Girls",
+    "phone": "1096971874",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 227,
+    "name": "نجوى عشطه",
+    "class": "8 Girls",
+    "phone": "0109822838 0109254551",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 228,
+    "name": "ليان محمود حمد",
+    "class": "8 Girls",
+    "phone": "01107137250 0155672380",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 229,
+    "name": "زينة نعيم حرب",
+    "class": "8 Girls",
+    "phone": "1013713178",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 230,
+    "name": "ميرا مدحت سالم",
+    "class": "7 Girls",
+    "phone": "1091438626",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 231,
+    "name": "سارة أبو الحسن",
+    "class": "6 Girls",
+    "phone": "1096971874",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 232,
+    "name": "تالين",
+    "class": "7 Girls",
+    "phone": "1009040267",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 233,
+    "name": "يزن سكيك",
+    "class": "8 Boys",
+    "phone": "1055622457",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 234,
+    "name": "عمرو مادي",
+    "class": "8 Boys",
+    "phone": "100855065",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 235,
+    "name": "مصعب عوض",
+    "class": "8 Boys",
+    "phone": "1055398300",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 236,
+    "name": "محمد اليزجي",
+    "class": "8 Boys",
+    "phone": "1030647363",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 237,
+    "name": "أحمد حجازي",
+    "class": "8 Boys",
+    "phone": "1009040267",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 238,
+    "name": "محمد عبد الحق",
+    "class": "8 Boys",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 239,
+    "name": "قصي سالم",
+    "class": "8 Boys",
+    "phone": "1091438626",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 240,
+    "name": "معتصم حمد",
+    "class": "8 Boys",
+    "phone": "1091025209",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 241,
+    "name": "آسر عدوان",
+    "class": "9",
+    "phone": "1069620906",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 242,
+    "name": "عمر الغلايني",
+    "class": "9",
+    "phone": "1020938233",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 243,
+    "name": "بلال الحصاري",
+    "class": "9",
+    "phone": "1120775514",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 244,
+    "name": "أحمد أبو العجين",
+    "class": "9",
+    "phone": "1069407292",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 245,
+    "name": "ملك ناجي الخضري",
+    "class": "10",
+    "phone": "1080125082",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 246,
+    "name": "هلا الحلك",
+    "class": "10",
+    "phone": "100624237",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 247,
+    "name": "سوزان سالم",
+    "class": "10",
+    "phone": "1091438626",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 248,
+    "name": "يارا مصطفى",
+    "class": "10",
+    "phone": "1070654812",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 249,
+    "name": "عمرو البلطجي",
+    "class": "7 Boys",
+    "phone": "1114788827",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 250,
+    "name": "نوهضة",
+    "class": "KG1",
+    "phone": "1094087948",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 251,
+    "name": "ولاء عصام",
+    "class": "KG1",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 252,
+    "name": "محمد عبد الله عبيد",
+    "class": "KG1",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  },
+  {
+    "id": 253,
+    "name": "محمود أنور عايش - Grade KG1",
+    "class": "KG1",
+    "phone": "Not provided",
+    "busSubscriber": false,
+    "isImported": true,
+    "importDate": "2026-02-17T09:48:56.416Z",
+    "branchId": 1
+  }
+]

@@ -1,0 +1,9 @@
+node_modules
+.env
+*.log
+data/*.json
+*.bak
+*.backup
+.DS_Store
+mongo-data/
+

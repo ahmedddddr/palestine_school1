@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: seeds-palestine-schools
+    env: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install
+    startCommand: node server.js
+    rootDir: .
+    autoDeploy: true
+    pullRequestPreviewsEnabled: false
+    healthCheckPath: /login
+    numInstances: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: TRUST_PROXY
+        value: "true"
+      - key: MONGODB_URI
+      - key: FORCE_FILE_STORAGE
+        value: "false"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: SUPER_ADMIN_USERNAME
+        value: superadmin
+      - key: SUPER_ADMIN_PASSWORD
+        generateValue: true
+      - key: BRANCH_ADMIN_USERNAME
+        value: branchadmin
+      - key: BRANCH_ADMIN_PASSWORD
+        generateValue: true
+      - key: LOGIN_RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: LOGIN_RATE_LIMIT_MAX
+        value: "15"
+      - key: API_RATE_LIMIT_WINDOW_MS
+        value: "60000"
+      - key: API_RATE_LIMIT_MAX
+        value: "500"
+      - key: CORS_ORIGINS
+        value: "*"
+
+databases: []

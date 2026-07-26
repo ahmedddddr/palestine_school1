@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Routes</title>
+</head>
+<body>
+    <h1>Route Debug</h1>
+    <div id="output"></div>
+    
+    <script>
+        // Load the same RouteManager code from script.js
+        class RouteManager {
+            constructor() {
+                this.routes = [];
+                this.loadRoutes();
+            }
+            
+            loadRoutes() {
+                try {
+                    const localStorageRoutes = localStorage.getItem('INDEPENDENT_ROUTES');
+                    const sessionStorageRoutes = sessionStorage.getItem('INDEPENDENT_ROUTES');
+                    
+                    console.log('localStorageRoutes:', localStorageRoutes);
+                    console.log('sessionStorageRoutes:', sessionStorageRoutes);
+                    
+                    if (localStorageRoutes) {
+                        this.routes = JSON.parse(localStorageRoutes);
+                        console.log('Loaded routes from localStorage:', this.routes.length);
+                    } else if (sessionStorageRoutes) {
+                        this.routes = JSON.parse(sessionStorageRoutes);
+                        console.log('Loaded routes from sessionStorage:', this.routes.length);
+                    } else {
+                        console.log('No routes found in storage');
+                        this.routes = [];
+                    }
+                } catch (error) {
+                    console.error('Error loading routes:', error);
+                    this.routes = [];
+                }
+            }
+            
+            getRoutes() {
+                return [...this.routes];
+            }
+        }
+        
+        // Test the RouteManager
+        const routeManager = new RouteManager();
+        const routes = routeManager.getRoutes();
+        
+        const output = document.getElementById('output');
+        output.innerHTML = `
+            <h2>Debug Results:</h2>
+            <p><strong>Total routes found:</strong> ${routes.length}</p>
+            <h3>Routes:</h3>
+            <ul>
+                ${routes.map(route => `<li>${route.name} - ${route.area}</li>`).join('')}
+            </ul>
+            <h3>Storage Contents:</h3>
+            <p><strong>localStorage 'INDEPENDENT_ROUTES':</strong></p>
+            <pre>${localStorage.getItem('INDEPENDENT_ROUTES') || 'NULL'}</pre>
+            <p><strong>sessionStorage 'INDEPENDENT_ROUTES':</strong></p>
+            <pre>${sessionStorage.getItem('INDEPENDENT_ROUTES') || 'NULL'}</pre>
+        `;
+    </script>
+</body>
+</html>

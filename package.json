@@ -13,7 +13,7 @@
     "postinstall": "node -e \"console.log('Dependencies installed OK')\""
   },
   "engines": {
-    "node": ">=18.17.0 <23.0.0",
+    "node": ">=18.17.0 <25.0.0",
     "npm": ">=9.0.0"
   },
   "keywords": [

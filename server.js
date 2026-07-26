@@ -36,12 +36,17 @@ async function connectToMongoDB() {
     try {
         mongoClient = new MongoClient(MONGODB_URI);
         await mongoClient.connect();
-        const parsed = new URL(MONGODB_URI.replace(/^mongodb(\+srv)?:\/\//, 'http://'));
-        const dbName = parsed.pathname && parsed.pathname.length > 1
-            ? parsed.pathname.slice(1)
-            : 'school-management';
+        let dbName = 'school-management';
+        try {
+            const parsed = new URL(MONGODB_URI.replace(/^mongodb(\+srv)?:\/\//, 'http://'));
+            if (parsed.pathname && parsed.pathname.length > 1) {
+                dbName = parsed.pathname.slice(1);
+            }
+            console.log(`✅ Connected to MongoDB "${dbName}" @ ${parsed.host}`);
+        } catch (parseErr) {
+            console.log(`✅ Connected to MongoDB (using default database: ${dbName})`);
+        }
         db = mongoClient.db(dbName);
-        console.log(`✅ Connected to MongoDB "${db.databaseName}" @ ${parsed.host}`);
         await ensureMongoIndexes();
         return true;
     } catch (err) {

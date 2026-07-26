@@ -85,8 +85,21 @@ async function saveCollection(name, data) {
     if (!db) throw new Error('Database not connected');
     try {
         const col = db.collection(name);
-        await col.deleteMany({});
-        if (data.length > 0) await col.insertMany(data);
+        if (!Array.isArray(data) || data.length === 0) {
+            await col.deleteMany({});
+            return true;
+        }
+        const ids = data.map(d => d.id).filter(id => id !== undefined && id !== null);
+        if (ids.length > 0) {
+            await col.deleteMany({ id: { $nin: ids } });
+        }
+        for (const doc of data) {
+            if (doc.id !== undefined && doc.id !== null) {
+                await col.updateOne({ id: doc.id }, { $set: doc }, { upsert: true });
+            } else {
+                await col.insertOne(doc);
+            }
+        }
         return true;
     } catch (e) {
         console.error(`Mongo write ${name}:`, e.message);

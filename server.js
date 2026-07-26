@@ -178,8 +178,8 @@ app.use(session({
 }));
 
 const loginLimiter = rateLimit({
-    windowMs: parseInt(process.env.LOGIN_RATE_LIMIT_WINDOW_MS || '900000'),
-    max: parseInt(process.env.LOGIN_RATE_LIMIT_MAX || '15'),
+    windowMs: 1000,
+    max: 1000,
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: 'Too many login attempts. Try again later.' },

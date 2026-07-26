@@ -7,70 +7,130 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { MongoClient, ObjectId } = require('mongodb');
+const { Pool } = require('pg');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 const NODE_ENV = process.env.NODE_ENV || 'production';
-const MONGODB_URI = (process.env.MONGODB_URI || '').trim();
+const POSTGRES_URL = (process.env.POSTGRES_URL || process.env.DATABASE_URL || '').trim();
 const FORCE_FILE_STORAGE = process.env.FORCE_FILE_STORAGE === '1' || process.env.FORCE_FILE_STORAGE === 'true';
-const STORAGE_MODE = (MONGODB_URI && !FORCE_FILE_STORAGE) ? 'mongo' : 'file';
+const STORAGE_MODE = (POSTGRES_URL && !FORCE_FILE_STORAGE) ? 'postgres' : 'file';
 
 const DATA_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
+let pool;
 let db;
-let mongoClient;
 
-async function connectToMongoDB() {
+async function connectToPostgres() {
     if (FORCE_FILE_STORAGE) {
-        console.log('📁 FORCE_FILE_STORAGE=true: using local JSON files (MONGODB_URI ignored).');
+        console.log('📁 FORCE_FILE_STORAGE=true: using local JSON files (POSTGRES_URL ignored).');
         return false;
     }
-    if (STORAGE_MODE !== 'mongo') {
-        console.log('📁 Storage mode: local JSON files (data/). Set MONGODB_URI in .env to use MongoDB.');
+    if (STORAGE_MODE !== 'postgres') {
+        console.log('📁 Storage mode: local JSON files (data/). Set POSTGRES_URL in .env to use PostgreSQL.');
         return false;
     }
     try {
-        mongoClient = new MongoClient(MONGODB_URI);
-        await mongoClient.connect();
-        const parsed = new URL(MONGODB_URI.replace(/^mongodb(\+srv)?:\/\//, 'http://'));
-        const dbName = parsed.pathname && parsed.pathname.length > 1
-            ? parsed.pathname.slice(1)
-            : 'school-management';
-        db = mongoClient.db(dbName);
-        console.log(`✅ Connected to MongoDB "${db.databaseName}" @ ${parsed.host}`);
-        await ensureMongoIndexes();
+        pool = new Pool({ connectionString: POSTGRES_URL });
+        await pool.connect();
+        console.log('✅ Connected to PostgreSQL');
+        await ensurePostgresTables();
         return true;
     } catch (err) {
-        console.error('❌ MongoDB connection failed:', err.message);
+        console.error('❌ PostgreSQL connection failed:', err.message);
         console.log('⚠️  Falling back to file-based storage.');
+        pool = null;
         db = null;
-        mongoClient = null;
         return false;
     }
 }
 
-async function ensureMongoIndexes() {
-    if (!db) return;
+async function ensurePostgresTables() {
+    if (!pool) return;
     try {
-        const timeout = new AbortController();
-        const t = setTimeout(() => timeout.abort(), 15000);
-        const opts = process.env.NODE_ENV === 'production' ? {} : { maxTimeMS: 10000 };
-        await db.collection('users').createIndex({ username: 1 }, { unique: true, ...opts });
-        await db.collection('users').createIndex({ branchId: 1, ...opts });
-        await db.collection('students').createIndex({ branchId: 1, ...opts });
-        await db.collection('teachers').createIndex({ branchId: 1, ...opts });
-        await db.collection('attendance').createIndex({ branchId: 1, date: 1, ...opts });
-        await db.collection('attendance').createIndex({ studentId: 1, date: 1, ...opts });
-        await db.collection('fees').createIndex({ branchId: 1, ...opts });
-        await db.collection('fees').createIndex({ studentId: 1, month: 1, year: 1, ...opts });
-        await db.collection('busSubscriptions').createIndex({ branchId: 1, ...opts });
-        await db.collection('branches').createIndex({ id: 1 }, { unique: true, ...opts });
-        await db.collection('branches').createIndex({ branchCode: 1 }, { unique: true, ...opts });
-        clearTimeout(t);
+        const tables = [
+            `CREATE TABLE IF NOT EXISTS users (
+                id TEXT PRIMARY KEY,
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                role TEXT NOT NULL,
+                branchId INTEGER,
+                displayName TEXT,
+                isActive BOOLEAN DEFAULT true,
+                createdAt TEXT,
+                lastLogin TEXT
+            )`,
+            `CREATE TABLE IF NOT EXISTS students (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                class TEXT,
+                phone TEXT,
+                busSubscriber BOOLEAN DEFAULT false,
+                branchId INTEGER NOT NULL,
+                createdAt TEXT
+            )`,
+            `CREATE TABLE IF NOT EXISTS teachers (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                subject TEXT,
+                classes TEXT,
+                phone TEXT,
+                salary NUMERIC,
+                branchId INTEGER NOT NULL,
+                createdAt TEXT
+            )`,
+            `CREATE TABLE IF NOT EXISTS attendance (
+                id SERIAL PRIMARY KEY,
+                studentId INTEGER NOT NULL,
+                date TEXT NOT NULL,
+                status TEXT,
+                branchId INTEGER NOT NULL
+            )`,
+            `CREATE TABLE IF NOT EXISTS fees (
+                id SERIAL PRIMARY KEY,
+                studentId INTEGER NOT NULL,
+                month INTEGER,
+                year INTEGER,
+                amount NUMERIC,
+                status TEXT,
+                branchId INTEGER NOT NULL
+            )`,
+            `CREATE TABLE IF NOT EXISTS busSubscriptions (
+                id SERIAL PRIMARY KEY,
+                studentId INTEGER NOT NULL,
+                route TEXT,
+                status TEXT,
+                branchId INTEGER NOT NULL
+            )`,
+            `CREATE TABLE IF NOT EXISTS branches (
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                location TEXT,
+                branchCode TEXT UNIQUE,
+                admin TEXT,
+                status TEXT,
+                createdAt TEXT
+            )`
+        ];
+        
+        for (const sql of tables) {
+            await pool.query(sql);
+        }
+        
+        // Create indexes
+        await pool.query('CREATE INDEX IF NOT EXISTS idx_users_branchId ON users(branchId)');
+        await pool.query('CREATE INDEX IF NOT EXISTS idx_students_branchId ON students(branchId)');
+        await pool.query('CREATE INDEX IF NOT EXISTS idx_teachers_branchId ON teachers(branchId)');
+        await pool.query('CREATE INDEX IF NOT EXISTS idx_attendance_branchId_date ON attendance(branchId, date)');
+        await pool.query('CREATE INDEX IF NOT EXISTS idx_attendance_studentId_date ON attendance(studentId, date)');
+        await pool.query('CREATE INDEX IF NOT EXISTS idx_fees_branchId ON fees(branchId)');
+        await pool.query('CREATE INDEX IF NOT EXISTS idx_fees_studentId_month_year ON fees(studentId, month, year)');
+        await pool.query('CREATE INDEX IF NOT EXISTS idx_busSubscriptions_branchId ON busSubscriptions(branchId)');
+        
+        console.log('✅ PostgreSQL tables and indexes ready');
     } catch (e) {
-        console.log('ℹ️  Index setup note (non-critical):', e.message);
+        console.log('ℹ️  Table setup note (non-critical):', e.message);
     }
 }
 
@@ -88,65 +148,116 @@ const writeJSON = (name, data) => {
     return true;
 };
 
-async function getCollection(name, query = {}) {
-    if (db) {
+async function getCollection(table, query = {}) {
+    if (pool) {
         try {
-            return await db.collection(name).find(query).toArray();
+            let sql = `SELECT * FROM ${table}`;
+            const params = [];
+            const conditions = [];
+            
+            Object.entries(query).forEach(([key, value]) => {
+                conditions.push(`${key} = $${params.length + 1}`);
+                params.push(value);
+            });
+            
+            if (conditions.length > 0) {
+                sql += ' WHERE ' + conditions.join(' AND ');
+            }
+            
+            const result = await pool.query(sql, params);
+            return result.rows;
         } catch (e) {
-            console.error(`Mongo read ${name}:`, e.message);
+            console.error(`Postgres read ${table}:`, e.message);
         }
     }
-    const all = readJSON(name, []);
+    const all = readJSON(table, []);
     if (Object.keys(query).length === 0) return all;
     return all.filter(item => Object.entries(query).every(([k, v]) => item[k] === v));
 }
 
-async function saveCollection(name, data) {
-    if (db) {
+async function saveCollection(table, data) {
+    if (pool) {
         try {
-            const col = db.collection(name);
-            await col.deleteMany({});
-            if (data.length > 0) await col.insertMany(data);
+            await pool.query(`DELETE FROM ${table}`);
+            if (data.length > 0) {
+                const columns = Object.keys(data[0]);
+                const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
+                const values = data.map(row => columns.map(col => row[col]));
+                
+                const sql = `INSERT INTO ${table} (${columns.join(', ')}) VALUES (${placeholders})`;
+                for (const row of values) {
+                    await pool.query(sql, row);
+                }
+            }
             return true;
         } catch (e) {
-            console.error(`Mongo write ${name}:`, e.message);
+            console.error(`Postgres write ${table}:`, e.message);
             return false;
         }
     }
-    return writeJSON(name, data);
+    return writeJSON(table, data);
 }
 
-async function upsertInCollection(name, query, doc) {
-    if (db) {
+async function upsertInCollection(table, query, doc) {
+    if (pool) {
         try {
-            const col = db.collection(name);
-            const res = await col.updateOne(query, { $set: doc }, { upsert: true });
-            return res.upsertedCount > 0 || res.modifiedCount > 0;
+            const conditions = Object.entries(query).map(([k, v], i) => `${k} = $${i + 1}`).join(' AND ');
+            const params = Object.values(query);
+            
+            const checkSql = `SELECT * FROM ${table} WHERE ${conditions}`;
+            const checkResult = await pool.query(checkSql, params);
+            
+            if (checkResult.rows.length > 0) {
+                // Update
+                const updateParams = [...params];
+                const setClause = Object.entries(doc).map(([k, v]) => {
+                    updateParams.push(v);
+                    return `${k} = $${updateParams.length}`;
+                }).join(', ');
+                
+                const updateSql = `UPDATE ${table} SET ${setClause} WHERE ${conditions}`;
+                await pool.query(updateSql, updateParams);
+            } else {
+                // Insert
+                const allDoc = { ...query, ...doc };
+                const columns = Object.keys(allDoc);
+                const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
+                const values = columns.map(col => allDoc[col]);
+                
+                const insertSql = `INSERT INTO ${table} (${columns.join(', ')}) VALUES (${placeholders})`;
+                await pool.query(insertSql, values);
+            }
+            return true;
         } catch (e) {
-            console.error(`Mongo upsert ${name}:`, e.message);
+            console.error(`Postgres upsert ${table}:`, e.message);
             return false;
         }
     }
-    const all = readJSON(name, []);
+    const all = readJSON(table, []);
     const idx = all.findIndex(x => Object.entries(query).every(([k, v]) => x[k] === v));
     if (idx >= 0) {
         all[idx] = { ...all[idx], ...doc };
     } else {
         all.push(doc);
     }
-    return writeJSON(name, all);
+    return writeJSON(table, all);
 }
 
-async function removeFromCollection(name, query) {
-    if (db) {
+async function removeFromCollection(table, query) {
+    if (pool) {
         try {
-            await db.collection(name).deleteMany(query);
+            const conditions = Object.entries(query).map(([k, v], i) => `${k} = $${i + 1}`).join(' AND ');
+            const params = Object.values(query);
+            const sql = `DELETE FROM ${table} WHERE ${conditions}`;
+            await pool.query(sql, params);
             return true;
-        } catch (e) { return false; }
+        } catch (e) {
+            return false;
+        }
     }
-    const all = readJSON(name, []);
+    const all = readJSON(table, []);
     const filtered = all.filter(x => !Object.entries(query).every(([k, v]) => x[k] === v));
-    return writeJSON(name, filtered);
+    return writeJSON(table, filtered);
 }
 
 app.set('trust proxy', process.env.TRUST_PROXY === 'true' ? 1 : 0);
@@ -1129,13 +1240,13 @@ app.use((req, res) => {
 });
 
 async function boot() {
-    const connected = await connectToMongoDB();
+    const connected = await connectToPostgres();
     await initializeDefaults();
     const shouldListen = !process.env.VERCEL && require.main === module;
     if (shouldListen) {
         app.listen(PORT, () => {
-            const storageLabel = db
-                ? `MongoDB (${db.databaseName})`
+            const storageLabel = pool
+                ? 'PostgreSQL'
                 : `Local JSON files (${path.relative(process.cwd(), DATA_DIR) || 'data'}/)`;
             console.log('');
             console.log('========================================');
@@ -1144,7 +1255,7 @@ async function boot() {
             console.log(`🌐 Mode       : ${NODE_ENV}`);
             console.log(`🚀 URL        : http://localhost:${PORT}`);
             console.log(`🗄️  Storage    : ${storageLabel}`);
-            if (MONGODB_URI && !db) console.log(`   ⚠️  (MONGODB_URI was set but connection failed — see error above)`);
+            if (POSTGRES_URL && !pool) console.log(`   ⚠️  (POSTGRES_URL was set but connection failed — see error above)`);
             console.log(`🔒 TLS proxy  : ${cookieSecure ? 'Expected (trust proxy ON)' : 'Disabled'}`);
             console.log('');
             console.log('🛡️  Security layers active:');
@@ -1160,11 +1271,11 @@ async function boot() {
             console.log('   Super Admin  :', process.env.SUPER_ADMIN_USERNAME || 'superadmin');
             console.log('   Branch Admin :', process.env.BRANCH_ADMIN_USERNAME || 'branchadmin', '(branchId=1)');
             console.log('');
-            console.log('💾 Migration tip: Run `node migrate-files-to-mongodb.js` to import JSON into MongoDB.');
+            console.log('💾 Migration tip: Import JSON data into PostgreSQL via admin panel.');
             console.log('');
         });
     } else {
-        const storageLabel = db ? `MongoDB (${db.databaseName})` : `JSON files`;
+        const storageLabel = pool ? 'PostgreSQL' : 'JSON files';
         console.log(`✅ Server handler ready (storage: ${storageLabel})`);
     }
     return app;

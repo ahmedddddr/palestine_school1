@@ -439,7 +439,7 @@
                 <div class="section-header">
                     <h2>Teacher Attendance Tracking</h2>
                     <div class="header-actions">
-                        <button class="btn btn-secondary" onclick="window.sms.exportTeacherAttendance()">📥 Export</button>
+                        <button class="btn btn-secondary" onclick="exportTeacherAttendance()">📥 Export</button>
                         <button class="btn btn-primary" onclick="markTodayTeacherAttendance()">Mark Today's Attendance</button>
                     </div>
                 </div>
@@ -463,8 +463,8 @@
                         <option value="Computer Science">Computer Science</option>
                     </select>
                     <div class="bulk-actions">
-                        <button class="btn btn-sm btn-success" onclick="window.sms.markAllTeachersPresent()">✅ All Present</button>
-                        <button class="btn btn-sm btn-danger" onclick="window.sms.markAllTeachersAbsent()">❌ All Absent</button>
+                        <button class="btn btn-sm btn-success" onclick="markAllTeachersPresent()">✅ All Present</button>
+                        <button class="btn btn-sm btn-danger" onclick="markAllTeachersAbsent()">❌ All Absent</button>
                     </div>
                 </div>
 

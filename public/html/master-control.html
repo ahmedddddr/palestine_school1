@@ -267,7 +267,7 @@
 
         .branch-stats {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin-bottom: 16px;
         }
@@ -578,6 +578,8 @@
         let fullData = {
             students: [],
             teachers: [],
+            teacherAttendance: [],
+            teacherSalaries: [],
             fees: [],
             busSubscriptions: [],
             attendance: []
@@ -594,6 +596,8 @@
                 const data = await res.json();
                 fullData.students = Array.isArray(data.students) ? data.students : [];
                 fullData.teachers = Array.isArray(data.teachers) ? data.teachers : [];
+                fullData.teacherAttendance = Array.isArray(data.teacherAttendance) ? data.teacherAttendance : [];
+                fullData.teacherSalaries = Array.isArray(data.teacherSalaries) ? data.teacherSalaries : [];
                 fullData.fees = Array.isArray(data.fees) ? data.fees : [];
                 fullData.busSubscriptions = Array.isArray(data.busSubscriptions) ? data.busSubscriptions : [];
                 fullData.attendance = Array.isArray(data.attendance) ? data.attendance : [];
@@ -617,14 +621,37 @@
             const bid = String(branchId);
             const students = fullData.students.filter(s => String(s.branchId) === bid);
             const teachers = fullData.teachers.filter(t => String(t.branchId) === bid);
+            const teacherAttendance = fullData.teacherAttendance.filter(ta => {
+                const teacher = fullData.teachers.find(t => t.id === ta.teacherId);
+                return teacher && String(teacher.branchId) === bid;
+            });
+            const teacherSalaries = fullData.teacherSalaries.filter(ts => {
+                const teacher = fullData.teachers.find(t => t.id === ts.teacherId);
+                return teacher && String(teacher.branchId) === bid;
+            });
             const fees = fullData.fees.filter(f => String(f.branchId) === bid);
             const bus = fullData.busSubscriptions.filter(b => String(b.branchId) === bid);
             let revenue = 0;
             fees.forEach(f => { revenue += Number(f.paid) || 0; });
             bus.forEach(b => { revenue += Number(b.paid) || 0; });
+            
+            // Calculate teacher salary totals
+            let totalSalaryPaid = 0;
+            teacherSalaries.forEach(ts => { totalSalaryPaid += Number(ts.paid) || 0; });
+            
+            // Calculate attendance rate
+            const today = new Date().toISOString().split('T')[0];
+            const todayAttendance = teacherAttendance.filter(ta => ta.date === today);
+            const presentCount = todayAttendance.filter(ta => ta.status === 'present').length;
+            const attendanceRate = todayAttendance.length > 0 ? Math.round((presentCount / todayAttendance.length) * 100) : 0;
+            
             return {
                 students: students.length,
                 teachers: teachers.length,
+                teacherAttendance: teacherAttendance.length,
+                teacherSalaries: teacherSalaries.length,
+                totalSalaryPaid: totalSalaryPaid,
+                attendanceRate: attendanceRate,
                 revenue: revenue
             };
         }
@@ -658,6 +685,14 @@
                         <div class="branch-stat">
                             <div class="branch-stat-label">Teachers</div>
                             <div class="branch-stat-value">${stats.teachers}</div>
+                        </div>
+                        <div class="branch-stat">
+                            <div class="branch-stat-label">Attendance</div>
+                            <div class="branch-stat-value">${stats.attendanceRate}%</div>
+                        </div>
+                        <div class="branch-stat">
+                            <div class="branch-stat-label">Salary Paid</div>
+                            <div class="branch-stat-value">$${stats.totalSalaryPaid.toLocaleString()}</div>
                         </div>
                         <div class="branch-stat">
                             <div class="branch-stat-label">Admin</div>

@@ -44,6 +44,38 @@ window.markTodayTeacherAttendance = function() {
     }
 };
 
+window.markAllTeachersPresent = function() {
+    if (typeof sms !== 'undefined' && typeof sms.markAllTeachersPresent === 'function') {
+        sms.markAllTeachersPresent();
+    } else {
+        alert('Teacher attendance system not initialized');
+    }
+};
+
+window.markAllTeachersAbsent = function() {
+    if (typeof sms !== 'undefined' && typeof sms.markAllTeachersAbsent === 'function') {
+        sms.markAllTeachersAbsent();
+    } else {
+        alert('Teacher attendance system not initialized');
+    }
+};
+
+window.exportTeacherAttendance = function() {
+    if (typeof sms !== 'undefined' && typeof sms.exportTeacherAttendance === 'function') {
+        sms.exportTeacherAttendance();
+    } else {
+        alert('Teacher attendance system not initialized');
+    }
+};
+
+window.deleteTeacherSalary = function(salaryId) {
+    if (typeof sms !== 'undefined' && typeof sms.deleteTeacherSalary === 'function') {
+        sms.deleteTeacherSalary(salaryId);
+    } else {
+        alert('Teacher salary system not initialized');
+    }
+};
+
 // Add teacher management methods to the class
 if (typeof SchoolManagementSystem !== 'undefined') {
     SchoolManagementSystem.prototype.openTeacherModal = function(teacherId = null) {
@@ -432,7 +464,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                     <td>${salary.paymentDate || 'N/A'}</td>
                     <td>
                         <button class="btn btn-sm btn-primary" onclick="alert('Edit functionality coming soon')">Edit</button>
-                        <button class="btn btn-sm btn-danger" onclick="sms.deleteTeacherSalary(${salary.id})">Delete</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTeacherSalary(${salary.id})">Delete</button>
                     </td>
                 </tr>
             `;

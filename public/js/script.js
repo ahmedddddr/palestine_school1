@@ -10016,6 +10016,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const postToServer = async (type, data) => {
         try {
+            console.log(`=== POST /api/save START (${type}) ===`);
+            console.log('Type:', type);
+            console.log('Data length:', Array.isArray(data) ? data.length : 'not array');
+            console.log('Data sample:', Array.isArray(data) && data.length > 0 ? data[0] : 'empty');
+            
             const response = await fetch('/api/save', {
                 method: 'POST',
                 headers: {
@@ -10024,11 +10029,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 credentials: 'include',
                 body: JSON.stringify({ type, data })
             });
+            
+            console.log('Response status:', response.status);
+            
             if (!response.ok) {
-                console.warn(`Failed to sync ${type} to server: ${response.status}`);
+                const errorText = await response.text().catch(() => 'Unknown error');
+                console.error(`Failed to sync ${type} to server: ${response.status}`, errorText);
+                console.error(`=== POST /api/save ERROR (${type}) ===`);
+            } else {
+                console.log(`=== POST /api/save SUCCESS (${type}) ===`);
             }
         } catch (error) {
-            console.warn(`Error syncing ${type} to server:`, error.message);
+            console.error(`Error syncing ${type} to server:`, error.message);
+            console.error(`=== POST /api/save ERROR (${type}) ===`);
         }
     };
 

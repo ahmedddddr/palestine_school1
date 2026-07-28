@@ -1163,9 +1163,19 @@ app.delete('/api/bus/:id', requireAnyRole(['super_admin', 'branch_admin']), asyn
 
 app.post('/api/save', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
     try {
+        console.log('=== /api/save START ===');
+        console.log('Request body type:', req.body?.type);
+        console.log('Request body data length:', Array.isArray(req.body?.data) ? req.body.data.length : 'not array');
+        console.log('User role:', req.session?.role);
+        console.log('Branch scope:', req.branchScope);
+        
         const { type, data } = req.body;
         const validTypes = ['students', 'attendance', 'bus', 'fees', 'teachers', 'branches', 'teacher-attendance', 'teacher-salaries'];
-        if (!validTypes.includes(type)) return res.status(400).json({ error: 'Invalid type' });
+        if (!validTypes.includes(type)) {
+            console.error('Invalid type:', type);
+            return res.status(400).json({ error: 'Invalid type' });
+        }
+        
         const colNameMap = {
             'bus': 'busSubscriptions',
             'teacher-attendance': 'teacherAttendance',
@@ -1174,10 +1184,18 @@ app.post('/api/save', requireAnyRole(['super_admin', 'branch_admin']), async (re
         const colName = colNameMap[type] || type;
         const raw = Array.isArray(data) ? data : [];
         const scoped = req.branchScope === null ? raw : raw.map(item => ({ ...item, branchId: req.branchScope }));
+        
+        console.log('Saving to collection:', colName);
+        console.log('Items to save:', scoped.length);
+        
         await saveCollection(colName, scoped);
+        
+        console.log('=== /api/save SUCCESS ===');
         res.json({ success: true });
     } catch (error) {
-        console.error('Error in /api/save:', error);
+        console.error('=== /api/save ERROR ===');
+        console.error('Error details:', error.message);
+        console.error('Error stack:', error.stack);
         res.status(500).json({ error: 'Failed to save data', details: error.message });
     }
 });

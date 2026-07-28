@@ -403,11 +403,15 @@ if (typeof SchoolManagementSystem !== 'undefined') {
             const teacher = this.teachers.find(t => t.id === salary.teacherId);
             const teacherName = teacher ? teacher.name : 'Unknown';
             const subject = teacher ? teacher.subject : 'Unknown';
-            const total = salary.baseSalary + salary.bonus - salary.deductions;
-            const balance = total - salary.paid;
+            const baseSalary = salary.baseSalary || 0;
+            const bonus = salary.bonus || 0;
+            const deductions = salary.deductions || 0;
+            const paid = salary.paid || 0;
+            const total = baseSalary + bonus - deductions;
+            const balance = total - paid;
             let status = 'unpaid';
-            if (salary.paid >= total) status = 'paid';
-            else if (salary.paid > 0) status = 'partial';
+            if (paid >= total) status = 'paid';
+            else if (paid > 0) status = 'partial';
 
             const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 
                                'July', 'August', 'September', 'October', 'November', 'December'];
@@ -418,11 +422,11 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                     <td>${subject}</td>
                     <td>${monthNames[salary.month] || salary.month}</td>
                     <td>${salary.year}</td>
-                    <td>$${salary.baseSalary.toFixed(2)}</td>
-                    <td>$${salary.bonus.toFixed(2)}</td>
-                    <td>$${salary.deductions.toFixed(2)}</td>
+                    <td>$${baseSalary.toFixed(2)}</td>
+                    <td>$${bonus.toFixed(2)}</td>
+                    <td>$${deductions.toFixed(2)}</td>
                     <td>$${total.toFixed(2)}</td>
-                    <td>$${salary.paid.toFixed(2)}</td>
+                    <td>$${paid.toFixed(2)}</td>
                     <td>$${balance.toFixed(2)}</td>
                     <td><span class="status-badge status-${status}">${status}</span></td>
                     <td>${salary.paymentDate || 'N/A'}</td>

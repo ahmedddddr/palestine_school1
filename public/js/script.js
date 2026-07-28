@@ -10373,9 +10373,12 @@ document.addEventListener('DOMContentLoaded', () => {
         serverSyncTimer = setTimeout(async () => {
             if (!window.sms) return;
             await postToServer('students', window.sms.students || []);
+            await postToServer('teachers', window.sms.teachers || []);
             await postToServer('attendance', window.sms.attendance || []);
+            await postToServer('teacher-attendance', window.sms.teacherAttendance || []);
             await postToServer('bus', window.sms.busSubscriptions || []);
             await postToServer('fees', window.sms.feePayments || []);
+            await postToServer('teacher-salaries', window.sms.teacherSalaries || []);
         }, 800);
     };
 

@@ -1,6 +1,34 @@
 // Teacher Management Functions
 // These functions extend the SchoolManagementSystem class
 
+// Global functions for onclick handlers - must be defined first
+window.openTeacherModal = function(teacherId = null) {
+    if (typeof sms !== 'undefined') {
+        sms.openTeacherModal(teacherId);
+    }
+};
+
+window.deleteTeacher = function(teacherId) {
+    if (typeof sms !== 'undefined') {
+        sms.deleteTeacher(teacherId);
+    }
+};
+
+window.openTeacherSalaryModal = function() {
+    const modal = document.getElementById('teacher-salary-modal');
+    const teacherSelect = document.getElementById('salary-teacher');
+    
+    // Populate teacher dropdown
+    if (typeof sms !== 'undefined' && sms.teachers) {
+        teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
+        sms.teachers.forEach(teacher => {
+            teacherSelect.innerHTML += `<option value="${teacher.id}">${teacher.name} - ${teacher.subject}</option>`;
+        });
+    }
+    
+    modal.classList.add('show');
+};
+
 // Add teacher management methods to the class
 if (typeof SchoolManagementSystem !== 'undefined') {
     SchoolManagementSystem.prototype.openTeacherModal = function(teacherId = null) {
@@ -430,56 +458,6 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         link.click();
         document.body.removeChild(link);
     };
-}
-
-// Global functions for onclick handlers
-window.openTeacherModal = function(teacherId = null) {
-    if (typeof sms !== 'undefined') {
-        sms.openTeacherModal(teacherId);
-    }
-};
-
-window.deleteTeacher = function(teacherId) {
-    if (typeof sms !== 'undefined') {
-        sms.deleteTeacher(teacherId);
-    }
-};
-
-window.openTeacherSalaryModal = function() {
-    const modal = document.getElementById('teacher-salary-modal');
-    const teacherSelect = document.getElementById('salary-teacher');
-    
-    // Populate teacher dropdown
-    if (typeof sms !== 'undefined' && sms.teachers) {
-        teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
-        sms.teachers.forEach(teacher => {
-            teacherSelect.innerHTML += `<option value="${teacher.id}">${teacher.name} - ${teacher.subject}</option>`;
-        });
-    }
-    
-    modal.classList.add('show');
-};
-
-// Also keep as regular function for backward compatibility
-function openTeacherModal(teacherId = null) {
-    if (typeof sms !== 'undefined') {
-        sms.openTeacherModal(teacherId);
-    }
-}
-
-function openTeacherSalaryModal() {
-    const modal = document.getElementById('teacher-salary-modal');
-    const teacherSelect = document.getElementById('salary-teacher');
-    
-    // Populate teacher dropdown
-    if (typeof sms !== 'undefined' && sms.teachers) {
-        teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
-        sms.teachers.forEach(teacher => {
-            teacherSelect.innerHTML += `<option value="${teacher.id}">${teacher.name} - ${teacher.subject}</option>`;
-        });
-    }
-    
-    modal.classList.add('show');
 }
 
 // Initialize teacher form handler

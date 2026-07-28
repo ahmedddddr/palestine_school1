@@ -278,90 +278,18 @@ class SchoolManagementSystem {
         };
     }
 
-    // Enhanced Data Persistence with Better Organization
+    // Enhanced Data Persistence - Database Only
     saveDataToStorage() {
-        console.log('=== SAVE DATA TO STORAGE START ===');
-        console.log('Saving data to localStorage...', {
+        console.log('=== SAVE DATA TO DATABASE START ===');
+        console.log('Data will be synced to database via server sync:', {
             students: this.students.length,
             attendance: this.attendance.length,
             bus: this.busSubscriptions.length,
             fees: this.feePayments.length
         });
         
-        try {
-            // Test localStorage first
-            console.log('Testing localStorage...');
-            localStorage.setItem('test', 'working');
-            const testResult = localStorage.getItem('test');
-            console.log('localStorage test result:', testResult);
-            localStorage.removeItem('test');
-            
-            if (testResult !== 'working') {
-                console.error('localStorage is not working!');
-                return;
-            }
-            
-            // Create comprehensive data object with metadata
-            const dataToSave = {
-                version: '1.0',
-                lastSaved: new Date().toISOString(),
-                data: {
-                    students: this.students,
-                    attendance: this.attendance,
-                    busSubscriptions: this.busSubscriptions,
-                    busRoutes: this.busRoutes,
-                    feePayments: this.feePayments
-                },
-                metadata: {
-                    totalStudents: this.students.length,
-                    totalAttendance: this.attendance.length,
-                    totalBusSubscriptions: this.busSubscriptions.length,
-                    totalBusRoutes: this.busRoutes.length,
-                    totalFeePayments: this.feePayments.length
-                }
-            };
-            
-            // Save individual arrays for backward compatibility
-            console.log('Saving individual arrays...');
-            console.log('About to save routes:', this.busRoutes);
-            console.log('Routes type:', typeof this.busRoutes);
-            console.log('Routes length:', this.busRoutes.length);
-            
-            localStorage.setItem('school_students', JSON.stringify(this.students));
-            localStorage.setItem('school_attendance', JSON.stringify(this.attendance));
-            localStorage.setItem('school_bus', JSON.stringify(this.busSubscriptions));
-            localStorage.setItem('school_bus_routes', JSON.stringify(this.busRoutes));
-            
-            // Immediately verify routes save
-            const savedRoutes = localStorage.getItem('school_bus_routes');
-            console.log('Routes immediately after save:', savedRoutes);
-            
-            localStorage.setItem('school_fees', JSON.stringify(this.feePayments));
-            
-            // Temporarily disable backup to test route saving
-            console.log('Backup system temporarily disabled for testing');
-            
-            // Save main data with timestamp
-            console.log('Saving main data object...');
-            localStorage.setItem('school_data_main', JSON.stringify(dataToSave));
-            
-            // Verify save worked
-            console.log('Verifying save...');
-            const savedData = localStorage.getItem('school_data_main');
-            const parsedData = JSON.parse(savedData);
-            console.log('Verification - saved data counts:', {
-                students: parsedData.data.students.length,
-                attendance: parsedData.data.attendance.length,
-                bus: parsedData.data.busSubscriptions.length,
-                fees: parsedData.data.feePayments.length
-            });
-            
-            console.log('Data saved successfully to localStorage');
-            console.log('=== SAVE DATA TO STORAGE COMPLETE ===');
-        } catch (error) {
-            console.error('Error saving to localStorage:', error);
-            this.restoreFromBackup();
-        }
+        // Data will be synced to database via scheduleServerSync
+        console.log('=== SAVE DATA TO DATABASE COMPLETE ===');
     }
 
     // Data Validation and Cleanup
@@ -10359,6 +10287,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({ type, data })
             });
             if (!response.ok) {

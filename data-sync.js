@@ -9,11 +9,11 @@ class DataSyncManager {
     // Load data from server
     async loadData() {
         try {
-            const response = await fetch(`${this.baseURL}/api/data`);
+            const response = await fetch(`${this.baseURL}/api/data`, { credentials: 'include' });
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status}`);
+            }
             const data = await response.json();
-            
-            // Update localStorage as backup
-            localStorage.setItem('school_data_server', JSON.stringify(data));
             
             console.log('✅ Data loaded from server:', {
                 students: data.students?.length || 0,
@@ -27,11 +27,8 @@ class DataSyncManager {
             
             return data;
         } catch (error) {
-            console.error('❌ Failed to load from server, using localStorage backup:', error);
-            
-            // Fallback to localStorage
-            const backup = localStorage.getItem('school_data_server');
-            return backup ? JSON.parse(backup) : this.getDefaultData();
+            console.error('❌ Failed to load from server:', error);
+            return this.getDefaultData();
         }
     }
 
@@ -43,6 +40,7 @@ class DataSyncManager {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify(data)
             });
             
@@ -54,10 +52,6 @@ class DataSyncManager {
             }
         } catch (error) {
             console.error(`❌ Failed to save ${dataType} to server:`, error);
-            
-            // Fallback to localStorage
-            localStorage.setItem(`school_${dataType}`, JSON.stringify(data));
-            console.log(`⚠️ ${dataType} saved to localStorage as backup`);
             return false;
         }
     }

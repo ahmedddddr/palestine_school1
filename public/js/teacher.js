@@ -19,11 +19,15 @@ window.openTeacherSalaryModal = function() {
     const teacherSelect = document.getElementById('salary-teacher');
     
     // Populate teacher dropdown
-    if (typeof sms !== 'undefined' && sms.teachers) {
-        teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
+    teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
+    
+    if (typeof sms !== 'undefined' && sms.teachers && sms.teachers.length > 0) {
         sms.teachers.forEach(teacher => {
             teacherSelect.innerHTML += `<option value="${teacher.id}">${teacher.name} - ${teacher.subject}</option>`;
         });
+    } else {
+        // If no teachers available, show a message
+        teacherSelect.innerHTML = '<option value="">No teachers available</option>';
     }
     
     modal.classList.add('show');

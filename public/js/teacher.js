@@ -642,6 +642,8 @@ document.addEventListener('DOMContentLoaded', function() {
         teacherSalaryForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            console.log('=== TEACHER SALARY FORM SUBMISSION START ===');
+            
             const teacherId = parseInt(document.getElementById('salary-teacher').value);
             const month = parseInt(document.getElementById('salary-month').value);
             const year = parseInt(document.getElementById('salary-year').value);
@@ -652,6 +654,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const paymentDate = document.getElementById('salary-date').value;
             const notes = document.getElementById('salary-notes').value;
 
+            console.log('Form data:', { teacherId, month, year, baseSalary, bonus, deductions, paid, paymentDate, notes });
+
             // Calculate payment status automatically
             const total = baseSalary + bonus - deductions;
             let paymentStatus = 'pending';
@@ -661,10 +665,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 paymentStatus = 'partial';
             }
 
+            console.log('Calculated payment status:', paymentStatus);
+
             try {
                 let response;
                 if (typeof sms !== 'undefined' && sms.currentEditingSalary) {
                     // Update existing salary
+                    console.log('Updating existing salary:', sms.currentEditingSalary);
                     response = await fetch(`/api/teacher-salaries/${sms.currentEditingSalary}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
@@ -684,6 +691,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 } else {
                     // Add new salary
+                    console.log('Creating new salary record');
                     response = await fetch('/api/teacher-salaries', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -703,8 +711,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 }
 
+                console.log('Response status:', response.status);
+
                 if (response.ok) {
                     const result = await response.json();
+                    console.log('Response data:', result);
                     if (typeof sms !== 'undefined') {
                         if (sms.currentEditingSalary) {
                             // Update existing record

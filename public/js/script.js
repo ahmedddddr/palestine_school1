@@ -10335,19 +10335,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (remoteStudents && (!hasLocalStudents || remoteStudents.length > 0)) {
                 window.sms.students = remoteStudents;
-                try { localStorage.setItem('school_students', JSON.stringify(remoteStudents)); } catch (_) {}
             }
             if (remoteAttendance && (!hasLocalAttendance || remoteAttendance.length > 0)) {
                 window.sms.attendance = remoteAttendance;
-                try { localStorage.setItem('school_attendance', JSON.stringify(remoteAttendance)); } catch (_) {}
             }
             if (remoteBus && (!hasLocalBus || remoteBus.length > 0)) {
                 window.sms.busSubscriptions = remoteBus;
-                try { localStorage.setItem('school_bus', JSON.stringify(remoteBus)); } catch (_) {}
             }
             if (remoteFees && (!hasLocalFees || remoteFees.length > 0)) {
                 window.sms.feePayments = remoteFees;
-                try { localStorage.setItem('school_fees', JSON.stringify(remoteFees)); } catch (_) {}
             }
 
             if (typeof window.sms.renderStudents === 'function') {

@@ -530,7 +530,6 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                     <td><span class="status-badge status-${status}">${status}</span></td>
                     <td>${salary.paymentDate || 'N/A'}</td>
                     <td>
-                        <button class="btn btn-sm btn-primary" onclick="editTeacherSalary(${salary.id})">Edit</button>
                         <button class="btn btn-sm btn-danger" onclick="deleteTeacherSalary(${salary.id})">Delete</button>
                     </td>
                 </tr>

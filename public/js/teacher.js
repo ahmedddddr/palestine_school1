@@ -118,11 +118,18 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                 });
                 
                 if (response.ok) {
-                    const result = await response.json();
-                    const teacherIndex = this.teachers.findIndex(t => t.id === this.currentEditingTeacher);
-                    this.teachers[teacherIndex] = result.data;
+                    try {
+                        const result = await response.json();
+                        const teacherIndex = this.teachers.findIndex(t => t.id === this.currentEditingTeacher);
+                        if (teacherIndex >= 0 && result.data) {
+                            this.teachers[teacherIndex] = result.data;
+                        }
+                    } catch (e) {
+                        console.error('Failed to parse teacher update response:', e);
+                    }
                 } else {
-                    throw new Error('Failed to update teacher');
+                    const errorText = await response.text().catch(() => 'Unknown error');
+                    throw new Error(`Failed to update teacher: ${errorText}`);
                 }
             } else {
                 // Add new teacher
@@ -133,10 +140,17 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                 });
                 
                 if (response.ok) {
-                    const result = await response.json();
-                    this.teachers.push(result.data);
+                    try {
+                        const result = await response.json();
+                        if (result.data) {
+                            this.teachers.push(result.data);
+                        }
+                    } catch (e) {
+                        console.error('Failed to parse teacher add response:', e);
+                    }
                 } else {
-                    throw new Error('Failed to add teacher');
+                    const errorText = await response.text().catch(() => 'Unknown error');
+                    throw new Error(`Failed to add teacher: ${errorText}`);
                 }
             }
 
@@ -173,6 +187,11 @@ if (typeof SchoolManagementSystem !== 'undefined') {
     SchoolManagementSystem.prototype.renderTeachers = function() {
         const searchTerm = document.getElementById('teacher-search')?.value.toLowerCase() || '';
         const subjectFilter = document.getElementById('teacher-subject-filter')?.value || '';
+
+        // Ensure teachers array exists
+        if (!this.teachers || !Array.isArray(this.teachers)) {
+            this.teachers = [];
+        }
 
         let filteredTeachers = this.teachers.filter(teacher => {
             const matchesSearch = teacher.name.toLowerCase().includes(searchTerm);
@@ -215,6 +234,14 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         const selectedDate = dateInput?.value || new Date().toISOString().split('T')[0];
         const searchTerm = document.getElementById('teacher-attendance-search')?.value.toLowerCase() || '';
         const subjectFilter = document.getElementById('teacher-attendance-subject-filter')?.value || '';
+
+        // Ensure teachers and teacherAttendance arrays exist
+        if (!this.teachers || !Array.isArray(this.teachers)) {
+            this.teachers = [];
+        }
+        if (!this.teacherAttendance || !Array.isArray(this.teacherAttendance)) {
+            this.teacherAttendance = [];
+        }
 
         let filteredTeachers = this.teachers.filter(teacher => {
             const matchesSearch = teacher.name.toLowerCase().includes(searchTerm);
@@ -411,14 +438,28 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         const yearFilter = document.getElementById('teacher-salaries-year')?.value || '';
         const statusFilter = document.getElementById('teacher-salaries-status-filter')?.value || '';
 
+        // Ensure teacherSalaries and teachers arrays exist
+        if (!this.teacherSalaries || !Array.isArray(this.teacherSalaries)) {
+            this.teacherSalaries = [];
+        }
+        if (!this.teachers || !Array.isArray(this.teachers)) {
+            this.teachers = [];
+        }
+
         let filteredSalaries = this.teacherSalaries.filter(salary => {
             const matchesMonth = !monthFilter || salary.month === parseInt(monthFilter);
             const matchesYear = !yearFilter || salary.year === parseInt(yearFilter);
             
+            const baseSalary = salary.baseSalary || 0;
+            const bonus = salary.bonus || 0;
+            const deductions = salary.deductions || 0;
+            const paid = salary.paid || 0;
+            const total = baseSalary + bonus - deductions;
+            
             let matchesStatus = true;
-            if (statusFilter === 'paid') matchesStatus = salary.paid >= salary.total;
-            else if (statusFilter === 'unpaid') matchesStatus = salary.paid === 0;
-            else if (statusFilter === 'partial') matchesStatus = salary.paid > 0 && salary.paid < salary.total;
+            if (statusFilter === 'paid') matchesStatus = paid >= total;
+            else if (statusFilter === 'unpaid') matchesStatus = paid === 0;
+            else if (statusFilter === 'partial') matchesStatus = paid > 0 && paid < total;
 
             return matchesMonth && matchesYear && matchesStatus;
         });
@@ -678,6 +719,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load teacher data from server on page load
     async function loadTeacherDataFromServer() {
         try {
+            // Initialize arrays if they don't exist
+            if (typeof sms !== 'undefined') {
+                if (!sms.teachers) sms.teachers = [];
+                if (!sms.teacherAttendance) sms.teacherAttendance = [];
+                if (!sms.teacherSalaries) sms.teacherSalaries = [];
+            }
+
             const [teachersRes, teacherAttendanceRes, teacherSalariesRes] = await Promise.all([
                 fetch('/api/teachers'),
                 fetch('/api/teacher-attendance'),
@@ -685,21 +733,54 @@ document.addEventListener('DOMContentLoaded', function() {
             ]);
 
             if (teachersRes.ok && typeof sms !== 'undefined') {
-                sms.teachers = await teachersRes.json();
-                console.log('✅ Teachers loaded from server:', sms.teachers.length);
+                try {
+                    const teachersData = await teachersRes.json();
+                    sms.teachers = Array.isArray(teachersData) ? teachersData : [];
+                    console.log('✅ Teachers loaded from server:', sms.teachers.length);
+                } catch (e) {
+                    console.error('❌ Failed to parse teachers JSON:', e);
+                    sms.teachers = [];
+                }
+            } else {
+                console.warn('⚠️ Teachers API returned non-OK status:', teachersRes.status);
+                if (typeof sms !== 'undefined') sms.teachers = [];
             }
 
             if (teacherAttendanceRes.ok && typeof sms !== 'undefined') {
-                sms.teacherAttendance = await teacherAttendanceRes.json();
-                console.log('✅ Teacher attendance loaded from server:', sms.teacherAttendance.length);
+                try {
+                    const attendanceData = await teacherAttendanceRes.json();
+                    sms.teacherAttendance = Array.isArray(attendanceData) ? attendanceData : [];
+                    console.log('✅ Teacher attendance loaded from server:', sms.teacherAttendance.length);
+                } catch (e) {
+                    console.error('❌ Failed to parse teacher attendance JSON:', e);
+                    sms.teacherAttendance = [];
+                }
+            } else {
+                console.warn('⚠️ Teacher attendance API returned non-OK status:', teacherAttendanceRes.status);
+                if (typeof sms !== 'undefined') sms.teacherAttendance = [];
             }
 
             if (teacherSalariesRes.ok && typeof sms !== 'undefined') {
-                sms.teacherSalaries = await teacherSalariesRes.json();
-                console.log('✅ Teacher salaries loaded from server:', sms.teacherSalaries.length);
+                try {
+                    const salariesData = await teacherSalariesRes.json();
+                    sms.teacherSalaries = Array.isArray(salariesData) ? salariesData : [];
+                    console.log('✅ Teacher salaries loaded from server:', sms.teacherSalaries.length);
+                } catch (e) {
+                    console.error('❌ Failed to parse teacher salaries JSON:', e);
+                    sms.teacherSalaries = [];
+                }
+            } else {
+                console.warn('⚠️ Teacher salaries API returned non-OK status:', teacherSalariesRes.status);
+                if (typeof sms !== 'undefined') sms.teacherSalaries = [];
             }
         } catch (error) {
             console.error('❌ Failed to load teacher data from server:', error);
+            // Ensure arrays exist even if everything fails
+            if (typeof sms !== 'undefined') {
+                if (!sms.teachers) sms.teachers = [];
+                if (!sms.teacherAttendance) sms.teacherAttendance = [];
+                if (!sms.teacherSalaries) sms.teacherSalaries = [];
+            }
         }
     }
 

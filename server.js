@@ -971,7 +971,7 @@ app.get('/api/teacher-salaries', requireAnyRole(['super_admin', 'branch_admin', 
     res.json(filteredByScope(await getCollection('teacherSalaries'), req.branchScope));
 });
 
-app.post('/api/teacher-salaries', async (req, res) => {
+app.post('/api/teacher-salaries', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
     const all = await getCollection('teacherSalaries');
     const body = req.body;
     const branchId = req.branchScope || Number(body.branchId) || 1;
@@ -997,7 +997,7 @@ app.post('/api/teacher-salaries', async (req, res) => {
     res.json({ success: true, data: record });
 });
 
-app.put('/api/teacher-salaries/:id', async (req, res) => {
+app.put('/api/teacher-salaries/:id', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
     const id = Number(req.params.id);
     const all = await getCollection('teacherSalaries');
     const idx = all.findIndex(s => Number(s.id) === id);

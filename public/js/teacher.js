@@ -122,8 +122,8 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                 <td>${teacher.phone}</td>
                 <td>$${teacher.salary.toFixed(2)}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary" onclick="sms.openTeacherModal(${teacher.id})">Edit</button>
-                    <button class="btn btn-sm btn-danger" onclick="sms.deleteTeacher(${teacher.id})">Delete</button>
+                    <button class="btn btn-sm btn-primary" onclick="openTeacherModal(${teacher.id})">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteTeacher(${teacher.id})">Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -436,6 +436,12 @@ if (typeof SchoolManagementSystem !== 'undefined') {
 window.openTeacherModal = function(teacherId = null) {
     if (typeof sms !== 'undefined') {
         sms.openTeacherModal(teacherId);
+    }
+};
+
+window.deleteTeacher = function(teacherId) {
+    if (typeof sms !== 'undefined') {
+        sms.deleteTeacher(teacherId);
     }
 };
 

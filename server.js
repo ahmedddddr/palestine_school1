@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
 const helmet = require('helmet');
@@ -178,10 +179,25 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
 const cookieSecure = NODE_ENV === 'production' || process.env.TRUST_PROXY === 'true';
+
+// Configure session store
+let sessionStore;
+if (MONGODB_URI) {
+    sessionStore = MongoStore.create({
+        mongoUrl: MONGODB_URI,
+        collectionName: 'sessions',
+        ttl: 8 * 60 * 60 // 8 hours
+    });
+    console.log('✅ Using MongoDB for session storage');
+} else {
+    console.log('⚠️ No MongoDB URI found, using memory storage (sessions will not persist)');
+}
+
 app.use(session({
     secret: process.env.SESSION_SECRET || 'fallback-insecure-change-me-please',
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
     cookie: {
         secure: cookieSecure,
         httpOnly: true,

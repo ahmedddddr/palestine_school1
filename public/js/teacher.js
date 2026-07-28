@@ -113,10 +113,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                 // Update existing teacher
                 const response = await fetch(`/api/teachers/${this.currentEditingTeacher}`, {
                     method: 'PUT',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({ name, subject, classes, phone: phone || 'Not provided', salary })
                 });
@@ -139,10 +136,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                 // Add new teacher
                 const response = await fetch('/api/teachers', {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({ name, subject, classes, phone: phone || 'Not provided', salary })
                 });
@@ -178,10 +172,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         try {
             const response = await fetch(`/api/teachers/${teacherId}`, {
                 method: 'DELETE',
-                credentials: 'include',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
-                }
+                credentials: 'include'
             });
 
             if (response.ok) {
@@ -537,10 +528,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
 
             const response = await fetch(`/api/teacher-salaries/${salaryId}`, {
                 method: 'DELETE',
-                credentials: 'include',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
-                }
+                credentials: 'include'
             });
 
             if (response.ok) {
@@ -753,24 +741,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const [teachersRes, teacherAttendanceRes, teacherSalariesRes] = await Promise.all([
-                fetch('/api/teachers', { 
-                    credentials: 'include',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
-                    }
-                }),
-                fetch('/api/teacher-attendance', { 
-                    credentials: 'include',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
-                    }
-                }),
-                fetch('/api/teacher-salaries', { 
-                    credentials: 'include',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
-                    }
-                })
+                fetch('/api/teachers', { credentials: 'include' }),
+                fetch('/api/teacher-attendance', { credentials: 'include' }),
+                fetch('/api/teacher-salaries', { credentials: 'include' })
             ]);
 
             if (teachersRes.ok && typeof sms !== 'undefined') {

@@ -10285,8 +10285,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/save', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                    'Content-Type': 'application/json'
                 },
                 credentials: 'include',
                 body: JSON.stringify({ type, data })
@@ -10317,12 +10316,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const hydrateFromServer = async () => {
         try {
-            const res = await fetch('/api/data', {
-                credentials: 'include',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
-                }
-            });
+            const res = await fetch('/api/data');
             if (!res.ok) {
                 serverHydrated = true;
                 return;
@@ -10393,12 +10387,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setInterval(async () => {
         try {
-            const res = await fetch('/api/data', {
-                credentials: 'include',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
-                }
-            });
+            const res = await fetch('/api/data');
             if (!res.ok) return;
             const data = await res.json();
             const remoteAttendance = Array.isArray(data?.attendance) ? data.attendance : [];

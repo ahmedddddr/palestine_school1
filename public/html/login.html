@@ -310,11 +310,6 @@
                 const username = document.getElementById('username').value.trim();
                 const password = document.getElementById('password').value;
 
-                console.log('=== LOGIN DEBUG ===');
-                console.log('Username:', username);
-                console.log('Password length:', password.length);
-                alert('Attempting login with username: ' + username); // Debug alert
-
                 try {
                     const res = await fetch('/login', {
                         method: 'POST',
@@ -322,47 +317,11 @@
                         credentials: 'same-origin',
                         body: JSON.stringify({ username, password })
                     });
-                    
-                    console.log('Response status:', res.status);
-                    console.log('Response ok:', res.ok);
-                    alert('Response received: ' + res.status); // Debug alert
-                    
                     let data = {};
-                    try { 
-                        data = await res.json(); 
-                        console.log('Response data:', data);
-                        alert('Response data: ' + JSON.stringify(data)); // Debug alert
-                    } catch (e) {
-                        console.error('Failed to parse JSON:', e);
-                        alert('Failed to parse response'); // Debug alert
-                    }
-                    
+                    try { data = await res.json(); } catch (_) {}
                     if (res.ok && data.success) {
-                        console.log('Login successful, storing token');
-                        alert('Login successful! Storing token...'); // Debug alert
-                        // Store JWT token in localStorage
-                        if (data.token) {
-                            localStorage.setItem('auth_token', data.token);
-                            console.log('Token stored:', data.token.substring(0, 20) + '...');
-                        }
-                        console.log('Redirecting to:', data.redirect || '/');
-                        alert('Redirecting to: ' + (data.redirect || '/')); // Debug alert
-                        
-                        // Use multiple redirect methods for reliability
-                        const redirectUrl = data.redirect || '/';
-                        setTimeout(() => {
-                            window.location.replace(redirectUrl);
-                        }, 100);
-                        
-                        // Fallback redirect
-                        setTimeout(() => {
-                            if (window.location.pathname === '/login') {
-                                window.location.href = redirectUrl;
-                            }
-                        }, 500);
+                        window.location.href = data.redirect || '/';
                     } else {
-                        console.log('Login failed:', data.error || 'Unknown error');
-                        alert('Login failed: ' + (data.error || 'Unknown error')); // Debug alert
                         errorEl.textContent = (data && data.error) ? data.error : 'Invalid username or password.';
                         errorEl.style.display = 'block';
                         document.getElementById('password').value = '';
@@ -370,8 +329,6 @@
                         btn.textContent = 'Login to System';
                     }
                 } catch (err) {
-                    console.error('Network error:', err);
-                    alert('Network error: ' + err.message); // Debug alert
                     errorEl.textContent = 'Network error. Please try again.';
                     errorEl.style.display = 'block';
                     btn.disabled = false;

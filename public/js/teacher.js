@@ -33,6 +33,17 @@ window.openTeacherSalaryModal = function() {
     modal.classList.add('show');
 };
 
+window.markTodayTeacherAttendance = function() {
+    const dateInput = document.getElementById('teacher-attendance-date');
+    const selectedDate = dateInput?.value || new Date().toISOString().split('T')[0];
+    
+    if (typeof sms !== 'undefined' && typeof sms.markAllTeachersPresent === 'function') {
+        sms.markAllTeachersPresent();
+    } else {
+        alert('Teacher attendance system not initialized');
+    }
+};
+
 // Add teacher management methods to the class
 if (typeof SchoolManagementSystem !== 'undefined') {
     SchoolManagementSystem.prototype.openTeacherModal = function(teacherId = null) {

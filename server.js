@@ -691,10 +691,12 @@ app.get('/api/data', async (req, res) => {
         const students = filteredByScope(await getCollection('students'), req.branchScope);
         const teachers = filteredByScope(await getCollection('teachers'), req.branchScope);
         const attendance = filteredByScope(await getCollection('attendance'), req.branchScope);
+        const teacherAttendance = filteredByScope(await getCollection('teacherAttendance'), req.branchScope);
         const fees = filteredByScope(await getCollection('fees'), req.branchScope);
         const busSubscriptions = filteredByScope(await getCollection('busSubscriptions'), req.branchScope);
+        const teacherSalaries = filteredByScope(await getCollection('teacherSalaries'), req.branchScope);
         const branches = req.branchScope === null ? await getCollection('branches') : (await getCollection('branches')).filter(b => String(b.id) === String(req.branchScope));
-        res.json({ students, teachers, attendance, fees, busSubscriptions, branches, currentBranchId: req.branchScope });
+        res.json({ students, teachers, attendance, teacherAttendance, fees, busSubscriptions, teacherSalaries, branches, currentBranchId: req.branchScope });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to load data' });

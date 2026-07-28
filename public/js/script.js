@@ -118,6 +118,9 @@ class SchoolManagementSystem {
     constructor() {
         console.log('=== CONSTRUCTOR START ===');
         this.students = [];
+        this.teachers = [];
+        this.teacherAttendance = [];
+        this.teacherSalaries = [];
         this.attendance = [];
         this.busSubscriptions = [];
         this.feePayments = [];

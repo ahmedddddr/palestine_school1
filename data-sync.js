@@ -17,9 +17,12 @@ class DataSyncManager {
             
             console.log('✅ Data loaded from server:', {
                 students: data.students?.length || 0,
+                teachers: data.teachers?.length || 0,
                 attendance: data.attendance?.length || 0,
+                teacherAttendance: data.teacherAttendance?.length || 0,
                 busSubscriptions: data.busSubscriptions?.length || 0,
-                feePayments: data.feePayments?.length || 0
+                feePayments: data.feePayments?.length || 0,
+                teacherSalaries: data.teacherSalaries?.length || 0
             });
             
             return data;
@@ -63,9 +66,12 @@ class DataSyncManager {
     getDefaultData() {
         return {
             students: [],
+            teachers: [],
             attendance: [],
+            teacherAttendance: [],
             busSubscriptions: [],
-            feePayments: []
+            feePayments: [],
+            teacherSalaries: []
         };
     }
 
@@ -77,15 +83,21 @@ class DataSyncManager {
                 
                 // Update school system with server data
                 if (serverData.students) schoolSystem.students = serverData.students;
+                if (serverData.teachers) schoolSystem.teachers = serverData.teachers;
                 if (serverData.attendance) schoolSystem.attendance = serverData.attendance;
+                if (serverData.teacherAttendance) schoolSystem.teacherAttendance = serverData.teacherAttendance;
                 if (serverData.busSubscriptions) schoolSystem.busSubscriptions = serverData.busSubscriptions;
                 if (serverData.feePayments) schoolSystem.feePayments = serverData.feePayments;
+                if (serverData.teacherSalaries) schoolSystem.teacherSalaries = serverData.teacherSalaries;
                 
                 // Refresh UI
                 schoolSystem.renderStudents();
+                if (schoolSystem.renderTeachers) schoolSystem.renderTeachers();
                 schoolSystem.renderAttendance();
+                if (schoolSystem.renderTeacherAttendance) schoolSystem.renderTeacherAttendance();
                 schoolSystem.renderBusSubscriptions();
                 schoolSystem.renderFeePayments();
+                if (schoolSystem.renderTeacherSalaries) schoolSystem.renderTeacherSalaries();
                 schoolSystem.updateDashboard();
                 
                 console.log('🔄 Auto-sync completed');

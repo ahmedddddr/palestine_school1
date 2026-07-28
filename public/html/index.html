@@ -18,9 +18,12 @@
                 <nav class="nav">
                     <button class="nav-btn active" data-section="dashboard">Dashboard</button>
                     <button class="nav-btn" data-section="students">Students</button>
+                    <button class="nav-btn" data-section="teachers">Teachers</button>
                     <button class="nav-btn" data-section="attendance">Attendance</button>
+                    <button class="nav-btn" data-section="teacher-attendance">Teacher Attendance</button>
                     <button class="nav-btn" data-section="bus">Bus</button>
                     <button class="nav-btn" data-section="fees">Fees</button>
+                    <button class="nav-btn" data-section="teacher-salaries">Teacher Salaries</button>
                 </nav>
             </div>
         </div>
@@ -254,6 +257,51 @@
                 </div>
             </section>
 
+            <!-- Teachers Section -->
+            <section id="teachers" class="section">
+                <div class="section-header">
+                    <h2>Teacher Management</h2>
+                    <button class="btn btn-primary" onclick="openTeacherModal()">Add New Teacher</button>
+                </div>
+                
+                <div class="filters">
+                    <input type="text" id="teacher-search" placeholder="Search by name..." class="search-input">
+                    <select id="teacher-subject-filter" class="filter-select">
+                        <option value="">All Subjects</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                        <option value="English">English</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="History">History</option>
+                        <option value="Geography">Geography</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Art">Art</option>
+                        <option value="Physical Education">Physical Education</option>
+                        <option value="Computer Science">Computer Science</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Subject</th>
+                                <th>Classes</th>
+                                <th>Phone</th>
+                                <th>Salary</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teachers-table">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- Attendance Section -->
             <section id="attendance" class="section">
                 <div class="section-header">
@@ -386,6 +434,54 @@
                 </div>
             </section>
 
+            <!-- Teacher Attendance Section -->
+            <section id="teacher-attendance" class="section">
+                <div class="section-header">
+                    <h2>Teacher Attendance Tracking</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="window.sms.exportTeacherAttendance()">📥 Export</button>
+                        <button class="btn btn-primary" onclick="markTodayTeacherAttendance()">Mark Today's Attendance</button>
+                    </div>
+                </div>
+                
+                <div class="filters">
+                    <input type="date" id="teacher-attendance-date" class="date-input">
+                    <input type="text" id="teacher-attendance-search" placeholder="Search by teacher name..." class="search-input">
+                    <select id="teacher-attendance-subject-filter" class="filter-select">
+                        <option value="">All Subjects</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                        <option value="English">English</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="History">History</option>
+                        <option value="Geography">Geography</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Art">Art</option>
+                        <option value="Physical Education">Physical Education</option>
+                        <option value="Computer Science">Computer Science</option>
+                    </select>
+                    <div class="bulk-actions">
+                        <button class="btn btn-sm btn-success" onclick="window.sms.markAllTeachersPresent()">✅ All Present</button>
+                        <button class="btn btn-sm btn-danger" onclick="window.sms.markAllTeachersAbsent()">❌ All Absent</button>
+                    </div>
+                </div>
+
+                <div class="attendance-header">
+                    <div class="attendance-summary">
+                        <span id="teacher-attendance-summary-text">0 teachers loaded</span>
+                        <div class="attendance-stats" id="teacher-attendance-stats">
+                            <span class="stat-badge present-badge">Present: <span id="teacher-present-count">0</span></span>
+                            <span class="stat-badge absent-badge">Absent: <span id="teacher-absent-count">0</span></span>
+                            <span class="stat-badge unmarked-badge">Unmarked: <span id="teacher-unmarked-count">0</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="attendance-grid" id="teacher-attendance-grid">
+                </div>
+            </section>
+
             <!-- Fees Section -->
             <section id="fees" class="section">
                 <div class="section-header">
@@ -448,6 +544,68 @@
                             </tr>
                         </thead>
                         <tbody id="fees-table">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Teacher Salaries Section -->
+            <section id="teacher-salaries" class="section">
+                <div class="section-header">
+                    <h2>Teacher Salaries Management</h2>
+                    <button class="btn btn-primary" onclick="openTeacherSalaryModal()">Record Salary Payment</button>
+                </div>
+                
+                <div class="filters">
+                    <select id="teacher-salaries-month" class="filter-select">
+                        <option value="">All Months</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <select id="teacher-salaries-year" class="filter-select">
+                        <option value="">All Years</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                    <select id="teacher-salaries-status-filter" class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="paid">Paid</option>
+                        <option value="unpaid">Unpaid</option>
+                        <option value="partial">Partial</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Subject</th>
+                                <th>Month</th>
+                                <th>Year</th>
+                                <th>Base Salary</th>
+                                <th>Bonus</th>
+                                <th>Deductions</th>
+                                <th>Total</th>
+                                <th>Paid</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Payment Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacher-salaries-table">
                         </tbody>
                     </table>
                 </div>
@@ -636,8 +794,126 @@
         </div>
     </div>
 
+    <!-- Teacher Modal -->
+    <div id="teacher-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('teacher-modal')">&times;</span>
+            <h3>Add/Edit Teacher</h3>
+            <form id="teacher-form">
+                <div class="form-group">
+                    <label for="teacher-name">Full Name</label>
+                    <input type="text" id="teacher-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="teacher-subject">Subject</label>
+                    <select id="teacher-subject" required>
+                        <option value="">Select Subject</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                        <option value="English">English</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="History">History</option>
+                        <option value="Geography">Geography</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Art">Art</option>
+                        <option value="Physical Education">Physical Education</option>
+                        <option value="Computer Science">Computer Science</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="teacher-classes">Classes (comma-separated)</label>
+                    <input type="text" id="teacher-classes" placeholder="e.g., Grade 1, Grade 2, Grade 3">
+                </div>
+                <div class="form-group">
+                    <label for="teacher-phone">Phone</label>
+                    <input type="tel" id="teacher-phone">
+                </div>
+                <div class="form-group">
+                    <label for="teacher-salary">Monthly Salary ($)</label>
+                    <input type="number" id="teacher-salary" min="0" step="0.01" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Teacher</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('teacher-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Teacher Salary Modal -->
+    <div id="teacher-salary-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('teacher-salary-modal')">&times;</span>
+            <h3>Record Teacher Salary Payment</h3>
+            <form id="teacher-salary-form">
+                <div class="form-group">
+                    <label for="salary-teacher">Select Teacher</label>
+                    <select id="salary-teacher" required>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="salary-month">Month</label>
+                    <select id="salary-month" required>
+                        <option value="">Select Month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="salary-year">Year</label>
+                    <select id="salary-year" required>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="salary-base">Base Salary ($)</label>
+                    <input type="number" id="salary-base" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="salary-bonus">Bonus ($)</label>
+                    <input type="number" id="salary-bonus" min="0" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="salary-deductions">Deductions ($)</label>
+                    <input type="number" id="salary-deductions" min="0" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="salary-paid">Amount Paid ($)</label>
+                    <input type="number" id="salary-paid" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="salary-date">Payment Date</label>
+                    <input type="date" id="salary-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="salary-notes">Notes</label>
+                    <textarea id="salary-notes" rows="2"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Record Payment</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('teacher-salary-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="data-sync.js?v=20250220-1715"></script>
     <script src="script.js?v=20250220-1715"></script>
+    <script src="teacher.js?v=20250220-1715"></script>
     <script>
         // Debug script to check routes
         setTimeout(() => {

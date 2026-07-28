@@ -10354,15 +10354,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const postToServer = async (type, data) => {
         try {
-            await fetch('/api/save', {
+            const response = await fetch('/api/save', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ type, data })
             });
-        } catch (_) {
-            // ignore
+            if (!response.ok) {
+                console.warn(`Failed to sync ${type} to server: ${response.status}`);
+            }
+        } catch (error) {
+            console.warn(`Error syncing ${type} to server:`, error.message);
         }
     };
 

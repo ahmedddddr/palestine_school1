@@ -1135,19 +1135,24 @@ app.delete('/api/bus/:id', requireAnyRole(['super_admin', 'branch_admin']), asyn
 });
 
 app.post('/api/save', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
-    const { type, data } = req.body;
-    const validTypes = ['students', 'attendance', 'bus', 'fees', 'teachers', 'branches', 'teacher-attendance', 'teacher-salaries'];
-    if (!validTypes.includes(type)) return res.status(400).json({ error: 'Invalid type' });
-    const colNameMap = {
-        'bus': 'busSubscriptions',
-        'teacher-attendance': 'teacherAttendance',
-        'teacher-salaries': 'teacherSalaries'
-    };
-    const colName = colNameMap[type] || type;
-    const raw = Array.isArray(data) ? data : [];
-    const scoped = req.branchScope === null ? raw : raw.map(item => ({ ...item, branchId: req.branchScope }));
-    await saveCollection(colName, scoped);
-    res.json({ success: true });
+    try {
+        const { type, data } = req.body;
+        const validTypes = ['students', 'attendance', 'bus', 'fees', 'teachers', 'branches', 'teacher-attendance', 'teacher-salaries'];
+        if (!validTypes.includes(type)) return res.status(400).json({ error: 'Invalid type' });
+        const colNameMap = {
+            'bus': 'busSubscriptions',
+            'teacher-attendance': 'teacherAttendance',
+            'teacher-salaries': 'teacherSalaries'
+        };
+        const colName = colNameMap[type] || type;
+        const raw = Array.isArray(data) ? data : [];
+        const scoped = req.branchScope === null ? raw : raw.map(item => ({ ...item, branchId: req.branchScope }));
+        await saveCollection(colName, scoped);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error in /api/save:', error);
+        res.status(500).json({ error: 'Failed to save data', details: error.message });
+    }
 });
 
 app.post('/api/admin/seed-from-json', requireAuth('super_admin'), async (req, res) => {

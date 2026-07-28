@@ -518,6 +518,11 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         }
 
         try {
+            // Ensure teacherSalaries array exists
+            if (!this.teacherSalaries || !Array.isArray(this.teacherSalaries)) {
+                this.teacherSalaries = [];
+            }
+
             const response = await fetch(`/api/teacher-salaries/${salaryId}`, {
                 method: 'DELETE'
             });
@@ -525,8 +530,13 @@ if (typeof SchoolManagementSystem !== 'undefined') {
             if (response.ok) {
                 this.teacherSalaries = this.teacherSalaries.filter(s => s.id !== salaryId);
                 this.renderTeacherSalaries();
+            } else if (response.status === 404) {
+                console.warn('Salary record not found on server, removing from local state');
+                this.teacherSalaries = this.teacherSalaries.filter(s => s.id !== salaryId);
+                this.renderTeacherSalaries();
             } else {
-                throw new Error('Failed to delete salary record');
+                const errorText = await response.text().catch(() => 'Unknown error');
+                throw new Error(`Failed to delete salary record: ${errorText}`);
             }
         } catch (error) {
             console.error('Error deleting teacher salary:', error);

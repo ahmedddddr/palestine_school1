@@ -433,6 +433,28 @@ if (typeof SchoolManagementSystem !== 'undefined') {
 }
 
 // Global functions for onclick handlers
+window.openTeacherModal = function(teacherId = null) {
+    if (typeof sms !== 'undefined') {
+        sms.openTeacherModal(teacherId);
+    }
+};
+
+window.openTeacherSalaryModal = function() {
+    const modal = document.getElementById('teacher-salary-modal');
+    const teacherSelect = document.getElementById('salary-teacher');
+    
+    // Populate teacher dropdown
+    if (typeof sms !== 'undefined' && sms.teachers) {
+        teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
+        sms.teachers.forEach(teacher => {
+            teacherSelect.innerHTML += `<option value="${teacher.id}">${teacher.name} - ${teacher.subject}</option>`;
+        });
+    }
+    
+    modal.classList.add('show');
+};
+
+// Also keep as regular function for backward compatibility
 function openTeacherModal(teacherId = null) {
     if (typeof sms !== 'undefined') {
         sms.openTeacherModal(teacherId);

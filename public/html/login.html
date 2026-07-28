@@ -310,6 +310,10 @@
                 const username = document.getElementById('username').value.trim();
                 const password = document.getElementById('password').value;
 
+                console.log('=== LOGIN DEBUG ===');
+                console.log('Username:', username);
+                console.log('Password length:', password.length);
+
                 try {
                     const res = await fetch('/login', {
                         method: 'POST',
@@ -317,15 +321,29 @@
                         credentials: 'same-origin',
                         body: JSON.stringify({ username, password })
                     });
+                    
+                    console.log('Response status:', res.status);
+                    console.log('Response ok:', res.ok);
+                    
                     let data = {};
-                    try { data = await res.json(); } catch (_) {}
+                    try { 
+                        data = await res.json(); 
+                        console.log('Response data:', data);
+                    } catch (e) {
+                        console.error('Failed to parse JSON:', e);
+                    }
+                    
                     if (res.ok && data.success) {
+                        console.log('Login successful, storing token');
                         // Store JWT token in localStorage
                         if (data.token) {
                             localStorage.setItem('auth_token', data.token);
+                            console.log('Token stored:', data.token.substring(0, 20) + '...');
                         }
+                        console.log('Redirecting to:', data.redirect || '/');
                         window.location.href = data.redirect || '/';
                     } else {
+                        console.log('Login failed:', data.error || 'Unknown error');
                         errorEl.textContent = (data && data.error) ? data.error : 'Invalid username or password.';
                         errorEl.style.display = 'block';
                         document.getElementById('password').value = '';
@@ -333,6 +351,7 @@
                         btn.textContent = 'Login to System';
                     }
                 } catch (err) {
+                    console.error('Network error:', err);
                     errorEl.textContent = 'Network error. Please try again.';
                     errorEl.style.display = 'block';
                     btn.disabled = false;

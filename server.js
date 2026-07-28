@@ -218,6 +218,10 @@ function isValidRole(role) {
 function requireAuth(role = null) {
     return (req, res, next) => {
         if (!req.session || !req.session.authenticated) {
+            // Always return JSON for API endpoints
+            if (req.path.startsWith('/api/')) {
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
             return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Unauthorized' });
         }
         if (role && req.session.role !== role) {
@@ -230,6 +234,10 @@ function requireAuth(role = null) {
 function requireAnyRole(roles = []) {
     return (req, res, next) => {
         if (!req.session || !req.session.authenticated) {
+            // Always return JSON for API endpoints
+            if (req.path.startsWith('/api/')) {
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
             return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Unauthorized' });
         }
         if (!roles.includes(req.session.role)) {
@@ -760,7 +768,7 @@ app.delete('/api/students/:id', async (req, res) => {
     res.json({ success: true });
 });
 
-app.get('/api/teachers', async (req, res) => {
+app.get('/api/teachers', requireAnyRole(['super_admin', 'branch_admin', 'teacher']), async (req, res) => {
     res.json(filteredByScope(await getCollection('teachers'), req.branchScope));
 });
 
@@ -882,7 +890,7 @@ app.delete('/api/attendance/:id', requireAnyRole(['super_admin', 'branch_admin']
 });
 
 // Teacher Attendance API
-app.get('/api/teacher-attendance', async (req, res) => {
+app.get('/api/teacher-attendance', requireAnyRole(['super_admin', 'branch_admin', 'teacher']), async (req, res) => {
     res.json(filteredByScope(await getCollection('teacherAttendance'), req.branchScope));
 });
 
@@ -943,7 +951,7 @@ app.delete('/api/teacher-attendance/:id', requireAnyRole(['super_admin', 'branch
 });
 
 // Teacher Salaries API
-app.get('/api/teacher-salaries', async (req, res) => {
+app.get('/api/teacher-salaries', requireAnyRole(['super_admin', 'branch_admin', 'teacher']), async (req, res) => {
     res.json(filteredByScope(await getCollection('teacherSalaries'), req.branchScope));
 });
 

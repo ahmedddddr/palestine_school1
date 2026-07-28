@@ -9,7 +9,12 @@ class DataSyncManager {
     // Load data from server
     async loadData() {
         try {
-            const response = await fetch(`${this.baseURL}/api/data`, { credentials: 'include' });
+            const response = await fetch(`${this.baseURL}/api/data`, { 
+                credentials: 'include',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                }
+            });
             if (!response.ok) {
                 throw new Error(`Server returned ${response.status}`);
             }
@@ -39,6 +44,7 @@ class DataSyncManager {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
                 },
                 credentials: 'include',
                 body: JSON.stringify(data)

@@ -7,12 +7,14 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const jwt = require('jsonwebtoken');
 const { MongoClient, ObjectId } = require('mongodb');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const MONGODB_URI = (process.env.MONGODB_URI || '').trim();
+const JWT_SECRET = process.env.JWT_SECRET || 'palestine-schools-secret-key-change-in-production';
 
 let db;
 let mongoClient;
@@ -217,48 +219,118 @@ function isValidRole(role) {
 
 function requireAuth(role = null) {
     return (req, res, next) => {
-        if (!req.session || !req.session.authenticated) {
+        // Check for JWT token in Authorization header
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
+        
+        // Fallback to session for backward compatibility
+        if (!token && req.session && req.session.authenticated) {
+            if (role && req.session.role !== role) {
+                return res.status(403).json({ error: 'Forbidden: insufficient permissions' });
+            }
+            req.user = {
+                userId: req.session.userId,
+                username: req.session.username,
+                role: req.session.role,
+                branchId: req.session.branchId,
+                displayName: req.session.displayName
+            };
+            return next();
+        }
+        
+        // Validate JWT token
+        if (!token) {
             // Always return JSON for API endpoints
             if (req.path.startsWith('/api/')) {
-                return res.status(401).json({ error: 'Unauthorized' });
+                return res.status(401).json({ error: 'Unauthorized: No token provided' });
             }
             return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Unauthorized' });
         }
-        if (role && req.session.role !== role) {
-            return res.status(403).json({ error: 'Forbidden: insufficient permissions' });
+        
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            req.user = decoded;
+            
+            if (role && decoded.role !== role) {
+                return res.status(403).json({ error: 'Forbidden: insufficient permissions' });
+            }
+            
+            next();
+        } catch (error) {
+            if (req.path.startsWith('/api/')) {
+                return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+            }
+            return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Unauthorized' });
         }
-        next();
     };
 }
 
 function requireAnyRole(roles = []) {
     return (req, res, next) => {
-        if (!req.session || !req.session.authenticated) {
+        // Check for JWT token in Authorization header
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
+        
+        // Fallback to session for backward compatibility
+        if (!token && req.session && req.session.authenticated) {
+            if (!roles.includes(req.session.role)) {
+                return res.status(403).json({ error: 'Forbidden: insufficient permissions' });
+            }
+            req.user = {
+                userId: req.session.userId,
+                username: req.session.username,
+                role: req.session.role,
+                branchId: req.session.branchId,
+                displayName: req.session.displayName
+            };
+            return next();
+        }
+        
+        // Validate JWT token
+        if (!token) {
             // Always return JSON for API endpoints
             if (req.path.startsWith('/api/')) {
-                return res.status(401).json({ error: 'Unauthorized' });
+                return res.status(401).json({ error: 'Unauthorized: No token provided' });
             }
             return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Unauthorized' });
         }
-        if (!roles.includes(req.session.role)) {
-            return res.status(403).json({ error: 'Forbidden: insufficient permissions' });
+        
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            req.user = decoded;
+            
+            if (!roles.includes(decoded.role)) {
+                return res.status(403).json({ error: 'Forbidden: insufficient permissions' });
+            }
+            
+            next();
+        } catch (error) {
+            if (req.path.startsWith('/api/')) {
+                return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+            }
+            return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Unauthorized' });
         }
-        next();
     };
 }
 
 function scopeByBranch(req, res, next) {
-    if (!req.session || !req.session.authenticated) {
+    // Check for JWT user first, then fallback to session
+    const user = req.user || (req.session && req.session.authenticated ? req.session : null);
+    
+    if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
-    if (req.session.role === 'super_admin') {
+    
+    if (user.role === 'super_admin') {
         req.branchScope = null;
         return next();
     }
-    if (!req.session.branchId) {
+    
+    if (!user.branchId) {
         return res.status(403).json({ error: 'User has no branch assignment' });
     }
-    req.branchScope = req.session.branchId;
+    
+    req.branchScope = user.branchId;
     next();
 }
 
@@ -396,14 +468,20 @@ app.post('/login', loginLimiter, async (req, res) => {
         return res.status(401).json({ success: false, error: 'Invalid credentials.' });
     }
 
-    req.session.authenticated = true;
-    req.session.userId = user.id;
-    req.session.username = user.username;
-    req.session.role = user.role;
-    req.session.branchId = user.branchId;
-    req.session.displayName = user.displayName || user.username;
-    req.session.loginAt = new Date().toISOString();
+    // Create JWT token
+    const token = jwt.sign(
+        { 
+            userId: user.id, 
+            username: user.username, 
+            role: user.role, 
+            branchId: user.branchId,
+            displayName: user.displayName || user.username
+        },
+        JWT_SECRET,
+        { expiresIn: '24h' }
+    );
 
+    // Update last login
     const now = new Date().toISOString();
     const allUsers = await getCollection('users');
     const idx = allUsers.findIndex(u => u.id === user.id);
@@ -414,7 +492,7 @@ app.post('/login', loginLimiter, async (req, res) => {
 
     const redirect = user.role === 'teacher' ? '/teacher' :
                      user.role === 'super_admin' ? '/master-control' : '/';
-    res.json({ success: true, redirect, role: user.role, branchId: user.branchId });
+    res.json({ success: true, redirect, role: user.role, branchId: user.branchId, token });
 });
 
 app.get('/logout', (req, res) => {

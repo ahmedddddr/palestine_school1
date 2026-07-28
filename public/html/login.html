@@ -320,6 +320,10 @@
                     let data = {};
                     try { data = await res.json(); } catch (_) {}
                     if (res.ok && data.success) {
+                        // Store JWT token in localStorage
+                        if (data.token) {
+                            localStorage.setItem('auth_token', data.token);
+                        }
                         window.location.href = data.redirect || '/';
                     } else {
                         errorEl.textContent = (data && data.error) ? data.error : 'Invalid username or password.';

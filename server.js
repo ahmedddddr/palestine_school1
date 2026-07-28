@@ -982,6 +982,7 @@ app.post('/api/teacher-salaries', async (req, res) => {
         baseSalary: Number(body.baseSalary) || 0,
         bonus: Number(body.bonus) || 0,
         deductions: Number(body.deductions) || 0,
+        paid: Number(body.paid) || 0,
         totalSalary: (Number(body.baseSalary) || 0) + (Number(body.bonus) || 0) - (Number(body.deductions) || 0),
         month: sanitizeString(body.month, 20),
         year: Number(body.year) || new Date().getFullYear(),
@@ -1008,11 +1009,13 @@ app.put('/api/teacher-salaries/:id', async (req, res) => {
     const baseSalary = body.baseSalary !== undefined ? Number(body.baseSalary) : all[idx].baseSalary;
     const bonus = body.bonus !== undefined ? Number(body.bonus) : all[idx].bonus;
     const deductions = body.deductions !== undefined ? Number(body.deductions) : all[idx].deductions;
+    const paid = body.paid !== undefined ? Number(body.paid) : all[idx].paid;
     all[idx] = {
         ...all[idx],
         baseSalary,
         bonus,
         deductions,
+        paid,
         totalSalary: baseSalary + bonus - deductions,
         month: body.month !== undefined ? sanitizeString(body.month, 20) : all[idx].month,
         year: body.year !== undefined ? Number(body.year) : all[idx].year,

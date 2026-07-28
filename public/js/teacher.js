@@ -653,6 +653,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const paymentDate = document.getElementById('salary-date').value;
             const notes = document.getElementById('salary-notes').value;
 
+            // Calculate payment status automatically
+            const total = baseSalary + bonus - deductions;
+            let paymentStatus = 'pending';
+            if (paid >= total) {
+                paymentStatus = 'paid';
+            } else if (paid > 0) {
+                paymentStatus = 'partial';
+            }
+
             try {
                 let response;
                 if (typeof sms !== 'undefined' && sms.currentEditingSalary) {
@@ -669,6 +678,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             bonus,
                             deductions,
                             paid,
+                            paymentStatus,
                             paymentDate,
                             notes
                         })
@@ -687,6 +697,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             bonus,
                             deductions,
                             paid,
+                            paymentStatus,
                             paymentDate,
                             notes
                         })

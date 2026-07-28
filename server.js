@@ -462,56 +462,76 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', loginLimiter, async (req, res) => {
-    const username = sanitizeString(req.body.username || '', 50);
-    const password = typeof req.body.password === 'string' ? req.body.password : '';
-
-    if (!username || !password) {
-        return res.status(400).json({ success: false, error: 'Username and password are required.' });
-    }
-
-    const users = await getCollection('users', { username, isActive: true });
-    const user = users[0];
-
-    if (!user) {
-        return res.status(401).json({ success: false, error: 'Invalid credentials.' });
-    }
-
-    let ok = false;
     try {
-        ok = await bcrypt.compare(password, user.password);
-    } catch (e) {
-        ok = false;
+        const username = sanitizeString(req.body.username || '', 50);
+        const password = typeof req.body.password === 'string' ? req.body.password : '';
+
+        console.log('=== LOGIN REQUEST ===');
+        console.log('Username:', username);
+        console.log('Password provided:', !!password);
+
+        if (!username || !password) {
+            console.log('Missing credentials');
+            return res.status(400).json({ success: false, error: 'Username and password are required.' });
+        }
+
+        const users = await getCollection('users', { username, isActive: true });
+        console.log('Users found:', users.length);
+        const user = users[0];
+
+        if (!user) {
+            console.log('User not found');
+            return res.status(401).json({ success: false, error: 'Invalid credentials.' });
+        }
+
+        console.log('User found:', user.username, 'Role:', user.role);
+
+        let ok = false;
+        try {
+            ok = await bcrypt.compare(password, user.password);
+            console.log('Password comparison result:', ok);
+        } catch (e) {
+            console.error('Password comparison error:', e);
+            ok = false;
+        }
+
+        if (!ok) {
+            console.log('Invalid password');
+            return res.status(401).json({ success: false, error: 'Invalid credentials.' });
+        }
+
+        // Create JWT token
+        console.log('Creating JWT token with secret:', JWT_SECRET ? 'present' : 'missing');
+        const token = jwt.sign(
+            { 
+                userId: user.id, 
+                username: user.username, 
+                role: user.role, 
+                branchId: user.branchId,
+                displayName: user.displayName || user.username
+            },
+            JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+        console.log('JWT token created successfully');
+
+        // Update last login
+        const now = new Date().toISOString();
+        const allUsers = await getCollection('users');
+        const idx = allUsers.findIndex(u => u.id === user.id);
+        if (idx >= 0) {
+            allUsers[idx].lastLogin = now;
+            await saveCollection('users', allUsers);
+        }
+
+        const redirect = user.role === 'teacher' ? '/teacher' :
+                         user.role === 'super_admin' ? '/master-control' : '/';
+        console.log('Redirecting to:', redirect);
+        res.json({ success: true, redirect, role: user.role, branchId: user.branchId, token });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, error: 'Server error during login' });
     }
-
-    if (!ok) {
-        return res.status(401).json({ success: false, error: 'Invalid credentials.' });
-    }
-
-    // Create JWT token
-    const token = jwt.sign(
-        { 
-            userId: user.id, 
-            username: user.username, 
-            role: user.role, 
-            branchId: user.branchId,
-            displayName: user.displayName || user.username
-        },
-        JWT_SECRET,
-        { expiresIn: '24h' }
-    );
-
-    // Update last login
-    const now = new Date().toISOString();
-    const allUsers = await getCollection('users');
-    const idx = allUsers.findIndex(u => u.id === user.id);
-    if (idx >= 0) {
-        allUsers[idx].lastLogin = now;
-        await saveCollection('users', allUsers);
-    }
-
-    const redirect = user.role === 'teacher' ? '/teacher' :
-                     user.role === 'super_admin' ? '/master-control' : '/';
-    res.json({ success: true, redirect, role: user.role, branchId: user.branchId, token });
 });
 
 app.get('/logout', (req, res) => {

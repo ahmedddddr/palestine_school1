@@ -488,100 +488,25 @@ class SchoolManagementSystem {
         return false;
     }
 
-    // Enhanced Data Loading with Imported Student Protection
+    // Enhanced Data Loading - Database Only
     loadDataFromStorage() {
-        console.log('=== LOAD DATA FROM STORAGE START ===');
-        console.log('Loading data from localStorage...');
+        console.log('=== LOAD DATA FROM DATABASE START ===');
+        console.log('Data will be loaded from database via API calls');
         
-        // Try to load main data object first (new format)
-        const mainData = localStorage.getItem('school_data_main');
+        // Initialize empty arrays - data will be loaded from database
+        this.students = [];
+        this.attendance = [];
+        this.busSubscriptions = [];
+        this.feePayments = [];
+        this.teachers = [];
+        this.teacherAttendance = [];
+        this.teacherSalaries = [];
+        this.busRoutes = [];
         
-        if (mainData) {
-            try {
-                console.log('Found main data object, parsing...');
-                const parsedData = JSON.parse(mainData);
-                console.log('Main data version:', parsedData.version);
-                console.log('Last saved:', parsedData.lastSaved);
-                
-                // Load data from structured format
-                this.students = parsedData.data.students || [];
-                this.attendance = parsedData.data.attendance || [];
-                this.busSubscriptions = parsedData.data.busSubscriptions || [];
-                this.feePayments = parsedData.data.feePayments || [];
-                
-                // Restore imported student protection
-                this.restoreImportedStudentProtection();
-                
-                console.log('Successfully loaded from main data:', {
-                    students: this.students.length,
-                    attendance: this.attendance.length,
-                    bus: this.busSubscriptions.length,
-                    fees: this.feePayments.length
-                });
-                
-                // Apply Arabic student names only to non-imported students
-                const arabicNamesApplied = this.applyArabicStudentNames();
-                if (arabicNamesApplied) {
-                    this.saveDataToStorage();
-                }
-                
-                console.log('=== LOAD DATA FROM STORAGE COMPLETE ===');
-                return;
-            } catch (error) {
-                console.error('Error parsing main data, falling back to individual arrays...', error);
-            }
-        }
-        
-        // Fallback to individual arrays (old format)
-        console.log('Loading from individual arrays (fallback)...');
-        const savedStudents = localStorage.getItem('school_students');
-        const savedAttendance = localStorage.getItem('school_attendance');
-        const savedBus = localStorage.getItem('school_bus');
-        const savedFees = localStorage.getItem('school_fees');
+        console.log('=== LOAD DATA FROM DATABASE COMPLETE ===');
+    }
 
-        console.log('Saved data found:', {
-            students: !!savedStudents,
-            attendance: !!savedAttendance,
-            bus: !!savedBus,
-            fees: !!savedFees
-        });
-
-        let dataLoaded = false;
-
-        // Load saved data - NEVER clear it!
-        if (savedStudents) {
-            try {
-                this.students = JSON.parse(savedStudents);
-                console.log('Loaded', this.students.length, 'students from localStorage');
-                dataLoaded = true;
-            } catch (error) {
-                console.error('Error loading students, trying backup...', error);
-                if (this.restoreFromBackup()) {
-                    dataLoaded = true;
-                }
-            }
-        
-        // Load attendance from localStorage - NEVER clear it!
-        if (savedAttendance) {
-            try {
-                this.attendance = JSON.parse(savedAttendance);
-                console.log('Loaded', this.attendance.length, 'attendance records from localStorage');
-            } catch (error) {
-                console.error('Error loading attendance, using backup...', error);
-                const backup = localStorage.getItem('school_data_backup');
-                if (backup) {
-                    const parsedBackup = JSON.parse(backup);
-                    this.attendance = parsedBackup.attendance || [];
-                }
-            }
-        }
-        
-        if (savedBus) {
-            try {
-                this.busSubscriptions = JSON.parse(savedBus);
-                console.log('Loaded', this.busSubscriptions.length, 'bus subscriptions from localStorage');
-            } catch (error) {
-                console.error('Error loading bus data, using backup...', error);
+    // Data Validation and Cleanup
                 const backup = localStorage.getItem('school_data_backup');
                 if (backup) {
                     const parsedBackup = JSON.parse(backup);
@@ -613,66 +538,8 @@ class SchoolManagementSystem {
             this.saveDataToStorage();
         }
 
-        // Load bus routes from localStorage
-        const savedRoutes = localStorage.getItem('school_bus_routes');
-        const directRoutes = localStorage.getItem('ROUTES_DIRECT_SAVE');
-        
-        console.log('Raw routes from localStorage:', savedRoutes);
-        console.log('Direct routes from localStorage:', directRoutes);
-        
-        // PRIORITY: Use direct save first, then normal save
-        if (directRoutes) {
-            try {
-                this.busRoutes = JSON.parse(directRoutes);
-                console.log('Loaded', this.busRoutes.length, 'bus routes from DIRECT save:', this.busRoutes);
-            } catch (error) {
-                console.error('Error loading direct routes, trying normal...', error);
-                // Fall back to normal save
-                if (savedRoutes) {
-                    try {
-                        this.busRoutes = JSON.parse(savedRoutes);
-                        console.log('Loaded', this.busRoutes.length, 'bus routes from normal save:', this.busRoutes);
-                    } catch (error) {
-                        console.error('Error loading bus routes, using defaults...', error);
-                        // Keep default routes
-                    }
-                } else {
-                    console.log('No saved routes found, using defaults');
-                    // Initialize with default routes
-                    this.busRoutes = [
-                        { id: 1, name: 'Route 1: North Area', area: 'North Area' },
-                        { id: 2, name: 'Route 2: South Area', area: 'South Area' },
-                        { id: 3, name: 'Route 3: East Area', area: 'East Area' },
-                        { id: 4, name: 'Route 4: West Area', area: 'West Area' },
-                        { id: 5, name: 'Route 5: City Center', area: 'City Center' },
-                        { id: 6, name: 'Route 6: Industrial Zone', area: 'Industrial Zone' },
-                        { id: 7, name: 'Route 7: Residential Area', area: 'Residential Area' },
-                        { id: 8, name: 'Route 8: School District', area: 'School District' }
-                    ];
-                }
-            }
-        } else if (savedRoutes) {
-            try {
-                this.busRoutes = JSON.parse(savedRoutes);
-                console.log('Loaded', this.busRoutes.length, 'bus routes from normal save:', this.busRoutes);
-            } catch (error) {
-                console.error('Error loading bus routes, using defaults...', error);
-                // Keep default routes
-            }
-        } else {
-            console.log('No saved routes found, using defaults');
-            // Initialize with default routes
-            this.busRoutes = [
-                { id: 1, name: 'Route 1: North Area', area: 'North Area' },
-                { id: 2, name: 'Route 2: South Area', area: 'South Area' },
-                { id: 3, name: 'Route 3: East Area', area: 'East Area' },
-                { id: 4, name: 'Route 4: West Area', area: 'West Area' },
-                { id: 5, name: 'Route 5: City Center', area: 'City Center' },
-                { id: 6, name: 'Route 6: Industrial Zone', area: 'Industrial Zone' },
-                { id: 7, name: 'Route 7: Residential Area', area: 'Residential Area' },
-                { id: 8, name: 'Route 8: School District', area: 'School District' }
-            ];
-        }
+        // Load bus routes from database only (no localStorage)
+        this.busRoutes = [];
         
         console.log('Final routes array after loading:', this.busRoutes);
 
@@ -5710,100 +5577,25 @@ const seenStudents = new Set();
         return false;
     }
 
-    // Enhanced Data Loading with Imported Student Protection
+    // Enhanced Data Loading - Database Only
     loadDataFromStorage() {
-        console.log('=== LOAD DATA FROM STORAGE START ===');
-        console.log('Loading data from localStorage...');
+        console.log('=== LOAD DATA FROM DATABASE START ===');
+        console.log('Data will be loaded from database via API calls');
         
-        // Try to load main data object first (new format)
-        const mainData = localStorage.getItem('school_data_main');
+        // Initialize empty arrays - data will be loaded from database
+        this.students = [];
+        this.attendance = [];
+        this.busSubscriptions = [];
+        this.feePayments = [];
+        this.teachers = [];
+        this.teacherAttendance = [];
+        this.teacherSalaries = [];
+        this.busRoutes = [];
         
-        if (mainData) {
-            try {
-                console.log('Found main data object, parsing...');
-                const parsedData = JSON.parse(mainData);
-                console.log('Main data version:', parsedData.version);
-                console.log('Last saved:', parsedData.lastSaved);
-                
-                // Load data from structured format
-                this.students = parsedData.data.students || [];
-                this.attendance = parsedData.data.attendance || [];
-                this.busSubscriptions = parsedData.data.busSubscriptions || [];
-                this.feePayments = parsedData.data.feePayments || [];
-                
-                // Restore imported student protection
-                this.restoreImportedStudentProtection();
-                
-                console.log('Successfully loaded from main data:', {
-                    students: this.students.length,
-                    attendance: this.attendance.length,
-                    bus: this.busSubscriptions.length,
-                    fees: this.feePayments.length
-                });
-                
-                // Apply Arabic student names only to non-imported students
-                const arabicNamesApplied = this.applyArabicStudentNames();
-                if (arabicNamesApplied) {
-                    this.saveDataToStorage();
-                }
-                
-                console.log('=== LOAD DATA FROM STORAGE COMPLETE ===');
-                return;
-            } catch (error) {
-                console.error('Error parsing main data, falling back to individual arrays...', error);
-            }
-        }
-        
-        // Fallback to individual arrays (old format)
-        console.log('Loading from individual arrays (fallback)...');
-        const savedStudents = localStorage.getItem('school_students');
-        const savedAttendance = localStorage.getItem('school_attendance');
-        const savedBus = localStorage.getItem('school_bus');
-        const savedFees = localStorage.getItem('school_fees');
+        console.log('=== LOAD DATA FROM DATABASE COMPLETE ===');
+    }
 
-        console.log('Saved data found:', {
-            students: !!savedStudents,
-            attendance: !!savedAttendance,
-            bus: !!savedBus,
-            fees: !!savedFees
-        });
-
-        let dataLoaded = false;
-
-        // Load saved data - NEVER clear it!
-        if (savedStudents) {
-            try {
-                this.students = JSON.parse(savedStudents);
-                console.log('Loaded', this.students.length, 'students from localStorage');
-                dataLoaded = true;
-            } catch (error) {
-                console.error('Error loading students, trying backup...', error);
-                if (this.restoreFromBackup()) {
-                    dataLoaded = true;
-                }
-            }
-        
-        // Load attendance from localStorage - NEVER clear it!
-        if (savedAttendance) {
-            try {
-                this.attendance = JSON.parse(savedAttendance);
-                console.log('Loaded', this.attendance.length, 'attendance records from localStorage');
-            } catch (error) {
-                console.error('Error loading attendance, using backup...', error);
-                const backup = localStorage.getItem('school_data_backup');
-                if (backup) {
-                    const parsedBackup = JSON.parse(backup);
-                    this.attendance = parsedBackup.attendance || [];
-                }
-            }
-        }
-        
-        if (savedBus) {
-            try {
-                this.busSubscriptions = JSON.parse(savedBus);
-                console.log('Loaded', this.busSubscriptions.length, 'bus subscriptions from localStorage');
-            } catch (error) {
-                console.error('Error loading bus data, using backup...', error);
+    // Data Validation and Cleanup
                 const backup = localStorage.getItem('school_data_backup');
                 if (backup) {
                     const parsedBackup = JSON.parse(backup);
@@ -5835,66 +5627,8 @@ const seenStudents = new Set();
             this.saveDataToStorage();
         }
 
-        // Load bus routes from localStorage
-        const savedRoutes = localStorage.getItem('school_bus_routes');
-        const directRoutes = localStorage.getItem('ROUTES_DIRECT_SAVE');
-        
-        console.log('Raw routes from localStorage:', savedRoutes);
-        console.log('Direct routes from localStorage:', directRoutes);
-        
-        // PRIORITY: Use direct save first, then normal save
-        if (directRoutes) {
-            try {
-                this.busRoutes = JSON.parse(directRoutes);
-                console.log('Loaded', this.busRoutes.length, 'bus routes from DIRECT save:', this.busRoutes);
-            } catch (error) {
-                console.error('Error loading direct routes, trying normal...', error);
-                // Fall back to normal save
-                if (savedRoutes) {
-                    try {
-                        this.busRoutes = JSON.parse(savedRoutes);
-                        console.log('Loaded', this.busRoutes.length, 'bus routes from normal save:', this.busRoutes);
-                    } catch (error) {
-                        console.error('Error loading bus routes, using defaults...', error);
-                        // Keep default routes
-                    }
-                } else {
-                    console.log('No saved routes found, using defaults');
-                    // Initialize with default routes
-                    this.busRoutes = [
-                        { id: 1, name: 'Route 1: North Area', area: 'North Area' },
-                        { id: 2, name: 'Route 2: South Area', area: 'South Area' },
-                        { id: 3, name: 'Route 3: East Area', area: 'East Area' },
-                        { id: 4, name: 'Route 4: West Area', area: 'West Area' },
-                        { id: 5, name: 'Route 5: City Center', area: 'City Center' },
-                        { id: 6, name: 'Route 6: Industrial Zone', area: 'Industrial Zone' },
-                        { id: 7, name: 'Route 7: Residential Area', area: 'Residential Area' },
-                        { id: 8, name: 'Route 8: School District', area: 'School District' }
-                    ];
-                }
-            }
-        } else if (savedRoutes) {
-            try {
-                this.busRoutes = JSON.parse(savedRoutes);
-                console.log('Loaded', this.busRoutes.length, 'bus routes from normal save:', this.busRoutes);
-            } catch (error) {
-                console.error('Error loading bus routes, using defaults...', error);
-                // Keep default routes
-            }
-        } else {
-            console.log('No saved routes found, using defaults');
-            // Initialize with default routes
-            this.busRoutes = [
-                { id: 1, name: 'Route 1: North Area', area: 'North Area' },
-                { id: 2, name: 'Route 2: South Area', area: 'South Area' },
-                { id: 3, name: 'Route 3: East Area', area: 'East Area' },
-                { id: 4, name: 'Route 4: West Area', area: 'West Area' },
-                { id: 5, name: 'Route 5: City Center', area: 'City Center' },
-                { id: 6, name: 'Route 6: Industrial Zone', area: 'Industrial Zone' },
-                { id: 7, name: 'Route 7: Residential Area', area: 'Residential Area' },
-                { id: 8, name: 'Route 8: School District', area: 'School District' }
-            ];
-        }
+        // Load bus routes from database only (no localStorage)
+        this.busRoutes = [];
         
         console.log('Final routes array after loading:', this.busRoutes);
 

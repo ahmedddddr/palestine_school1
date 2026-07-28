@@ -76,6 +76,29 @@ window.deleteTeacherSalary = function(salaryId) {
     }
 };
 
+window.editTeacherSalary = function(salaryId) {
+    if (typeof sms !== 'undefined' && typeof sms.editTeacherSalary === 'function') {
+        sms.editTeacherSalary(salaryId);
+    } else {
+        alert('Teacher salary system not initialized');
+    }
+};
+
+window.openTeacherSalaryModal = function() {
+    if (typeof sms !== 'undefined') {
+        sms.currentEditingSalary = null;
+        const modalTitle = document.querySelector('#teacher-salary-modal h3');
+        if (modalTitle) {
+            modalTitle.textContent = 'Record Teacher Salary Payment';
+        }
+        const submitBtn = document.querySelector('#teacher-salary-form button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.textContent = 'Record Payment';
+        }
+        document.getElementById('teacher-salary-modal').style.display = 'block';
+    }
+};
+
 // Add teacher management methods to the class
 if (typeof SchoolManagementSystem !== 'undefined') {
     SchoolManagementSystem.prototype.openTeacherModal = function(teacherId = null) {
@@ -507,7 +530,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                     <td><span class="status-badge status-${status}">${status}</span></td>
                     <td>${salary.paymentDate || 'N/A'}</td>
                     <td>
-                        <button class="btn btn-sm btn-primary" onclick="alert('Edit functionality coming soon')">Edit</button>
+                        <button class="btn btn-sm btn-primary" onclick="editTeacherSalary(${salary.id})">Edit</button>
                         <button class="btn btn-sm btn-danger" onclick="deleteTeacherSalary(${salary.id})">Delete</button>
                     </td>
                 </tr>
@@ -546,6 +569,43 @@ if (typeof SchoolManagementSystem !== 'undefined') {
             console.error('Error deleting teacher salary:', error);
             alert('Failed to delete salary record. Please try again.');
         }
+    };
+
+    SchoolManagementSystem.prototype.editTeacherSalary = function(salaryId) {
+        const salary = this.teacherSalaries.find(s => s.id === salaryId);
+        if (!salary) {
+            alert('Salary record not found');
+            return;
+        }
+
+        // Set current editing salary ID
+        this.currentEditingSalary = salaryId;
+
+        // Update modal title
+        const modalTitle = document.querySelector('#teacher-salary-modal h3');
+        if (modalTitle) {
+            modalTitle.textContent = 'Edit Teacher Salary Payment';
+        }
+
+        // Populate form with existing data
+        document.getElementById('salary-teacher').value = salary.teacherId;
+        document.getElementById('salary-month').value = salary.month;
+        document.getElementById('salary-year').value = salary.year;
+        document.getElementById('salary-base').value = salary.baseSalary || 0;
+        document.getElementById('salary-bonus').value = salary.bonus || 0;
+        document.getElementById('salary-deductions').value = salary.deductions || 0;
+        document.getElementById('salary-paid').value = salary.paid || 0;
+        document.getElementById('salary-date').value = salary.paymentDate || '';
+        document.getElementById('salary-notes').value = salary.notes || '';
+
+        // Change submit button text
+        const submitBtn = document.querySelector('#teacher-salary-form button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.textContent = 'Update Payment';
+        }
+
+        // Open modal
+        document.getElementById('teacher-salary-modal').style.display = 'block';
     };
 
     SchoolManagementSystem.prototype.exportTeacherAttendance = function() {
@@ -594,36 +654,69 @@ document.addEventListener('DOMContentLoaded', function() {
             const notes = document.getElementById('salary-notes').value;
 
             try {
-                const response = await fetch('/api/teacher-salaries', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        teacherId,
-                        month,
-                        year,
-                        baseSalary,
-                        bonus,
-                        deductions,
-                        paid,
-                        paymentDate,
-                        notes
-                    })
-                });
+                let response;
+                if (typeof sms !== 'undefined' && sms.currentEditingSalary) {
+                    // Update existing salary
+                    response = await fetch(`/api/teacher-salaries/${sms.currentEditingSalary}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            teacherId,
+                            month,
+                            year,
+                            baseSalary,
+                            bonus,
+                            deductions,
+                            paid,
+                            paymentDate,
+                            notes
+                        })
+                    });
+                } else {
+                    // Add new salary
+                    response = await fetch('/api/teacher-salaries', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            teacherId,
+                            month,
+                            year,
+                            baseSalary,
+                            bonus,
+                            deductions,
+                            paid,
+                            paymentDate,
+                            notes
+                        })
+                    });
+                }
 
                 if (response.ok) {
                     const result = await response.json();
                     if (typeof sms !== 'undefined') {
-                        sms.teacherSalaries.push(result.data);
+                        if (sms.currentEditingSalary) {
+                            // Update existing record
+                            const index = sms.teacherSalaries.findIndex(s => s.id === sms.currentEditingSalary);
+                            if (index >= 0 && result.data) {
+                                sms.teacherSalaries[index] = result.data;
+                            }
+                            sms.currentEditingSalary = null;
+                        } else {
+                            // Add new record
+                            sms.teacherSalaries.push(result.data);
+                        }
                         sms.renderTeacherSalaries();
                         sms.closeModal('teacher-salary-modal');
                     }
-                    alert('Teacher salary payment recorded successfully');
+                    alert('Teacher salary payment saved successfully');
                 } else {
-                    throw new Error('Failed to record salary payment');
+                    throw new Error('Failed to save salary payment');
                 }
             } catch (error) {
-                console.error('Error recording teacher salary:', error);
-                alert('Failed to record salary payment. Please try again.');
+                console.error('Error saving teacher salary:', error);
+                alert('Failed to save salary payment. Please try again.');
             }
         });
     }

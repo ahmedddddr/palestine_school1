@@ -436,9 +436,28 @@ function filteredByScope(data, scope) {
 }
 
 app.get('/login', (req, res) => {
-    if (req.session && req.session.authenticated) {
-        return res.redirect(req.session.role === 'teacher' ? '/teacher' : '/');
+    // Check for JWT token in Authorization header
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
+    
+    // Check session or JWT token
+    const hasSession = req.session && req.session.authenticated;
+    let hasValidToken = false;
+    
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            hasValidToken = true;
+        } catch (error) {
+            // Invalid token, continue to login page
+        }
     }
+    
+    if (hasSession || hasValidToken) {
+        const role = hasSession ? req.session.role : (hasValidToken ? jwt.decode(token).role : null);
+        return res.redirect(role === 'teacher' ? '/teacher' : '/');
+    }
+    
     res.sendFile(path.join(__dirname, 'public', 'html', 'login.html'));
 });
 

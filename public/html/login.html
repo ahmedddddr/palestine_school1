@@ -347,7 +347,19 @@
                         }
                         console.log('Redirecting to:', data.redirect || '/');
                         alert('Redirecting to: ' + (data.redirect || '/')); // Debug alert
-                        window.location.href = data.redirect || '/';
+                        
+                        // Use multiple redirect methods for reliability
+                        const redirectUrl = data.redirect || '/';
+                        setTimeout(() => {
+                            window.location.replace(redirectUrl);
+                        }, 100);
+                        
+                        // Fallback redirect
+                        setTimeout(() => {
+                            if (window.location.pathname === '/login') {
+                                window.location.href = redirectUrl;
+                            }
+                        }, 500);
                     } else {
                         console.log('Login failed:', data.error || 'Unknown error');
                         alert('Login failed: ' + (data.error || 'Unknown error')); // Debug alert

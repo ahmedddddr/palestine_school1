@@ -638,10 +638,17 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include',
                     body: JSON.stringify({
                         type: 'attendance',
                         data: attendance
                     })
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to save attendance:', response.status);
+                    }
+                }).catch(error => {
+                    console.error('Error saving attendance:', error.message);
                 });
                 
                 // Show success message

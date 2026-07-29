@@ -10046,22 +10046,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const scheduleServerSync = () => {
-        // Disabled automatic sync to prevent 500 errors
-        console.log('Automatic server sync disabled to prevent 500 errors');
-        return;
-        
+        // Re-enable only students and teachers sync, keep other sync disabled to prevent 500 errors
         if (!serverHydrated) return;
         if (applyingRemoteAttendance) return;
         if (serverSyncTimer) clearTimeout(serverSyncTimer);
         serverSyncTimer = setTimeout(async () => {
             if (!window.sms) return;
+            // Only sync students and teachers to ensure data persistence
             await postToServer('students', window.sms.students || []);
             await postToServer('teachers', window.sms.teachers || []);
-            await postToServer('attendance', window.sms.attendance || []);
-            await postToServer('teacher-attendance', window.sms.teacherAttendance || []);
-            await postToServer('bus', window.sms.busSubscriptions || []);
-            await postToServer('fees', window.sms.feePayments || []);
-            await postToServer('teacher-salaries', window.sms.teacherSalaries || []);
+            // Keep other sync disabled to prevent 500 errors
+            console.log('Limited server sync completed (students and teachers only)');
         }, 800);
     };
 

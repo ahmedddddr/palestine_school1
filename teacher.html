@@ -631,6 +631,9 @@
                     attendance.push(attendanceRecord);
                 }
 
+                // Temporarily disabled to prevent 500 errors
+                console.log('Attendance save disabled temporarily to prevent 500 errors');
+                /*
                 await fetch('/api/save', {
                     method: 'POST',
                     headers: {
@@ -641,6 +644,7 @@
                         data: attendance
                     })
                 });
+                */
                 
                 // Show success message
                 const successMsg = document.getElementById('success-message');

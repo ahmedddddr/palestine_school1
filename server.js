@@ -224,7 +224,8 @@ const apiLimiter = rateLimit({
 
 function sanitizeString(str, maxLen = 255) {
     if (typeof str !== 'string') return '';
-    return str.replace(/[<>]/g, '').trim().slice(0, maxLen);
+    // Preserve Arabic characters and other Unicode, only remove HTML tags
+    return str.replace(/<[^>]*>/g, '').trim().slice(0, maxLen);
 }
 
 function isValidRole(role) {

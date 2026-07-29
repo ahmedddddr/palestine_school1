@@ -73,6 +73,14 @@ window.openTeacherSalaryModal = function() {
     modal.classList.add('show');
 };
 
+window.deleteTeacherSalary = function(salaryId) {
+    if (typeof sms !== 'undefined' && typeof sms.deleteTeacherSalary === 'function') {
+        sms.deleteTeacherSalary(salaryId);
+    } else {
+        alert('Teacher salary system not initialized');
+    }
+};
+
 // Add teacher management methods to the class
 if (typeof SchoolManagementSystem !== 'undefined') {
     SchoolManagementSystem.prototype.openTeacherModal = function(teacherId = null) {
@@ -432,7 +440,87 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         return Math.max(...this.teacherAttendance.map(a => a.id)) + 1;
     };
 
-    // Teacher Salaries Management - Removed for rebuild
+    // Teacher Salaries Management - New implementation
+    SchoolManagementSystem.prototype.renderTeacherSalaries = function() {
+        const tbody = document.getElementById('teacher-salaries-table');
+        if (!tbody) return;
+
+        // Ensure teacherSalaries and teachers arrays exist
+        if (!this.teacherSalaries || !Array.isArray(this.teacherSalaries)) {
+            this.teacherSalaries = [];
+        }
+        if (!this.teachers || !Array.isArray(this.teachers)) {
+            this.teachers = [];
+        }
+
+        if (this.teacherSalaries.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;">No salary records found</td></tr>';
+            return;
+        }
+
+        const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+
+        tbody.innerHTML = this.teacherSalaries.map(salary => {
+            const teacher = this.teachers.find(t => t.id === salary.teacherId);
+            const teacherName = teacher ? teacher.name : 'Unknown';
+            const subject = teacher ? teacher.subject : 'Unknown';
+            const baseSalary = salary.baseSalary || 0;
+            const bonus = salary.bonus || 0;
+            const deductions = salary.deductions || 0;
+            const paid = salary.paid || 0;
+            const total = baseSalary + bonus - deductions;
+            const balance = total - paid;
+            let status = 'unpaid';
+            if (paid >= total) status = 'paid';
+            else if (paid > 0) status = 'partial';
+
+            return `
+                <tr>
+                    <td>${teacherName}</td>
+                    <td>${subject}</td>
+                    <td>${monthNames[salary.month] || salary.month}</td>
+                    <td>${salary.year}</td>
+                    <td>$${baseSalary.toFixed(2)}</td>
+                    <td>$${bonus.toFixed(2)}</td>
+                    <td>$${deductions.toFixed(2)}</td>
+                    <td>$${total.toFixed(2)}</td>
+                    <td>$${paid.toFixed(2)}</td>
+                    <td>$${balance.toFixed(2)}</td>
+                    <td><span class="status-badge status-${status}">${status}</span></td>
+                    <td>${salary.paymentDate || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTeacherSalary(${salary.id})">Delete</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    };
+
+    SchoolManagementSystem.prototype.deleteTeacherSalary = async function(salaryId) {
+        if (!confirm('Are you sure you want to delete this salary record?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/teacher-salaries/${salaryId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                this.teacherSalaries = this.teacherSalaries.filter(s => s.id !== salaryId);
+                this.renderTeacherSalaries();
+                alert('Salary record deleted successfully');
+            } else {
+                const errorText = await response.text().catch(() => 'Unknown error');
+                throw new Error(`Failed to delete salary record: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error deleting teacher salary:', error);
+            alert('Failed to delete salary record. Please try again.');
+        }
+    };
 
     SchoolManagementSystem.prototype.exportTeacherAttendance = function() {
         const csvContent = "data:text/csv;charset=utf-8," 
@@ -514,6 +602,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Teacher salary payment saved successfully');
                     closeModal('teacher-salary-modal');
                     teacherSalaryForm.reset();
+                    
+                    // Reload teacher salaries data and render table
+                    if (typeof sms !== 'undefined') {
+                        await loadTeacherSalariesFromServer();
+                        sms.renderTeacherSalaries();
+                    }
                 } else {
                     const errorText = await response.text().catch(() => 'Unknown error');
                     console.error('Failed to save teacher salary:', errorText);
@@ -587,6 +681,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.renderTeachers();
             } else if (sectionName === 'teacher-attendance' && typeof this.renderTeacherAttendance === 'function') {
                 this.renderTeacherAttendance();
+            } else if (sectionName === 'teacher-salaries' && typeof this.renderTeacherSalaries === 'function') {
+                this.renderTeacherSalaries();
             }
         };
     }
@@ -598,11 +694,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (typeof sms !== 'undefined') {
                 if (!sms.teachers) sms.teachers = [];
                 if (!sms.teacherAttendance) sms.teacherAttendance = [];
+                if (!sms.teacherSalaries) sms.teacherSalaries = [];
             }
 
-            const [teachersRes, teacherAttendanceRes] = await Promise.all([
+            const [teachersRes, teacherAttendanceRes, teacherSalariesRes] = await Promise.all([
                 fetch('/api/teachers', { credentials: 'include' }),
-                fetch('/api/teacher-attendance', { credentials: 'include' })
+                fetch('/api/teacher-attendance', { credentials: 'include' }),
+                fetch('/api/teacher-salaries', { credentials: 'include' })
             ]);
 
             if (teachersRes.ok && typeof sms !== 'undefined') {
@@ -632,12 +730,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.warn('⚠️ Teacher attendance API returned non-OK status:', teacherAttendanceRes.status);
                 if (typeof sms !== 'undefined') sms.teacherAttendance = [];
             }
+
+            if (teacherSalariesRes.ok && typeof sms !== 'undefined') {
+                try {
+                    const salariesData = await teacherSalariesRes.json();
+                    sms.teacherSalaries = Array.isArray(salariesData) ? salariesData : [];
+                    console.log('✅ Teacher salaries loaded from server:', sms.teacherSalaries.length);
+                } catch (e) {
+                    console.error('❌ Failed to parse teacher salaries JSON:', e);
+                    sms.teacherSalaries = [];
+                }
+            } else {
+                console.warn('⚠️ Teacher salaries API returned non-OK status:', teacherSalariesRes.status);
+                if (typeof sms !== 'undefined') sms.teacherSalaries = [];
+            }
         } catch (error) {
             console.error('❌ Failed to load teacher data from server:', error);
             // Ensure arrays exist even if everything fails
             if (typeof sms !== 'undefined') {
                 if (!sms.teachers) sms.teachers = [];
                 if (!sms.teacherAttendance) sms.teacherAttendance = [];
+                if (!sms.teacherSalaries) sms.teacherSalaries = [];
+            }
+        }
+    }
+
+    // Load teacher salaries separately
+    async function loadTeacherSalariesFromServer() {
+        try {
+            if (typeof sms !== 'undefined') {
+                if (!sms.teacherSalaries) sms.teacherSalaries = [];
+                
+                const teacherSalariesRes = await fetch('/api/teacher-salaries', { credentials: 'include' });
+                
+                if (teacherSalariesRes.ok) {
+                    try {
+                        const salariesData = await teacherSalariesRes.json();
+                        sms.teacherSalaries = Array.isArray(salariesData) ? salariesData : [];
+                        console.log('✅ Teacher salaries loaded from server:', sms.teacherSalaries.length);
+                    } catch (e) {
+                        console.error('❌ Failed to parse teacher salaries JSON:', e);
+                        sms.teacherSalaries = [];
+                    }
+                } else {
+                    console.warn('⚠️ Teacher salaries API returned non-OK status:', teacherSalariesRes.status);
+                    sms.teacherSalaries = [];
+                }
+            }
+        } catch (error) {
+            console.error('❌ Failed to load teacher salaries from server:', error);
+            if (typeof sms !== 'undefined' && !sms.teacherSalaries) {
+                sms.teacherSalaries = [];
             }
         }
     }

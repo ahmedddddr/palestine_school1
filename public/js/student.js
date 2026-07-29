@@ -368,10 +368,33 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // Load all data when page loads
-    if (typeof sms !== 'undefined') {
-        sms.loadStudentsFromServer();
-        sms.loadBusSubscriptionsFromServer();
-        sms.loadAttendanceFromServer();
+    // Load all data when page loads - wait for SMS to be ready
+    function loadDataWithRetry(retryCount = 0) {
+        if (typeof sms !== 'undefined' && sms.loadStudentsFromServer) {
+            console.log('SMS available, loading data from server...');
+            Promise.all([
+                sms.loadStudentsFromServer(),
+                sms.loadBusSubscriptionsFromServer(),
+                sms.loadAttendanceFromServer()
+            ]).then(() => {
+                console.log('All data loaded successfully');
+                sms.renderStudents();
+                sms.renderBusSubscriptions();
+                sms.renderAttendance();
+                sms.updateDashboard();
+            }).catch(err => {
+                console.error('Error loading data:', err);
+            });
+        } else {
+            console.log('SMS not available, retrying... (attempt', retryCount + 1, ')');
+            if (retryCount < 10) {
+                setTimeout(() => loadDataWithRetry(retryCount + 1), 500);
+            } else {
+                console.error('Failed to load data after 10 attempts');
+            }
+        }
     }
+    
+    // Start loading data
+    loadDataWithRetry();
 });

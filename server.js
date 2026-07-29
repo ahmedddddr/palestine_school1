@@ -146,7 +146,7 @@ app.use(helmet({
 app.use((req, res, next) => {
     const csp = [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline'",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
         "script-src-attr 'unsafe-inline'",
         "script-src-elem 'self' 'unsafe-inline'",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",

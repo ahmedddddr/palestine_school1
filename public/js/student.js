@@ -94,6 +94,63 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
+    // Override deleteStudent to use direct API calls
+    if (typeof SchoolManagementSystem !== 'undefined') {
+        const originalDeleteStudent = SchoolManagementSystem.prototype.deleteStudent;
+        SchoolManagementSystem.prototype.deleteStudent = async function(studentId) {
+            // Check if this is an imported student
+            if (this.isImportedStudent(studentId)) {
+                const student = this.students.find(s => s.id === studentId);
+                if (!confirm(`⚠️ WARNING: This is an imported student: "${student.name}".\n\nImported students are protected and should NOT be deleted.\n\nAre you absolutely sure you want to delete this protected imported student?`)) {
+                    return; // Don't delete if user cancels
+                }
+            } else {
+                if (!confirm('Are you sure you want to delete this student?')) {
+                    return;
+                }
+            }
+
+            try {
+                // Delete from server via API
+                const response = await fetch(`/api/students/${studentId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    // Remove from local arrays
+                    this.students = this.students.filter(s => s.id !== studentId);
+                    
+                    // Remove from protection if it was imported
+                    if (this.isImportedStudent(studentId)) {
+                        this.importedStudentIds.delete(studentId);
+                        console.log(`Removed imported student from protection: ${studentId}`);
+                    }
+                    
+                    // Clean up related data
+                    this.attendance = this.attendance.filter(a => a.studentId !== studentId);
+                    this.busSubscriptions = this.busSubscriptions.filter(b => b.studentId !== studentId);
+                    this.feePayments = this.feePayments.filter(f => f.studentId !== studentId);
+                    
+                    // Reload from server to ensure consistency
+                    await loadStudentsFromServer();
+                    this.renderStudents();
+                    this.updateDashboard();
+                    
+                    console.log(`Deleted student with ID: ${studentId}`);
+                } else {
+                    const errorText = await response.text().catch(() => 'Unknown error');
+                    console.error('Failed to delete student:', errorText);
+                    alert('Failed to delete student. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error deleting student:', error);
+                alert('Failed to delete student. Please try again.');
+            }
+        };
+    }
+
     // Load students when page loads
     loadStudentsFromServer();
 });

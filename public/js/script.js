@@ -281,14 +281,77 @@ class SchoolManagementSystem {
     // Enhanced Data Persistence - Database Only
     saveDataToStorage() {
         console.log('=== SAVE DATA TO DATABASE START ===');
-        console.log('Data will be synced to database via server sync:', {
+        console.log('Saving data to server via API:', {
             students: this.students.length,
             attendance: this.attendance.length,
             bus: this.busSubscriptions.length,
             fees: this.feePayments.length
         });
         
-        // Data will be synced to database via scheduleServerSync
+        // Save students (fire and forget)
+        if (this.students.length > 0) {
+            fetch('/api/data/students', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(this.students)
+            }).then(res => {
+                if (res.ok) {
+                    console.log('✅ Students saved to server');
+                } else {
+                    console.error('❌ Failed to save students to server');
+                }
+            }).catch(err => console.error('❌ Error saving students:', err));
+        }
+        
+        // Save attendance (fire and forget)
+        if (this.attendance.length > 0) {
+            fetch('/api/data/attendance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(this.attendance)
+            }).then(res => {
+                if (res.ok) {
+                    console.log('✅ Attendance saved to server');
+                } else {
+                    console.error('❌ Failed to save attendance to server');
+                }
+            }).catch(err => console.error('❌ Error saving attendance:', err));
+        }
+        
+        // Save bus subscriptions (fire and forget)
+        if (this.busSubscriptions.length > 0) {
+            fetch('/api/data/bus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(this.busSubscriptions)
+            }).then(res => {
+                if (res.ok) {
+                    console.log('✅ Bus subscriptions saved to server');
+                } else {
+                    console.error('❌ Failed to save bus subscriptions to server');
+                }
+            }).catch(err => console.error('❌ Error saving bus subscriptions:', err));
+        }
+        
+        // Save fees (fire and forget)
+        if (this.feePayments.length > 0) {
+            fetch('/api/data/fees', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(this.feePayments)
+            }).then(res => {
+                if (res.ok) {
+                    console.log('✅ Fee payments saved to server');
+                } else {
+                    console.error('❌ Failed to save fee payments to server');
+                }
+            }).catch(err => console.error('❌ Error saving fee payments:', err));
+        }
+        
         console.log('=== SAVE DATA TO DATABASE COMPLETE ===');
     }
 

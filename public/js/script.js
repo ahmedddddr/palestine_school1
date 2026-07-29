@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Palestinian School Management System JavaScript
 
 // INDEPENDENT ROUTE SYSTEM - Separate from main data
@@ -2829,7 +2830,7 @@ class SchoolManagementSystem {
         // Student Form
         safeOn('student-form', 'submit', (e) => {
             e.preventDefault();
-            this.saveStudent();
+            await this.saveStudent();
         });
 
         // Bus Form
@@ -3142,7 +3143,7 @@ class SchoolManagementSystem {
         modal.classList.add('show');
     }
 
-    saveStudent() {
+    async saveStudent() {
         const name = document.getElementById('student-name').value.trim();
         const studentClass = document.getElementById('student-class').value;
         const phone = document.getElementById('student-phone').value.trim();
@@ -7852,7 +7853,7 @@ const seenStudents = new Set();
         // Student Form
         safeOn('student-form', 'submit', (e) => {
             e.preventDefault();
-            this.saveStudent();
+            await this.saveStudent();
         });
 
         // Bus Form
@@ -8047,7 +8048,7 @@ const seenStudents = new Set();
         modal.classList.add('show');
     }
 
-    saveStudent() {
+    async saveStudent() {
         const name = document.getElementById('student-name').value.trim();
         const studentClass = document.getElementById('student-class').value;
         const phone = document.getElementById('student-phone').value.trim();

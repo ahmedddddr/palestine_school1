@@ -1170,6 +1170,13 @@ app.post('/api/save', requireAnyRole(['super_admin', 'branch_admin']), async (re
         console.log('Branch scope:', req.branchScope);
         
         const { type, data } = req.body;
+        
+        // Validate request body
+        if (!type) {
+            console.error('Missing type in request body');
+            return res.status(400).json({ error: 'Missing type' });
+        }
+        
         const validTypes = ['students', 'attendance', 'bus', 'fees', 'teachers', 'branches', 'teacher-attendance', 'teacher-salaries'];
         if (!validTypes.includes(type)) {
             console.error('Invalid type:', type);
@@ -1182,7 +1189,14 @@ app.post('/api/save', requireAnyRole(['super_admin', 'branch_admin']), async (re
             'teacher-salaries': 'teacherSalaries'
         };
         const colName = colNameMap[type] || type;
-        const raw = Array.isArray(data) ? data : [];
+        
+        // Validate data
+        if (!Array.isArray(data)) {
+            console.error('Data is not an array:', typeof data);
+            return res.status(400).json({ error: 'Data must be an array' });
+        }
+        
+        const raw = data;
         const scoped = req.branchScope === null ? raw : raw.map(item => ({ ...item, branchId: req.branchScope }));
         
         console.log('Saving to collection:', colName);

@@ -10364,6 +10364,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const scheduleServerSync = () => {
+        // Disabled automatic sync to prevent 500 errors
+        console.log('Automatic server sync disabled to prevent 500 errors');
+        return;
+        
         if (!serverHydrated) return;
         if (applyingRemoteAttendance) return;
         if (serverSyncTimer) clearTimeout(serverSyncTimer);

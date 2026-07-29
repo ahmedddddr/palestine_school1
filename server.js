@@ -147,11 +147,7 @@ app.use((req, res, next) => {
     const csp = [
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-        "script-src-attr 'unsafe-inline'",
-        "script-src-elem 'self' 'unsafe-inline'",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "style-src-attr 'unsafe-inline'",
-        "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "font-src 'self' https://fonts.gstatic.com data:",
         "img-src 'self' data: https:",
         "connect-src 'self'",

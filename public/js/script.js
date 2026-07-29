@@ -555,17 +555,17 @@ class SchoolManagementSystem {
     // Enhanced Data Loading - Database Only
     loadDataFromStorage() {
         console.log('=== LOAD DATA FROM DATABASE START ===');
-        console.log('Data will be loaded from database via API calls');
+        console.log('Data will be loaded from database via API calls in student.js');
         
-        // Initialize empty arrays - data will be loaded from database
-        this.students = [];
-        this.attendance = [];
-        this.busSubscriptions = [];
-        this.feePayments = [];
-        this.teachers = [];
-        this.teacherAttendance = [];
-        this.teacherSalaries = [];
-        this.busRoutes = [];
+        // Don't clear arrays - data will be loaded from server via API calls
+        // this.students = [];
+        // this.attendance = [];
+        // this.busSubscriptions = [];
+        // this.feePayments = [];
+        // this.teachers = [];
+        // this.teacherAttendance = [];
+        // this.teacherSalaries = [];
+        // this.busRoutes = [];
         
         console.log('=== LOAD DATA FROM DATABASE COMPLETE ===');
     }
@@ -5644,17 +5644,17 @@ const seenStudents = new Set();
     // Enhanced Data Loading - Database Only
     loadDataFromStorage() {
         console.log('=== LOAD DATA FROM DATABASE START ===');
-        console.log('Data will be loaded from database via API calls');
+        console.log('Data will be loaded from database via API calls in student.js');
         
-        // Initialize empty arrays - data will be loaded from database
-        this.students = [];
-        this.attendance = [];
-        this.busSubscriptions = [];
-        this.feePayments = [];
-        this.teachers = [];
-        this.teacherAttendance = [];
-        this.teacherSalaries = [];
-        this.busRoutes = [];
+        // Don't clear arrays - data will be loaded from server via API calls
+        // this.students = [];
+        // this.attendance = [];
+        // this.busSubscriptions = [];
+        // this.feePayments = [];
+        // this.teachers = [];
+        // this.teacherAttendance = [];
+        // this.teacherSalaries = [];
+        // this.busRoutes = [];
         
         console.log('=== LOAD DATA FROM DATABASE COMPLETE ===');
     }
@@ -10272,3 +10272,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log('School Management System initialized');
 });
+

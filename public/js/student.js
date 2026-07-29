@@ -12,6 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     try {
                         const studentsData = await studentsRes.json();
                         this.students = Array.isArray(studentsData) ? studentsData : [];
+                        
+                        // Set busSubscriber property based on busSubscriptions
+                        if (this.busSubscriptions && this.busSubscriptions.length > 0) {
+                            this.students.forEach(student => {
+                                const hasBus = this.busSubscriptions.some(bus => bus.studentId === student.id);
+                                student.busSubscriber = hasBus;
+                            });
+                        }
+                        
                         console.log('✅ Students loaded from server:', this.students.length);
                     } catch (e) {
                         console.error('❌ Failed to parse students JSON:', e);
@@ -282,6 +291,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (response.ok) {
                     const result = await response.json();
+                    
+                    // Update student's bus subscriber status locally
+                    const student = this.students.find(s => s.id === studentId);
+                    if (student) {
+                        student.busSubscriber = true;
+                    }
+                    
                     alert('Bus subscription added successfully');
                     this.closeModal('bus-modal');
                     
@@ -311,6 +327,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
+                // Find subscription before deleting to get studentId
+                const subscription = this.busSubscriptions.find(b => b.id === subscriptionId);
+                const studentId = subscription ? subscription.studentId : null;
+
                 const response = await fetch(`/api/bus/${subscriptionId}`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
@@ -320,6 +340,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     // Remove from local data
                     this.busSubscriptions = this.busSubscriptions.filter(b => b.id !== subscriptionId);
+                    
+                    // Update student's bus subscriber status
+                    if (studentId) {
+                        const student = this.students.find(s => s.id === studentId);
+                        if (student) {
+                            student.busSubscriber = false;
+                        }
+                    }
                     
                     // Reload from server
                     await this.loadBusSubscriptionsFromServer();

@@ -454,7 +454,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         }
 
         if (this.teacherSalaries.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;">No salary records found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;">No salary records found</td></tr>';
             return;
         }
 
@@ -480,7 +480,6 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                     <td>${teacherName}</td>
                     <td>${subject}</td>
                     <td>${monthNames[salary.month] || salary.month}</td>
-                    <td>${salary.year}</td>
                     <td>$${baseSalary.toFixed(2)}</td>
                     <td>$${bonus.toFixed(2)}</td>
                     <td>$${deductions.toFixed(2)}</td>
@@ -561,7 +560,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const teacherId = parseInt(document.getElementById('salary-teacher').value);
             const month = parseInt(document.getElementById('salary-month').value);
-            const year = parseInt(document.getElementById('salary-year').value);
             const baseSalary = parseFloat(document.getElementById('salary-base').value);
             const bonus = parseFloat(document.getElementById('salary-bonus').value) || 0;
             const deductions = parseFloat(document.getElementById('salary-deductions').value) || 0;
@@ -586,7 +584,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({
                         teacherId,
                         month,
-                        year,
                         baseSalary,
                         bonus,
                         deductions,

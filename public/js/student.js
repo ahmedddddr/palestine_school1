@@ -1,33 +1,81 @@
 // Student Management - Direct API calls like teacher section
 document.addEventListener('DOMContentLoaded', function() {
-    // Load students from server on page load
-    async function loadStudentsFromServer() {
-        try {
-            if (typeof sms !== 'undefined') {
-                if (!sms.students) sms.students = [];
+    // Add load functions as prototype methods
+    if (typeof SchoolManagementSystem !== 'undefined') {
+        SchoolManagementSystem.prototype.loadStudentsFromServer = async function() {
+            try {
+                if (!this.students) this.students = [];
                 
                 const studentsRes = await fetch('/api/students', { credentials: 'include' });
                 
                 if (studentsRes.ok) {
                     try {
                         const studentsData = await studentsRes.json();
-                        sms.students = Array.isArray(studentsData) ? studentsData : [];
-                        console.log('✅ Students loaded from server:', sms.students.length);
+                        this.students = Array.isArray(studentsData) ? studentsData : [];
+                        console.log('✅ Students loaded from server:', this.students.length);
                     } catch (e) {
                         console.error('❌ Failed to parse students JSON:', e);
-                        sms.students = [];
+                        this.students = [];
                     }
                 } else {
                     console.warn('⚠️ Students API returned non-OK status:', studentsRes.status);
-                    sms.students = [];
+                    this.students = [];
                 }
+            } catch (error) {
+                console.error('❌ Failed to load students from server:', error);
+                if (!this.students) this.students = [];
             }
-        } catch (error) {
-            console.error('❌ Failed to load students from server:', error);
-            if (typeof sms !== 'undefined' && !sms.students) {
-                sms.students = [];
+        };
+
+        SchoolManagementSystem.prototype.loadBusSubscriptionsFromServer = async function() {
+            try {
+                if (!this.busSubscriptions) this.busSubscriptions = [];
+                
+                const busRes = await fetch('/api/bus', { credentials: 'include' });
+                
+                if (busRes.ok) {
+                    try {
+                        const busData = await busRes.json();
+                        this.busSubscriptions = Array.isArray(busData) ? busData : [];
+                        console.log('✅ Bus subscriptions loaded from server:', this.busSubscriptions.length);
+                    } catch (e) {
+                        console.error('❌ Failed to parse bus subscriptions JSON:', e);
+                        this.busSubscriptions = [];
+                    }
+                } else {
+                    console.warn('⚠️ Bus subscriptions API returned non-OK status:', busRes.status);
+                    this.busSubscriptions = [];
+                }
+            } catch (error) {
+                console.error('❌ Failed to load bus subscriptions from server:', error);
+                if (!this.busSubscriptions) this.busSubscriptions = [];
             }
-        }
+        };
+
+        SchoolManagementSystem.prototype.loadAttendanceFromServer = async function() {
+            try {
+                if (!this.attendance) this.attendance = [];
+                
+                const attendanceRes = await fetch('/api/attendance', { credentials: 'include' });
+                
+                if (attendanceRes.ok) {
+                    try {
+                        const attendanceData = await attendanceRes.json();
+                        this.attendance = Array.isArray(attendanceData) ? attendanceData : [];
+                        console.log('✅ Attendance loaded from server:', this.attendance.length);
+                    } catch (e) {
+                        console.error('❌ Failed to parse attendance JSON:', e);
+                        this.attendance = [];
+                    }
+                } else {
+                    console.warn('⚠️ Attendance API returned non-OK status:', attendanceRes.status);
+                    this.attendance = [];
+                }
+            } catch (error) {
+                console.error('❌ Failed to load attendance from server:', error);
+                if (!this.attendance) this.attendance = [];
+            }
+        };
     }
 
     // Override saveStudent to use direct API calls
@@ -292,68 +340,10 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // Load bus subscriptions from server
-    async function loadBusSubscriptionsFromServer() {
-        try {
-            if (typeof sms !== 'undefined') {
-                if (!sms.busSubscriptions) sms.busSubscriptions = [];
-                
-                const busRes = await fetch('/api/bus', { credentials: 'include' });
-                
-                if (busRes.ok) {
-                    try {
-                        const busData = await busRes.json();
-                        sms.busSubscriptions = Array.isArray(busData) ? busData : [];
-                        console.log('✅ Bus subscriptions loaded from server:', sms.busSubscriptions.length);
-                    } catch (e) {
-                        console.error('❌ Failed to parse bus subscriptions JSON:', e);
-                        sms.busSubscriptions = [];
-                    }
-                } else {
-                    console.warn('⚠️ Bus subscriptions API returned non-OK status:', busRes.status);
-                    sms.busSubscriptions = [];
-                }
-            }
-        } catch (error) {
-            console.error('❌ Failed to load bus subscriptions from server:', error);
-            if (typeof sms !== 'undefined' && !sms.busSubscriptions) {
-                sms.busSubscriptions = [];
-            }
-        }
-    }
-
-    // Load attendance from server
-    async function loadAttendanceFromServer() {
-        try {
-            if (typeof sms !== 'undefined') {
-                if (!sms.attendance) sms.attendance = [];
-                
-                const attendanceRes = await fetch('/api/attendance', { credentials: 'include' });
-                
-                if (attendanceRes.ok) {
-                    try {
-                        const attendanceData = await attendanceRes.json();
-                        sms.attendance = Array.isArray(attendanceData) ? attendanceData : [];
-                        console.log('✅ Attendance loaded from server:', sms.attendance.length);
-                    } catch (e) {
-                        console.error('❌ Failed to parse attendance JSON:', e);
-                        sms.attendance = [];
-                    }
-                } else {
-                    console.warn('⚠️ Attendance API returned non-OK status:', attendanceRes.status);
-                    sms.attendance = [];
-                }
-            }
-        } catch (error) {
-            console.error('❌ Failed to load attendance from server:', error);
-            if (typeof sms !== 'undefined' && !sms.attendance) {
-                sms.attendance = [];
-            }
-        }
-    }
-
     // Load all data when page loads
-    loadStudentsFromServer();
-    loadBusSubscriptionsFromServer();
-    loadAttendanceFromServer();
+    if (typeof sms !== 'undefined') {
+        sms.loadStudentsFromServer();
+        sms.loadBusSubscriptionsFromServer();
+        sms.loadAttendanceFromServer();
+    }
 });

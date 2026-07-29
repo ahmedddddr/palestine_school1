@@ -15,6 +15,11 @@ window.deleteTeacher = function(teacherId) {
 };
 
 window.openTeacherSalaryModal = function() {
+    console.log('=== OPEN TEACHER SALARY MODAL ===');
+    console.log('sms object:', typeof sms);
+    console.log('sms.teachers:', typeof sms !== 'undefined' ? sms.teachers : 'undefined');
+    console.log('Teachers count:', typeof sms !== 'undefined' && sms.teachers ? sms.teachers.length : 0);
+    
     const modal = document.getElementById('teacher-salary-modal');
     const teacherSelect = document.getElementById('salary-teacher');
     
@@ -25,12 +30,15 @@ window.openTeacherSalaryModal = function() {
         sms.teachers.forEach(teacher => {
             teacherSelect.innerHTML += `<option value="${teacher.id}">${teacher.name} - ${teacher.subject}</option>`;
         });
+        console.log('Teachers populated in dropdown');
     } else {
         // If no teachers available, show a message
         teacherSelect.innerHTML = '<option value="">No teachers available</option>';
+        console.warn('No teachers available to populate dropdown');
     }
     
     modal.classList.add('show');
+    console.log('Modal opened');
 };
 
 window.markTodayTeacherAttendance = function() {

@@ -71,6 +71,10 @@ class DataSyncManager {
 
     // Start auto-sync
     startAutoSync(schoolSystem) {
+        // Disabled auto-sync to prevent 500 errors
+        console.log('Auto-sync disabled to prevent 500 errors');
+        return;
+        
         setInterval(async () => {
             try {
                 const serverData = await this.loadData();

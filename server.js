@@ -963,7 +963,80 @@ app.delete('/api/teacher-attendance/:id', requireAnyRole(['super_admin', 'branch
     res.json({ success: true });
 });
 
-// Teacher Salaries API - Removed for rebuild
+// Teacher Salaries API
+app.get('/api/teacher-salaries', requireAnyRole(['super_admin', 'branch_admin', 'teacher']), async (req, res) => {
+    res.json(filteredByScope(await getCollection('teacherSalaries'), req.branchScope));
+});
+
+app.post('/api/teacher-salaries', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
+    const all = await getCollection('teacherSalaries');
+    const body = req.body;
+    const branchId = req.branchScope || Number(body.branchId) || 1;
+    const nextId = all.reduce((m, s) => Math.max(m, Number(s.id) || 0), 0) + 1;
+    const record = {
+        id: nextId,
+        teacherId: Number(body.teacherId),
+        baseSalary: Number(body.baseSalary) || 0,
+        bonus: Number(body.bonus) || 0,
+        deductions: Number(body.deductions) || 0,
+        paid: Number(body.paid) || 0,
+        totalSalary: (Number(body.baseSalary) || 0) + (Number(body.bonus) || 0) - (Number(body.deductions) || 0),
+        month: sanitizeString(body.month, 20),
+        year: Number(body.year) || new Date().getFullYear(),
+        paymentStatus: ['pending', 'paid', 'partial'].includes(body.paymentStatus) ? body.paymentStatus : 'pending',
+        paymentDate: body.paymentDate ? sanitizeString(body.paymentDate, 30) : null,
+        notes: sanitizeString(body.notes || '', 250),
+        branchId: Number(body.branchId || branchId),
+        createdAt: new Date().toISOString()
+    };
+    all.push(record);
+    await saveCollection('teacherSalaries', all);
+    res.json({ success: true, data: record });
+});
+
+app.put('/api/teacher-salaries/:id', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
+    const id = Number(req.params.id);
+    const all = await getCollection('teacherSalaries');
+    const idx = all.findIndex(s => Number(s.id) === id);
+    if (idx < 0) return res.status(404).json({ error: 'Not found' });
+    if (req.branchScope !== null && String(all[idx].branchId) !== String(req.branchScope)) {
+        return res.status(403).json({ error: 'Not your branch' });
+    }
+    const body = req.body;
+    const baseSalary = body.baseSalary !== undefined ? Number(body.baseSalary) : all[idx].baseSalary;
+    const bonus = body.bonus !== undefined ? Number(body.bonus) : all[idx].bonus;
+    const deductions = body.deductions !== undefined ? Number(body.deductions) : all[idx].deductions;
+    const paid = body.paid !== undefined ? Number(body.paid) : all[idx].paid;
+    all[idx] = {
+        ...all[idx],
+        baseSalary,
+        bonus,
+        deductions,
+        paid,
+        totalSalary: baseSalary + bonus - deductions,
+        month: body.month !== undefined ? sanitizeString(body.month, 20) : all[idx].month,
+        year: body.year !== undefined ? Number(body.year) : all[idx].year,
+        paymentStatus: body.paymentStatus !== undefined && ['pending', 'paid', 'partial'].includes(body.paymentStatus) ? body.paymentStatus : all[idx].paymentStatus,
+        paymentDate: body.paymentDate !== undefined ? sanitizeString(body.paymentDate, 30) : all[idx].paymentDate,
+        notes: body.notes !== undefined ? sanitizeString(body.notes, 250) : all[idx].notes,
+        updatedAt: new Date().toISOString()
+    };
+    await saveCollection('teacherSalaries', all);
+    res.json({ success: true, data: all[idx] });
+});
+
+app.delete('/api/teacher-salaries/:id', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
+    const id = Number(req.params.id);
+    const all = await getCollection('teacherSalaries');
+    const idx = all.findIndex(s => Number(s.id) === id);
+    if (idx < 0) return res.status(404).json({ error: 'Not found' });
+    if (req.branchScope !== null && String(all[idx].branchId) !== String(req.branchScope)) {
+        return res.status(403).json({ error: 'Not your branch' });
+    }
+    all.splice(idx, 1);
+    await saveCollection('teacherSalaries', all);
+    res.json({ success: true });
+});
 
 app.get('/api/fees', async (req, res) => {
     res.json(filteredByScope(await getCollection('fees'), req.branchScope));
@@ -1101,7 +1174,7 @@ app.post('/api/save', requireAnyRole(['super_admin', 'branch_admin']), async (re
             return res.status(400).json({ error: 'Missing type' });
         }
         
-        const validTypes = ['students', 'attendance', 'bus', 'fees', 'teachers', 'branches', 'teacher-attendance'];
+        const validTypes = ['students', 'attendance', 'bus', 'fees', 'teachers', 'branches', 'teacher-attendance', 'teacher-salaries'];
         if (!validTypes.includes(type)) {
             console.error('Invalid type:', type);
             return res.status(400).json({ error: 'Invalid type' });
@@ -1109,7 +1182,8 @@ app.post('/api/save', requireAnyRole(['super_admin', 'branch_admin']), async (re
         
         const colNameMap = {
             'bus': 'busSubscriptions',
-            'teacher-attendance': 'teacherAttendance'
+            'teacher-attendance': 'teacherAttendance',
+            'teacher-salaries': 'teacherSalaries'
         };
         const colName = colNameMap[type] || type;
         

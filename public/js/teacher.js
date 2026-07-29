@@ -49,6 +49,30 @@ window.exportTeacherAttendance = function() {
     }
 };
 
+window.openTeacherSalaryModal = function() {
+    const modal = document.getElementById('teacher-salary-modal');
+    const teacherSelect = document.getElementById('salary-teacher');
+    
+    // Populate teacher dropdown
+    teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
+    
+    if (typeof sms !== 'undefined' && sms.teachers && sms.teachers.length > 0) {
+        sms.teachers.forEach(teacher => {
+            teacherSelect.innerHTML += `<option value="${teacher.id}">${teacher.name} - ${teacher.subject}</option>`;
+        });
+    } else {
+        teacherSelect.innerHTML = '<option value="">No teachers available</option>';
+    }
+    
+    // Set default date to today
+    const dateInput = document.getElementById('salary-date');
+    if (dateInput) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+    
+    modal.classList.add('show');
+};
+
 // Add teacher management methods to the class
 if (typeof SchoolManagementSystem !== 'undefined') {
     SchoolManagementSystem.prototype.openTeacherModal = function(teacherId = null) {
@@ -441,6 +465,66 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Teacher salary form handler removed for rebuild
+
+    const teacherSalaryForm = document.getElementById('teacher-salary-form');
+    if (teacherSalaryForm) {
+        teacherSalaryForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const teacherId = parseInt(document.getElementById('salary-teacher').value);
+            const month = parseInt(document.getElementById('salary-month').value);
+            const year = parseInt(document.getElementById('salary-year').value);
+            const baseSalary = parseFloat(document.getElementById('salary-base').value);
+            const bonus = parseFloat(document.getElementById('salary-bonus').value) || 0;
+            const deductions = parseFloat(document.getElementById('salary-deductions').value) || 0;
+            const paid = parseFloat(document.getElementById('salary-paid').value);
+            const paymentDate = document.getElementById('salary-date').value;
+            const notes = document.getElementById('salary-notes').value;
+
+            // Calculate payment status automatically
+            const total = baseSalary + bonus - deductions;
+            let paymentStatus = 'pending';
+            if (paid >= total) {
+                paymentStatus = 'paid';
+            } else if (paid > 0) {
+                paymentStatus = 'partial';
+            }
+
+            try {
+                const response = await fetch('/api/teacher-salaries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        teacherId,
+                        month,
+                        year,
+                        baseSalary,
+                        bonus,
+                        deductions,
+                        paid,
+                        paymentStatus,
+                        paymentDate,
+                        notes
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Teacher salary payment saved successfully');
+                    closeModal('teacher-salary-modal');
+                    teacherSalaryForm.reset();
+                } else {
+                    const errorText = await response.text().catch(() => 'Unknown error');
+                    console.error('Failed to save teacher salary:', errorText);
+                    alert('Failed to save teacher salary payment. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error saving teacher salary:', error);
+                alert('Failed to save teacher salary payment. Please try again.');
+            }
+        });
+    }
 
     // Teacher search and filter handlers
     const teacherSearch = document.getElementById('teacher-search');

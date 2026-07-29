@@ -144,6 +144,59 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
+    // Override updateBusSubscription to use direct API calls
+    if (typeof SchoolManagementSystem !== 'undefined') {
+        SchoolManagementSystem.prototype.updateBusSubscription = async function(subscriptionId) {
+            const studentId = parseInt(document.getElementById('bus-student').value);
+            const route = document.getElementById('bus-route').value.trim();
+            const monthlyFee = parseFloat(document.getElementById('bus-fee').value);
+
+            if (!studentId || !route || isNaN(monthlyFee)) {
+                alert('Please fill in all bus subscription fields');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/bus/${subscriptionId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        studentId,
+                        route,
+                        monthlyFee
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    // Update student's bus subscriber status locally
+                    const student = this.students.find(s => s.id === studentId);
+                    if (student) {
+                        student.busSubscriber = true;
+                    }
+                    
+                    alert('Bus subscription updated successfully');
+                    this.closeModal('bus-modal');
+                    
+                    // Reload bus subscriptions from server
+                    await this.loadBusSubscriptionsFromServer();
+                    this.renderBusSubscriptions();
+                    this.renderStudents();
+                    this.updateDashboard();
+                } else {
+                    const errorText = await response.text().catch(() => 'Unknown error');
+                    console.error('Failed to update bus subscription:', errorText);
+                    alert('Failed to update bus subscription. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error updating bus subscription:', error);
+                alert('Failed to update bus subscription. Please try again.');
+            }
+        };
+    }
+
     // Load bus subscriptions when page loads
     setTimeout(() => {
         if (typeof sms !== 'undefined') {

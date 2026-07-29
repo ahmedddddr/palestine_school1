@@ -13,6 +13,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         const busData = await busRes.json();
                         this.busSubscriptions = Array.isArray(busData) ? busData : [];
                         console.log('✅ Bus subscriptions loaded from server:', this.busSubscriptions.length);
+                        
+                        // Update student bus subscriber status
+                        if (this.students && this.students.length > 0) {
+                            this.students.forEach(student => {
+                                const hasBus = this.busSubscriptions.some(bus => bus.studentId === student.id);
+                                student.busSubscriber = hasBus;
+                            });
+                        }
+                        
+                        // Render after loading
+                        this.renderBusSubscriptions();
+                        this.renderStudents();
+                        this.updateDashboard();
                     } catch (e) {
                         console.error('❌ Failed to parse bus subscriptions JSON:', e);
                         this.busSubscriptions = [];

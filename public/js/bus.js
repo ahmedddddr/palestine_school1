@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         studentId,
                         route,
                         monthlyFee,
+                        status: 'active',
                         startDate: new Date().toISOString().split('T')[0]
                     })
                 });
@@ -164,7 +165,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({
                         studentId,
                         route,
-                        monthlyFee
+                        monthlyFee,
+                        status: 'active'
                     })
                 });
 

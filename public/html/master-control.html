@@ -778,6 +778,7 @@
                 <select class="filter-select" id="fee-branch-filter">
                     <option value="">All Branches</option>
                 </select>
+                <button class="btn btn-primary" onclick="addFee()">+ Add Fee Payment</button>
             </div>
             <div class="table-container">
                 <table>
@@ -1619,6 +1620,115 @@
             }
         }
 
+        function addFee() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            
+            // Build student options
+            let studentOptions = '<option value="">Select Student</option>';
+            fullData.students.forEach(student => {
+                studentOptions += `<option value="${student.id}">${escapeHtml(student.name)} - ${escapeHtml(student.class)}</option>`;
+            });
+            
+            // Build branch options
+            let branchOptions = '<option value="">Select Branch</option>';
+            branches.forEach(branch => {
+                branchOptions += `<option value="${branch.id}">${escapeHtml(branch.name)}</option>`;
+            });
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add Fee Payment</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <form id="add-fee-form">
+                        <div class="form-group">
+                            <label class="form-label">Student</label>
+                            <select class="form-input" id="add-fee-student" required>
+                                ${studentOptions}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Branch</label>
+                            <select class="form-input" id="add-fee-branch" required>
+                                ${branchOptions}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-input" id="add-fee-amount" required min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Date</label>
+                            <input type="date" class="form-input" id="add-fee-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-input" id="add-fee-status">
+                                <option value="paid">Paid</option>
+                                <option value="unpaid">Unpaid</option>
+                            </select>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" data-close>Cancel</button>
+                            <button type="submit" class="modal-btn primary">Add Fee</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', () => modal.remove());
+            });
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal) modal.remove();
+            });
+
+            // Set today's date as default
+            document.getElementById('add-fee-date').value = new Date().toISOString().split('T')[0];
+
+            document.getElementById('add-fee-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const origBtn = submitBtn ? submitBtn.textContent : '';
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Adding...'; }
+
+                try {
+                    const studentId = document.getElementById('add-fee-student').value;
+                    const branchId = document.getElementById('add-fee-branch').value;
+                    const student = fullData.students.find(s => s.id === studentId);
+                    
+                    const r = await fetch('/api/fees', {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            studentId: studentId,
+                            branchId: branchId,
+                            studentName: student ? student.name : '',
+                            total: Number(document.getElementById('add-fee-amount').value),
+                            amount: Number(document.getElementById('add-fee-amount').value),
+                            paid: Number(document.getElementById('add-fee-amount').value),
+                            paymentDate: document.getElementById('add-fee-date').value,
+                            date: document.getElementById('add-fee-date').value,
+                            status: document.getElementById('add-fee-status').value
+                        })
+                    });
+                    const body = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                    modal.remove();
+                    await refreshAll();
+                    loadFeesTable();
+                    alert('Fee added successfully!');
+                } catch (err) {
+                    alert('Failed to add fee: ' + (err.message || err));
+                } finally {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origBtn; }
+                }
+            });
+        }
+
         async function editAttendance(id) {
             const att = fullData.attendance.find(a => a.id === id);
             if (!att) return;
@@ -1845,8 +1955,8 @@
             const fees = fullData.fees.filter(f => String(f.branchId) === bid);
             const bus = fullData.busSubscriptions.filter(b => String(b.branchId) === bid);
             let revenue = 0;
-            fees.forEach(f => { revenue += Number(f.paid) || 0; });
-            bus.forEach(b => { revenue += Number(b.paid) || 0; });
+            fees.forEach(f => { revenue += Number(f.paid) || Number(f.total) || Number(f.amount) || 0; });
+            bus.forEach(b => { revenue += Number(b.paid) || Number(b.monthlyFee) || 0; });
             
             // Calculate teacher salary totals
             let totalSalaryPaid = 0;
@@ -1935,8 +2045,8 @@
         function updateStats() {
             const totalStudents = fullData.students.length;
             let totalRevenue = 0;
-            fullData.fees.forEach(f => { totalRevenue += Number(f.paid) || 0; });
-            fullData.busSubscriptions.forEach(b => { totalRevenue += Number(b.paid) || 0; });
+            fullData.fees.forEach(f => { totalRevenue += Number(f.paid) || Number(f.total) || Number(f.amount) || 0; });
+            fullData.busSubscriptions.forEach(b => { totalRevenue += Number(b.paid) || Number(b.monthlyFee) || 0; });
             const totalTeachers = fullData.teachers.length;
             const totalBranches = branches.filter(b => !b.status || b.status !== 'inactive').length;
 

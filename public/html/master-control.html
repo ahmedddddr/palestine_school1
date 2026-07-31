@@ -787,6 +787,7 @@
                             <th>Date</th>
                             <th>Student</th>
                             <th>Amount</th>
+                            <th>Month</th>
                             <th>Status</th>
                             <th>Branch</th>
                             <th>Actions</th>
@@ -1102,6 +1103,7 @@
                     <td>${fee.paymentDate || fee.date || ''}</td>
                     <td>${student ? escapeHtml(student.name) : '—'}</td>
                     <td>$${Number(fee.total || fee.amount || 0).toFixed(2)}</td>
+                    <td>${escapeHtml(fee.month || '')}</td>
                     <td><span class="status-badge ${fee.status === 'paid' ? 'paid' : 'unpaid'}">${fee.status || 'unpaid'}</span></td>
                     <td>${branch ? escapeHtml(branch.name) : '—'}</td>
                     <td>
@@ -1551,6 +1553,10 @@
                             <input type="number" class="form-input" id="edit-fee-amount" value="${fee.total || fee.amount || 0}" required>
                         </div>
                         <div class="form-group">
+                            <label class="form-label">Month</label>
+                            <input type="text" class="form-input" id="edit-fee-month" value="${escapeAttr(fee.month || '')}" placeholder="January">
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Status</label>
                             <select class="form-input" id="edit-fee-status">
                                 <option value="paid" ${fee.status === 'paid' ? 'selected' : ''}>Paid</option>
@@ -1586,6 +1592,7 @@
                         body: JSON.stringify({
                             total: Number(document.getElementById('edit-fee-amount').value),
                             amount: Number(document.getElementById('edit-fee-amount').value),
+                            month: document.getElementById('edit-fee-month').value.trim(),
                             status: document.getElementById('edit-fee-status').value
                         })
                     });
@@ -1660,6 +1667,10 @@
                             <input type="number" class="form-input" id="add-fee-amount" required min="0" step="0.01">
                         </div>
                         <div class="form-group">
+                            <label class="form-label">Month</label>
+                            <input type="text" class="form-input" id="add-fee-month" placeholder="January">
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Payment Date</label>
                             <input type="date" class="form-input" id="add-fee-date" required>
                         </div>
@@ -1710,6 +1721,7 @@
                             total: Number(document.getElementById('add-fee-amount').value),
                             amount: Number(document.getElementById('add-fee-amount').value),
                             paid: Number(document.getElementById('add-fee-amount').value),
+                            month: document.getElementById('add-fee-month').value.trim(),
                             paymentDate: document.getElementById('add-fee-date').value,
                             date: document.getElementById('add-fee-date').value,
                             status: document.getElementById('add-fee-status').value

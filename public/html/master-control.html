@@ -330,6 +330,136 @@
             color: var(--pal-red);
         }
 
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(90deg, var(--pal-green), #0b8a46);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .table-container {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(248, 250, 252, 0.8);
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.paid {
+            background: rgba(0, 122, 61, 0.15);
+            color: var(--pal-green);
+        }
+
+        .status-badge.unpaid {
+            background: rgba(206, 17, 38, 0.15);
+            color: var(--pal-red);
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 4px;
+        }
+
+        .action-btn.edit {
+            background: rgba(0, 122, 61, 0.15);
+            color: var(--pal-green);
+        }
+
+        .action-btn.delete {
+            background: rgba(206, 17, 38, 0.15);
+            color: var(--pal-red);
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            min-width: 200px;
+        }
+
+        .filter-select {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            min-width: 150px;
+        }
+
         .add-branch-card {
             background: rgba(255, 255, 255, 0.1);
             border: 2px dashed rgba(255, 255, 255, 0.3);
@@ -535,9 +665,160 @@
             </div>
         </div>
 
-        <h2 class="section-title">Branch Management</h2>
-        <div class="branches-grid" id="branches-grid">
-            <!-- Branch cards will be loaded here -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-section="branches" onclick="showSection('branches')">🏫 Branches</div>
+            <div class="nav-tab" data-section="students" onclick="showSection('students')">👥 Students</div>
+            <div class="nav-tab" data-section="teachers" onclick="showSection('teachers')">👨‍🏫 Teachers</div>
+            <div class="nav-tab" data-section="fees" onclick="showSection('fees')">💰 Fees</div>
+            <div class="nav-tab" data-section="attendance" onclick="showSection('attendance')">📊 Attendance</div>
+            <div class="nav-tab" data-section="bus" onclick="showSection('bus')">🚌 Bus</div>
+        </div>
+
+        <!-- Branches Section -->
+        <div class="section active" id="branches-section">
+            <h2 class="section-title">Branch Management</h2>
+            <div class="branches-grid" id="branches-grid">
+                <!-- Branch cards will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Students Section -->
+        <div class="section" id="students-section">
+            <h2 class="section-title">Student Management</h2>
+            <div class="filters">
+                <input type="text" class="filter-input" placeholder="Search students..." id="student-search">
+                <select class="filter-select" id="student-branch-filter">
+                    <option value="">All Branches</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Class</th>
+                            <th>Phone</th>
+                            <th>Branch</th>
+                            <th>Bus</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-table">
+                        <!-- Students will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Teachers Section -->
+        <div class="section" id="teachers-section">
+            <h2 class="section-title">Teacher Management</h2>
+            <div class="filters">
+                <input type="text" class="filter-input" placeholder="Search teachers..." id="teacher-search">
+                <select class="filter-select" id="teacher-branch-filter">
+                    <option value="">All Branches</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Subject</th>
+                            <th>Phone</th>
+                            <th>Branch</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachers-table">
+                        <!-- Teachers will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Fees Section -->
+        <div class="section" id="fees-section">
+            <h2 class="section-title">Fee Management</h2>
+            <div class="filters">
+                <input type="date" class="filter-input" id="fee-date-filter">
+                <select class="filter-select" id="fee-branch-filter">
+                    <option value="">All Branches</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Student</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Branch</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fees-table">
+                        <!-- Fees will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Attendance Section -->
+        <div class="section" id="attendance-section">
+            <h2 class="section-title">Attendance Management</h2>
+            <div class="filters">
+                <input type="date" class="filter-input" id="attendance-date-filter">
+                <select class="filter-select" id="attendance-branch-filter">
+                    <option value="">All Branches</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Student</th>
+                            <th>Status</th>
+                            <th>Branch</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendance-table">
+                        <!-- Attendance will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bus Section -->
+        <div class="section" id="bus-section">
+            <h2 class="section-title">Bus Subscription Management</h2>
+            <div class="filters">
+                <select class="filter-select" id="bus-branch-filter">
+                    <option value="">All Branches</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Route</th>
+                            <th>Monthly Fee</th>
+                            <th>Status</th>
+                            <th>Branch</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bus-table">
+                        <!-- Bus subscriptions will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -587,7 +868,279 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             refreshAll();
+            populateBranchFilters();
+            
+            // Add event listeners for search and filter inputs
+            document.getElementById('student-search')?.addEventListener('input', loadStudentsTable);
+            document.getElementById('student-branch-filter')?.addEventListener('change', loadStudentsTable);
+            document.getElementById('teacher-search')?.addEventListener('input', loadTeachersTable);
+            document.getElementById('teacher-branch-filter')?.addEventListener('change', loadTeachersTable);
+            document.getElementById('fee-branch-filter')?.addEventListener('change', loadFeesTable);
+            document.getElementById('attendance-branch-filter')?.addEventListener('change', loadAttendanceTable);
+            document.getElementById('bus-branch-filter')?.addEventListener('change', loadBusTable);
         });
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.add('active');
+            
+            // Add active class to clicked tab
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+            
+            // Load data for the section
+            loadSectionData(sectionName);
+        }
+
+        function populateBranchFilters() {
+            const filters = ['student-branch-filter', 'teacher-branch-filter', 'fee-branch-filter', 'attendance-branch-filter', 'bus-branch-filter'];
+            filters.forEach(filterId => {
+                const select = document.getElementById(filterId);
+                if (select) {
+                    select.innerHTML = '<option value="">All Branches</option>';
+                    branches.forEach(branch => {
+                        select.innerHTML += `<option value="${branch.id}">${escapeHtml(branch.name)}</option>`;
+                    });
+                }
+            });
+        }
+
+        function loadSectionData(sectionName) {
+            switch(sectionName) {
+                case 'students':
+                    loadStudentsTable();
+                    break;
+                case 'teachers':
+                    loadTeachersTable();
+                    break;
+                case 'fees':
+                    loadFeesTable();
+                    break;
+                case 'attendance':
+                    loadAttendanceTable();
+                    break;
+                case 'bus':
+                    loadBusTable();
+                    break;
+            }
+        }
+
+        function loadStudentsTable() {
+            const tbody = document.getElementById('students-table');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            
+            const searchTerm = document.getElementById('student-search').value.toLowerCase();
+            const branchFilter = document.getElementById('student-branch-filter').value;
+            
+            let filteredStudents = fullData.students.filter(student => {
+                const matchesSearch = student.name.toLowerCase().includes(searchTerm);
+                const matchesBranch = !branchFilter || String(student.branchId) === branchFilter;
+                return matchesSearch && matchesBranch;
+            });
+            
+            filteredStudents.forEach(student => {
+                const branch = branches.find(b => String(b.id) === String(student.branchId));
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${escapeHtml(student.name)}</td>
+                    <td>${escapeHtml(student.class)}</td>
+                    <td>${escapeHtml(student.phone || '')}</td>
+                    <td>${branch ? escapeHtml(branch.name) : '—'}</td>
+                    <td>${student.busSubscriber ? '✅' : '❌'}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editStudent(${student.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteStudent(${student.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadTeachersTable() {
+            const tbody = document.getElementById('teachers-table');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            
+            const searchTerm = document.getElementById('teacher-search').value.toLowerCase();
+            const branchFilter = document.getElementById('teacher-branch-filter').value;
+            
+            let filteredTeachers = fullData.teachers.filter(teacher => {
+                const matchesSearch = teacher.name.toLowerCase().includes(searchTerm);
+                const matchesBranch = !branchFilter || String(teacher.branchId) === branchFilter;
+                return matchesSearch && matchesBranch;
+            });
+            
+            filteredTeachers.forEach(teacher => {
+                const branch = branches.find(b => String(b.id) === String(teacher.branchId));
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${teacher.id}</td>
+                    <td>${escapeHtml(teacher.name)}</td>
+                    <td>${escapeHtml(teacher.subject || '')}</td>
+                    <td>${escapeHtml(teacher.phone || '')}</td>
+                    <td>${branch ? escapeHtml(branch.name) : '—'}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editTeacher(${teacher.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteTeacher(${teacher.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadFeesTable() {
+            const tbody = document.getElementById('fees-table');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            
+            const branchFilter = document.getElementById('fee-branch-filter').value;
+            
+            let filteredFees = fullData.fees.filter(fee => {
+                const matchesBranch = !branchFilter || String(fee.branchId) === branchFilter;
+                return matchesBranch;
+            });
+            
+            filteredFees.forEach(fee => {
+                const student = fullData.students.find(s => s.id === fee.studentId);
+                const branch = branches.find(b => String(b.id) === String(fee.branchId));
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${fee.paymentDate || fee.date || ''}</td>
+                    <td>${student ? escapeHtml(student.name) : '—'}</td>
+                    <td>$${Number(fee.total || fee.amount || 0).toFixed(2)}</td>
+                    <td><span class="status-badge ${fee.status === 'paid' ? 'paid' : 'unpaid'}">${fee.status || 'unpaid'}</span></td>
+                    <td>${branch ? escapeHtml(branch.name) : '—'}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editFee(${fee.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteFee(${fee.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadAttendanceTable() {
+            const tbody = document.getElementById('attendance-table');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            
+            const branchFilter = document.getElementById('attendance-branch-filter').value;
+            
+            let filteredAttendance = fullData.attendance.filter(att => {
+                const matchesBranch = !branchFilter || String(att.branchId) === branchFilter;
+                return matchesBranch;
+            });
+            
+            filteredAttendance.forEach(att => {
+                const student = fullData.students.find(s => s.id === att.studentId);
+                const branch = branches.find(b => String(b.id) === String(att.branchId));
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${att.date || ''}</td>
+                    <td>${student ? escapeHtml(student.name) : '—'}</td>
+                    <td><span class="status-badge ${att.status === 'present' ? 'paid' : 'unpaid'}">${att.status || 'absent'}</span></td>
+                    <td>${branch ? escapeHtml(branch.name) : '—'}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editAttendance(${att.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteAttendance(${att.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadBusTable() {
+            const tbody = document.getElementById('bus-table');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            
+            const branchFilter = document.getElementById('bus-branch-filter').value;
+            
+            let filteredBus = fullData.busSubscriptions.filter(bus => {
+                const matchesBranch = !branchFilter || String(bus.branchId) === branchFilter;
+                return matchesBranch;
+            });
+            
+            filteredBus.forEach(bus => {
+                const student = fullData.students.find(s => s.id === bus.studentId);
+                const branch = branches.find(b => String(b.id) === String(bus.branchId));
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student ? escapeHtml(student.name) : '—'}</td>
+                    <td>${escapeHtml(bus.route || '')}</td>
+                    <td>$${Number(bus.monthlyFee || 0).toFixed(2)}</td>
+                    <td><span class="status-badge ${bus.status === 'active' ? 'paid' : 'unpaid'}">${bus.status || 'inactive'}</span></td>
+                    <td>${branch ? escapeHtml(branch.name) : '—'}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editBus(${bus.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteBus(${bus.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Edit/Delete functions (placeholders for now)
+        function editStudent(id) {
+            alert('Edit student functionality - ID: ' + id);
+        }
+
+        function deleteStudent(id) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                alert('Delete student functionality - ID: ' + id);
+            }
+        }
+
+        function editTeacher(id) {
+            alert('Edit teacher functionality - ID: ' + id);
+        }
+
+        function deleteTeacher(id) {
+            if (confirm('Are you sure you want to delete this teacher?')) {
+                alert('Delete teacher functionality - ID: ' + id);
+            }
+        }
+
+        function editFee(id) {
+            alert('Edit fee functionality - ID: ' + id);
+        }
+
+        function deleteFee(id) {
+            if (confirm('Are you sure you want to delete this fee record?')) {
+                alert('Delete fee functionality - ID: ' + id);
+            }
+        }
+
+        function editAttendance(id) {
+            alert('Edit attendance functionality - ID: ' + id);
+        }
+
+        function deleteAttendance(id) {
+            if (confirm('Are you sure you want to delete this attendance record?')) {
+                alert('Delete attendance functionality - ID: ' + id);
+            }
+        }
+
+        function editBus(id) {
+            alert('Edit bus subscription functionality - ID: ' + id);
+        }
+
+        function deleteBus(id) {
+            if (confirm('Are you sure you want to delete this bus subscription?')) {
+                alert('Delete bus subscription functionality - ID: ' + id);
+            }
+        }
 
         async function refreshAll() {
             try {
@@ -606,6 +1159,7 @@
                     const bRes = await fetch('/api/branches', { credentials: 'include' });
                     if (bRes.ok) branches = await bRes.json() || [];
                 }
+                populateBranchFilters();
                 loadBranches();
                 updateStats();
             } catch (e) {

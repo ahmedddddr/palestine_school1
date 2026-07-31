@@ -47,7 +47,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 24px;
             position: relative;
@@ -209,8 +209,8 @@
 
         .branches-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 24px;
             margin-bottom: 28px;
         }
 
@@ -274,18 +274,21 @@
 
         .branch-stat {
             background: rgba(248, 250, 252, 0.8);
-            padding: 12px;
+            padding: 14px;
             border-radius: 10px;
+            text-align: center;
         }
 
         .branch-stat-label {
             font-size: 11px;
             color: var(--muted);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .branch-stat-value {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--text);
         }
@@ -699,6 +702,7 @@
             <div class="nav-tab" data-section="fees" onclick="showSection('fees')">💰 Fees</div>
             <div class="nav-tab" data-section="attendance" onclick="showSection('attendance')">📊 Attendance</div>
             <div class="nav-tab" data-section="bus" onclick="showSection('bus')">🚌 Bus</div>
+            <div class="nav-tab" data-section="routes" onclick="showSection('routes')">🛣️ Routes</div>
         </div>
 
         <!-- Branches Section -->
@@ -847,6 +851,29 @@
                 </table>
             </div>
         </div>
+
+        <!-- Routes Section -->
+        <div class="section" id="routes-section">
+            <h2 class="section-title">Bus Routes Management</h2>
+            <div class="filters">
+                <button class="btn btn-primary" onclick="addRoute()">+ Add New Route</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Route Name</th>
+                            <th>Area</th>
+                            <th>Stops</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routes-table">
+                        <!-- Routes will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- Add Branch Modal -->
@@ -890,7 +917,8 @@
             teacherSalaries: [],
             fees: [],
             busSubscriptions: [],
-            attendance: []
+            attendance: [],
+            routes: []
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -981,6 +1009,9 @@
                     break;
                 case 'bus':
                     loadBusTable();
+                    break;
+                case 'routes':
+                    loadRoutesTable();
                     break;
             }
         }
@@ -1142,54 +1173,626 @@
             });
         }
 
-        // Edit/Delete functions (placeholders for now)
-        function editStudent(id) {
-            alert('Edit student functionality - ID: ' + id);
+        function loadRoutesTable() {
+            const tbody = document.getElementById('routes-table');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            
+            fullData.routes.forEach(route => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${escapeHtml(route.name || '')}</td>
+                    <td>${escapeHtml(route.area || '')}</td>
+                    <td>${escapeHtml(route.stops ? route.stops.join(', ') : '')}</td>
+                    <td>
+                        <button class="action-btn edit" onclick="editRoute(${route.id})">Edit</button>
+                        <button class="action-btn delete" onclick="deleteRoute(${route.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
         }
 
-        function deleteStudent(id) {
-            if (confirm('Are you sure you want to delete this student?')) {
-                alert('Delete student functionality - ID: ' + id);
+        function addRoute() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add New Route</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <form id="add-route-form">
+                        <div class="form-group">
+                            <label class="form-label">Route Name</label>
+                            <input type="text" class="form-input" id="add-route-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Area</label>
+                            <input type="text" class="form-input" id="add-route-area" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Stops (comma separated)</label>
+                            <input type="text" class="form-input" id="add-route-stops" placeholder="Stop1, Stop2, Stop3">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" data-close>Cancel</button>
+                            <button type="submit" class="modal-btn primary">Add Route</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', () => modal.remove());
+            });
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal) modal.remove();
+            });
+
+            document.getElementById('add-route-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const origBtn = submitBtn ? submitBtn.textContent : '';
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Adding...'; }
+
+                try {
+                    const stopsStr = document.getElementById('add-route-stops').value;
+                    const stops = stopsStr ? stopsStr.split(',').map(s => s.trim()).filter(s => s) : [];
+                    
+                    const r = await fetch('/api/routes', {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: document.getElementById('add-route-name').value.trim(),
+                            area: document.getElementById('add-route-area').value.trim(),
+                            stops: stops
+                        })
+                    });
+                    const body = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                    modal.remove();
+                    await refreshAll();
+                    loadRoutesTable();
+                    alert('Route added successfully!');
+                } catch (err) {
+                    alert('Failed to add route: ' + (err.message || err));
+                } finally {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origBtn; }
+                }
+            });
+        }
+
+        async function editRoute(id) {
+            const route = fullData.routes.find(r => r.id === id);
+            if (!route) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Route</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <form id="edit-route-form">
+                        <div class="form-group">
+                            <label class="form-label">Route Name</label>
+                            <input type="text" class="form-input" id="edit-route-name" value="${escapeAttr(route.name || '')}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Area</label>
+                            <input type="text" class="form-input" id="edit-route-area" value="${escapeAttr(route.area || '')}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Stops (comma separated)</label>
+                            <input type="text" class="form-input" id="edit-route-stops" value="${escapeAttr(route.stops ? route.stops.join(', ') : '')}">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" data-close>Cancel</button>
+                            <button type="submit" class="modal-btn primary">Update Route</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', () => modal.remove());
+            });
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal) modal.remove();
+            });
+
+            document.getElementById('edit-route-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const origBtn = submitBtn ? submitBtn.textContent : '';
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Updating...'; }
+
+                try {
+                    const stopsStr = document.getElementById('edit-route-stops').value;
+                    const stops = stopsStr ? stopsStr.split(',').map(s => s.trim()).filter(s => s) : [];
+                    
+                    const r = await fetch('/api/routes/' + encodeURIComponent(id), {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: document.getElementById('edit-route-name').value.trim(),
+                            area: document.getElementById('edit-route-area').value.trim(),
+                            stops: stops
+                        })
+                    });
+                    const body = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                    modal.remove();
+                    await refreshAll();
+                    loadRoutesTable();
+                    alert('Route updated successfully!');
+                } catch (err) {
+                    alert('Failed to update route: ' + (err.message || err));
+                } finally {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origBtn; }
+                }
+            });
+        }
+
+        async function deleteRoute(id) {
+            if (!confirm('Are you sure you want to delete this route?')) return;
+            try {
+                const r = await fetch('/api/routes/' + encodeURIComponent(id), {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const body = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                await refreshAll();
+                loadRoutesTable();
+                alert('Route deleted successfully!');
+            } catch (err) {
+                alert('Failed to delete route: ' + (err.message || err));
             }
         }
 
-        function editTeacher(id) {
-            alert('Edit teacher functionality - ID: ' + id);
+        // Edit/Delete functions with actual API calls
+        async function editStudent(id) {
+            const student = fullData.students.find(s => s.id === id);
+            if (!student) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Student</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <form id="edit-student-form">
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-input" id="edit-student-name" value="${escapeAttr(student.name)}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Class</label>
+                            <input type="text" class="form-input" id="edit-student-class" value="${escapeAttr(student.class)}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-input" id="edit-student-phone" value="${escapeAttr(student.phone || '')}">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" data-close>Cancel</button>
+                            <button type="submit" class="modal-btn primary">Update Student</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', () => modal.remove());
+            });
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal) modal.remove();
+            });
+
+            document.getElementById('edit-student-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const origBtn = submitBtn ? submitBtn.textContent : '';
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Updating...'; }
+
+                try {
+                    const r = await fetch('/api/students/' + encodeURIComponent(id), {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: document.getElementById('edit-student-name').value.trim(),
+                            class: document.getElementById('edit-student-class').value.trim(),
+                            phone: document.getElementById('edit-student-phone').value.trim()
+                        })
+                    });
+                    const body = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                    modal.remove();
+                    await refreshAll();
+                    loadStudentsTable();
+                    alert('Student updated successfully!');
+                } catch (err) {
+                    alert('Failed to update student: ' + (err.message || err));
+                } finally {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origBtn; }
+                }
+            });
         }
 
-        function deleteTeacher(id) {
-            if (confirm('Are you sure you want to delete this teacher?')) {
-                alert('Delete teacher functionality - ID: ' + id);
+        async function deleteStudent(id) {
+            if (!confirm('Are you sure you want to delete this student?')) return;
+            try {
+                const r = await fetch('/api/students/' + encodeURIComponent(id), {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const body = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                await refreshAll();
+                loadStudentsTable();
+                alert('Student deleted successfully!');
+            } catch (err) {
+                alert('Failed to delete student: ' + (err.message || err));
             }
         }
 
-        function editFee(id) {
-            alert('Edit fee functionality - ID: ' + id);
+        async function editTeacher(id) {
+            const teacher = fullData.teachers.find(t => t.id === id);
+            if (!teacher) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Teacher</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <form id="edit-teacher-form">
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-input" id="edit-teacher-name" value="${escapeAttr(teacher.name)}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <input type="text" class="form-input" id="edit-teacher-subject" value="${escapeAttr(teacher.subject || '')}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-input" id="edit-teacher-phone" value="${escapeAttr(teacher.phone || '')}">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" data-close>Cancel</button>
+                            <button type="submit" class="modal-btn primary">Update Teacher</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', () => modal.remove());
+            });
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal) modal.remove();
+            });
+
+            document.getElementById('edit-teacher-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const origBtn = submitBtn ? submitBtn.textContent : '';
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Updating...'; }
+
+                try {
+                    const r = await fetch('/api/teachers/' + encodeURIComponent(id), {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: document.getElementById('edit-teacher-name').value.trim(),
+                            subject: document.getElementById('edit-teacher-subject').value.trim(),
+                            phone: document.getElementById('edit-teacher-phone').value.trim()
+                        })
+                    });
+                    const body = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                    modal.remove();
+                    await refreshAll();
+                    loadTeachersTable();
+                    alert('Teacher updated successfully!');
+                } catch (err) {
+                    alert('Failed to update teacher: ' + (err.message || err));
+                } finally {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origBtn; }
+                }
+            });
         }
 
-        function deleteFee(id) {
-            if (confirm('Are you sure you want to delete this fee record?')) {
-                alert('Delete fee functionality - ID: ' + id);
+        async function deleteTeacher(id) {
+            if (!confirm('Are you sure you want to delete this teacher?')) return;
+            try {
+                const r = await fetch('/api/teachers/' + encodeURIComponent(id), {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const body = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                await refreshAll();
+                loadTeachersTable();
+                alert('Teacher deleted successfully!');
+            } catch (err) {
+                alert('Failed to delete teacher: ' + (err.message || err));
             }
         }
 
-        function editAttendance(id) {
-            alert('Edit attendance functionality - ID: ' + id);
+        async function editFee(id) {
+            const fee = fullData.fees.find(f => f.id === id);
+            if (!fee) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Fee</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <form id="edit-fee-form">
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-input" id="edit-fee-amount" value="${fee.total || fee.amount || 0}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-input" id="edit-fee-status">
+                                <option value="paid" ${fee.status === 'paid' ? 'selected' : ''}>Paid</option>
+                                <option value="unpaid" ${fee.status === 'unpaid' ? 'selected' : ''}>Unpaid</option>
+                            </select>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" data-close>Cancel</button>
+                            <button type="submit" class="modal-btn primary">Update Fee</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', () => modal.remove());
+            });
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal) modal.remove();
+            });
+
+            document.getElementById('edit-fee-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const origBtn = submitBtn ? submitBtn.textContent : '';
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Updating...'; }
+
+                try {
+                    const r = await fetch('/api/fees/' + encodeURIComponent(id), {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            total: Number(document.getElementById('edit-fee-amount').value),
+                            amount: Number(document.getElementById('edit-fee-amount').value),
+                            status: document.getElementById('edit-fee-status').value
+                        })
+                    });
+                    const body = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                    modal.remove();
+                    await refreshAll();
+                    loadFeesTable();
+                    alert('Fee updated successfully!');
+                } catch (err) {
+                    alert('Failed to update fee: ' + (err.message || err));
+                } finally {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origBtn; }
+                }
+            });
         }
 
-        function deleteAttendance(id) {
-            if (confirm('Are you sure you want to delete this attendance record?')) {
-                alert('Delete attendance functionality - ID: ' + id);
+        async function deleteFee(id) {
+            if (!confirm('Are you sure you want to delete this fee record?')) return;
+            try {
+                const r = await fetch('/api/fees/' + encodeURIComponent(id), {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const body = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                await refreshAll();
+                loadFeesTable();
+                alert('Fee deleted successfully!');
+            } catch (err) {
+                alert('Failed to delete fee: ' + (err.message || err));
             }
         }
 
-        function editBus(id) {
-            alert('Edit bus subscription functionality - ID: ' + id);
+        async function editAttendance(id) {
+            const att = fullData.attendance.find(a => a.id === id);
+            if (!att) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Attendance</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <form id="edit-attendance-form">
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-input" id="edit-attendance-date" value="${att.date || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-input" id="edit-attendance-status">
+                                <option value="present" ${att.status === 'present' ? 'selected' : ''}>Present</option>
+                                <option value="absent" ${att.status === 'absent' ? 'selected' : ''}>Absent</option>
+                            </select>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" data-close>Cancel</button>
+                            <button type="submit" class="modal-btn primary">Update Attendance</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', () => modal.remove());
+            });
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal) modal.remove();
+            });
+
+            document.getElementById('edit-attendance-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const origBtn = submitBtn ? submitBtn.textContent : '';
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Updating...'; }
+
+                try {
+                    const r = await fetch('/api/attendance/' + encodeURIComponent(id), {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            date: document.getElementById('edit-attendance-date').value,
+                            status: document.getElementById('edit-attendance-status').value
+                        })
+                    });
+                    const body = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                    modal.remove();
+                    await refreshAll();
+                    loadAttendanceTable();
+                    alert('Attendance updated successfully!');
+                } catch (err) {
+                    alert('Failed to update attendance: ' + (err.message || err));
+                } finally {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origBtn; }
+                }
+            });
         }
 
-        function deleteBus(id) {
-            if (confirm('Are you sure you want to delete this bus subscription?')) {
-                alert('Delete bus subscription functionality - ID: ' + id);
+        async function deleteAttendance(id) {
+            if (!confirm('Are you sure you want to delete this attendance record?')) return;
+            try {
+                const r = await fetch('/api/attendance/' + encodeURIComponent(id), {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const body = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                await refreshAll();
+                loadAttendanceTable();
+                alert('Attendance deleted successfully!');
+            } catch (err) {
+                alert('Failed to delete attendance: ' + (err.message || err));
+            }
+        }
+
+        async function editBus(id) {
+            const bus = fullData.busSubscriptions.find(b => b.id === id);
+            if (!bus) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Bus Subscription</h3>
+                        <button class="close-btn" data-close>&times;</button>
+                    </div>
+                    <form id="edit-bus-form">
+                        <div class="form-group">
+                            <label class="form-label">Route</label>
+                            <input type="text" class="form-input" id="edit-bus-route" value="${escapeAttr(bus.route || '')}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Monthly Fee</label>
+                            <input type="number" class="form-input" id="edit-bus-fee" value="${bus.monthlyFee || 0}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-input" id="edit-bus-status">
+                                <option value="active" ${bus.status === 'active' ? 'selected' : ''}>Active</option>
+                                <option value="inactive" ${bus.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+                            </select>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn secondary" data-close>Cancel</button>
+                            <button type="submit" class="modal-btn primary">Update Subscription</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', () => modal.remove());
+            });
+            modal.addEventListener('click', (ev) => {
+                if (ev.target === modal) modal.remove();
+            });
+
+            document.getElementById('edit-bus-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const origBtn = submitBtn ? submitBtn.textContent : '';
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Updating...'; }
+
+                try {
+                    const r = await fetch('/api/bus/' + encodeURIComponent(id), {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            route: document.getElementById('edit-bus-route').value.trim(),
+                            monthlyFee: Number(document.getElementById('edit-bus-fee').value),
+                            status: document.getElementById('edit-bus-status').value
+                        })
+                    });
+                    const body = await r.json().catch(() => ({}));
+                    if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                    modal.remove();
+                    await refreshAll();
+                    loadBusTable();
+                    alert('Bus subscription updated successfully!');
+                } catch (err) {
+                    alert('Failed to update bus subscription: ' + (err.message || err));
+                } finally {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origBtn; }
+                }
+            });
+        }
+
+        async function deleteBus(id) {
+            if (!confirm('Are you sure you want to delete this bus subscription?')) return;
+            try {
+                const r = await fetch('/api/bus/' + encodeURIComponent(id), {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const body = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(body.error || 'HTTP ' + r.status);
+                await refreshAll();
+                loadBusTable();
+                alert('Bus subscription deleted successfully!');
+            } catch (err) {
+                alert('Failed to delete bus subscription: ' + (err.message || err));
             }
         }
 
@@ -1205,10 +1808,15 @@
                 fullData.fees = Array.isArray(data.fees) ? data.fees : [];
                 fullData.busSubscriptions = Array.isArray(data.busSubscriptions) ? data.busSubscriptions : [];
                 fullData.attendance = Array.isArray(data.attendance) ? data.attendance : [];
+                fullData.routes = Array.isArray(data.routes) ? data.routes : [];
                 branches = Array.isArray(data.branches) ? data.branches : [];
                 if (branches.length === 0) {
                     const bRes = await fetch('/api/branches', { credentials: 'include' });
                     if (bRes.ok) branches = await bRes.json() || [];
+                }
+                if (fullData.routes.length === 0) {
+                    const rRes = await fetch('/api/routes', { credentials: 'include' });
+                    if (rRes.ok) fullData.routes = await rRes.json() || [];
                 }
                 populateBranchFilters();
                 loadBranches();

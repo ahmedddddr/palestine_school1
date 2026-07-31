@@ -331,10 +331,14 @@
         }
 
         .nav-tabs {
-            display: flex;
+            display: none;
             gap: 8px;
             margin-bottom: 24px;
             flex-wrap: wrap;
+        }
+
+        .nav-tabs.visible {
+            display: flex;
         }
 
         .nav-tab {
@@ -364,6 +368,28 @@
 
         .section.active {
             display: block;
+        }
+
+        .back-button {
+            display: none;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-button.visible {
+            display: inline-block;
         }
 
         .table-container {
@@ -665,9 +691,10 @@
             </div>
         </div>
 
-        <div class="nav-tabs">
-            <div class="nav-tab active" data-section="branches" onclick="showSection('branches')">🏫 Branches</div>
-            <div class="nav-tab" data-section="students" onclick="showSection('students')">👥 Students</div>
+        <button class="back-button" id="back-button" onclick="goBackToBranches()">← Back to Branches</button>
+
+        <div class="nav-tabs" id="nav-tabs">
+            <div class="nav-tab active" data-section="students" onclick="showSection('students')">👥 Students</div>
             <div class="nav-tab" data-section="teachers" onclick="showSection('teachers')">👨‍🏫 Teachers</div>
             <div class="nav-tab" data-section="fees" onclick="showSection('fees')">💰 Fees</div>
             <div class="nav-tab" data-section="attendance" onclick="showSection('attendance')">📊 Attendance</div>
@@ -895,10 +922,34 @@
             document.getElementById(sectionName + '-section').classList.add('active');
             
             // Add active class to clicked tab
-            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+            const tab = document.querySelector(`[data-section="${sectionName}"]`);
+            if (tab) tab.classList.add('active');
             
             // Load data for the section
             loadSectionData(sectionName);
+        }
+
+        function goBackToBranches() {
+            // Hide nav tabs and back button
+            document.getElementById('nav-tabs').classList.remove('visible');
+            document.getElementById('back-button').classList.remove('visible');
+            
+            // Hide all management sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show branches section
+            document.getElementById('branches-section').classList.add('active');
+            
+            // Reset all branch filters
+            const filters = ['student-branch-filter', 'teacher-branch-filter', 'fee-branch-filter', 'attendance-branch-filter', 'bus-branch-filter'];
+            filters.forEach(filterId => {
+                const select = document.getElementById(filterId);
+                if (select) {
+                    select.value = '';
+                }
+            });
         }
 
         function populateBranchFilters() {
@@ -1356,6 +1407,13 @@
         function manageBranch(branchId) {
             const branch = branches.find(b => Number(b.id) === Number(branchId));
             if (!branch) return;
+            
+            // Show nav tabs and back button
+            document.getElementById('nav-tabs').classList.add('visible');
+            document.getElementById('back-button').classList.add('visible');
+            
+            // Hide branches section
+            document.getElementById('branches-section').classList.remove('active');
             
             // Set all branch filters to the selected branch
             const filters = ['student-branch-filter', 'teacher-branch-filter', 'fee-branch-filter', 'attendance-branch-filter', 'bus-branch-filter'];

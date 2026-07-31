@@ -1356,7 +1356,18 @@
         function manageBranch(branchId) {
             const branch = branches.find(b => Number(b.id) === Number(branchId));
             if (!branch) return;
-            window.location.href = '/branch-admin?branch=' + encodeURIComponent(branchId);
+            
+            // Set all branch filters to the selected branch
+            const filters = ['student-branch-filter', 'teacher-branch-filter', 'fee-branch-filter', 'attendance-branch-filter', 'bus-branch-filter'];
+            filters.forEach(filterId => {
+                const select = document.getElementById(filterId);
+                if (select) {
+                    select.value = branchId;
+                }
+            });
+            
+            // Switch to students section and load filtered data
+            showSection('students');
         }
 
         function editBranch(branchId) {

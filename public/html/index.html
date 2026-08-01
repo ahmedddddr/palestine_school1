@@ -909,6 +909,22 @@
     <script src="js/student.js?v=20250729-2140"></script>
     <script src="js/bus.js?v=20250729-2180"></script>
     <script>
+        // Check account status on load and periodically
+        async function checkAccountStatus() {
+            try {
+                const res = await fetch('/api/auth/me', { credentials: 'include' });
+                if (res.status === 401 || res.status === 403) {
+                    // Account is disabled or session is invalid
+                    window.location.href = '/login';
+                }
+            } catch (err) {
+                console.error('Error checking account status:', err);
+            }
+        }
+        
+        checkAccountStatus();
+        setInterval(checkAccountStatus, 30000); // Check every 30 seconds
+        
         // Debug script to check routes
         setTimeout(() => {
             console.log('=== ROUTE DEBUG ===');

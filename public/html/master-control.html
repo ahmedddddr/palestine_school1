@@ -935,7 +935,23 @@
             document.getElementById('fee-branch-filter')?.addEventListener('change', loadFeesTable);
             document.getElementById('attendance-branch-filter')?.addEventListener('change', loadAttendanceTable);
             document.getElementById('bus-branch-filter')?.addEventListener('change', loadBusTable);
+            
+            // Check account status on load and periodically
+            checkAccountStatus();
+            setInterval(checkAccountStatus, 30000); // Check every 30 seconds
         });
+
+        async function checkAccountStatus() {
+            try {
+                const res = await fetch('/api/auth/me', { credentials: 'include' });
+                if (res.status === 401 || res.status === 403) {
+                    // Account is disabled or session is invalid
+                    window.location.href = '/login';
+                }
+            } catch (err) {
+                console.error('Error checking account status:', err);
+            }
+        }
 
         function showSection(sectionName) {
             // Hide all sections

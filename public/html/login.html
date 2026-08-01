@@ -300,19 +300,6 @@
                 errorEl.style.display = 'block';
                 errorEl.textContent = 'Session expired or access denied. Please login again.';
             }
-            
-            // Pre-fill username from URL parameter (from branch admin)
-            const usernameParam = params.get('username');
-            const emailParam = params.get('email');
-            if (usernameParam) {
-                document.getElementById('username').value = usernameParam;
-            }
-            if (emailParam) {
-                const emailInfo = document.createElement('div');
-                emailInfo.className = 'info-message';
-                emailInfo.textContent = `Branch Admin Email: ${emailParam}`;
-                form.parentNode.insertBefore(emailInfo, form);
-            }
 
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();

@@ -899,10 +899,6 @@
                     <input type="text" class="form-input" id="branch-admin" required placeholder="Admin username">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Admin Email</label>
-                    <input type="email" class="form-input" id="branch-email" placeholder="admin@example.com">
-                </div>
-                <div class="form-group">
                     <label class="form-label">Admin Password</label>
                     <input type="password" class="form-input" id="branch-password" required placeholder="Admin password">
                 </div>
@@ -2158,7 +2154,6 @@
             const name = document.getElementById('branch-name').value.trim();
             const location = document.getElementById('branch-location').value.trim();
             const admin = document.getElementById('branch-admin').value.trim();
-            const email = document.getElementById('branch-email').value.trim();
             const password = document.getElementById('branch-password').value;
 
             if (!name) { alert('Branch name is required'); if (btn) { btn.disabled=false; btn.textContent=originalText; } return; }
@@ -2170,7 +2165,7 @@
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name, location, admin, email,
+                        name, location, admin,
                         adminPassword: password,
                         adminDisplayName: `${name} Admin`,
                         branchCode: 'branch_' + (name.toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 20) || Date.now().toString(36)),
@@ -2191,24 +2186,27 @@
         });
 
         function manageBranch(branchId) {
-            console.log('manageBranch called with branchId:', branchId);
             const branch = branches.find(b => Number(b.id) === Number(branchId));
-            console.log('Found branch:', branch);
+            if (!branch) return;
             
-            if (!branch) {
-                console.error('Branch not found for ID:', branchId);
-                alert('Branch not found');
-                return;
-            }
+            // Show nav tabs and back button
+            document.getElementById('nav-tabs').classList.add('visible');
+            document.getElementById('back-button').classList.add('visible');
             
-            // Redirect to login page with branch admin info
-            const adminUsername = branch.admin || '';
-            const adminEmail = branch.email || '';
-            console.log('Redirecting to login with:', { adminUsername, adminEmail });
+            // Hide branches section
+            document.getElementById('branches-section').classList.remove('active');
             
-            const loginUrl = `/login?username=${encodeURIComponent(adminUsername)}&email=${encodeURIComponent(adminEmail)}`;
-            console.log('Login URL:', loginUrl);
-            window.location.href = loginUrl;
+            // Set all branch filters to the selected branch
+            const filters = ['student-branch-filter', 'teacher-branch-filter', 'fee-branch-filter', 'attendance-branch-filter', 'bus-branch-filter'];
+            filters.forEach(filterId => {
+                const select = document.getElementById(filterId);
+                if (select) {
+                    select.value = branchId;
+                }
+            });
+            
+            // Switch to students section and load filtered data
+            showSection('students');
         }
 
         function editBranch(branchId) {
@@ -2234,10 +2232,6 @@
                         <div class="form-group">
                             <label class="form-label">Admin Username</label>
                             <input type="text" class="form-input" id="edit-branch-admin" value="${escapeAttr(branch.admin || '')}" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Admin Email</label>
-                            <input type="email" class="form-input" id="edit-branch-email" value="${escapeAttr(branch.email || '')}" placeholder="admin@example.com">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Admin Password</label>
@@ -2267,8 +2261,7 @@
                 const payload = {
                     name: document.getElementById('edit-branch-name').value.trim(),
                     location: document.getElementById('edit-branch-location').value.trim(),
-                    admin: document.getElementById('edit-branch-admin').value.trim(),
-                    email: document.getElementById('edit-branch-email').value.trim()
+                    admin: document.getElementById('edit-branch-admin').value.trim()
                 };
                 const newPassword = document.getElementById('edit-branch-password').value;
                 if (newPassword) {

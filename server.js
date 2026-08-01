@@ -484,10 +484,28 @@ app.get('/logout', (req, res) => {
     });
 });
 
-app.get('/api/auth/me', (req, res) => {
+app.get('/api/auth/me', async (req, res) => {
     if (!req.session || !req.session.authenticated) {
         return res.status(401).json({ authenticated: false });
     }
+    
+    // Check if user account is still active in database
+    try {
+        const users = await getCollection('users', { id: req.session.userId });
+        const user = users[0];
+        
+        if (!user || user.isActive === false) {
+            // Account is disabled or doesn't exist - destroy session
+            req.session.destroy(() => {
+                return res.status(403).json({ authenticated: false, error: 'Account disabled' });
+            });
+            return;
+        }
+    } catch (e) {
+        console.error('Error checking user status in /api/auth/me:', e);
+        // On error, allow the request to proceed to avoid blocking legitimate users
+    }
+    
     res.json({
         authenticated: true,
         username: req.session.username,

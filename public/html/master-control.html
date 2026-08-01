@@ -2226,6 +2226,7 @@
                 fullData.busSubscriptions = Array.isArray(data.busSubscriptions) ? data.busSubscriptions : [];
                 fullData.attendance = Array.isArray(data.attendance) ? data.attendance : [];
                 fullData.routes = Array.isArray(data.routes) ? data.routes : [];
+                fullData.users = Array.isArray(data.users) ? data.users : [];
                 branches = Array.isArray(data.branches) ? data.branches : [];
                 if (branches.length === 0) {
                     const bRes = await fetch('/api/branches', { credentials: 'include' });
@@ -2234,10 +2235,6 @@
                 if (fullData.routes.length === 0) {
                     const rRes = await fetch('/api/routes', { credentials: 'include' });
                     if (rRes.ok) fullData.routes = await rRes.json() || [];
-                }
-                if (fullData.users.length === 0) {
-                    const uRes = await fetch('/api/users', { credentials: 'include' });
-                    if (uRes.ok) fullData.users = await uRes.json() || [];
                 }
                 populateBranchFilters();
                 loadBranches();

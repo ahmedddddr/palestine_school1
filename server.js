@@ -782,8 +782,18 @@ app.get('/api/data', async (req, res) => {
         const busSubscriptions = filteredByScope(await getCollection('busSubscriptions'), req.branchScope);
         const teacherSalaries = filteredByScope(await getCollection('teacherSalaries'), req.branchScope);
         const routes = filteredByScope(await getCollection('routes'), req.branchScope);
+        let users = await getCollection('users');
+        // Remove password from users before sending
+        users = users.map(u => {
+            const { password, ...safe } = u;
+            return safe;
+        });
+        // Filter users by branch scope for branch admins
+        if (req.branchScope !== null) {
+            users = users.filter(u => u.branchId === null || String(u.branchId) === String(req.branchScope));
+        }
         const branches = req.branchScope === null ? await getCollection('branches') : (await getCollection('branches')).filter(b => String(b.id) === String(req.branchScope));
-        res.json({ students, teachers, attendance, teacherAttendance, fees, busSubscriptions, teacherSalaries, routes, branches, currentBranchId: req.branchScope });
+        res.json({ students, teachers, attendance, teacherAttendance, fees, busSubscriptions, teacherSalaries, routes, users, branches, currentBranchId: req.branchScope });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to load data' });

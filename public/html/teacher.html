@@ -696,7 +696,11 @@
         }
         
         checkAccountStatus();
-        setInterval(checkAccountStatus, 30000); // Check every 30 seconds
+        setInterval(checkAccountStatus, 5000); // Check every 5 seconds
+        
+        // Check account status on user interactions for immediate logout
+        document.addEventListener('click', checkAccountStatus);
+        document.addEventListener('keydown', checkAccountStatus);
     </script>
 </body>
 </html>

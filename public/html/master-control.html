@@ -272,6 +272,10 @@
             margin-bottom: 16px;
         }
 
+        .branch-stats .branch-stat:nth-child(7) {
+            grid-column: span 1;
+        }
+
         .branch-stat {
             background: rgba(248, 250, 252, 0.8);
             padding: 14px;
@@ -2325,12 +2329,19 @@
             const currentYear = now.getFullYear();
             let monthlyRevenue = 0;
             fees.forEach(f => {
-                if (f.month === currentMonth) {
+                // Check if fee is from current month by month field or by date
+                if (f.month && f.month === currentMonth) {
                     monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
+                } else if (f.paymentDate || f.date) {
+                    const feeDate = new Date(f.paymentDate || f.date);
+                    if (feeDate.getMonth() === now.getMonth() && feeDate.getFullYear() === currentYear) {
+                        monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
+                    }
                 }
             });
             bus.forEach(b => {
-                if (b.year === currentYear && b.month === currentMonth) {
+                // Check if bus subscription is from current month
+                if (b.month && b.month === currentMonth && (!b.year || b.year === currentYear)) {
                     monthlyRevenue += Number(b.monthlyFee) || Number(b.paid) || 0;
                 }
             });

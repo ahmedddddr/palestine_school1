@@ -2190,24 +2190,10 @@
             const branch = branches.find(b => Number(b.id) === Number(branchId));
             if (!branch) return;
             
-            // Show nav tabs and back button
-            document.getElementById('nav-tabs').classList.add('visible');
-            document.getElementById('back-button').classList.add('visible');
-            
-            // Hide branches section
-            document.getElementById('branches-section').classList.remove('active');
-            
-            // Set all branch filters to the selected branch
-            const filters = ['student-branch-filter', 'teacher-branch-filter', 'fee-branch-filter', 'attendance-branch-filter', 'bus-branch-filter'];
-            filters.forEach(filterId => {
-                const select = document.getElementById(filterId);
-                if (select) {
-                    select.value = branchId;
-                }
-            });
-            
-            // Switch to students section and load filtered data
-            showSection('students');
+            // Redirect to login page with branch admin info
+            const adminUsername = branch.admin || '';
+            const adminEmail = branch.email || '';
+            window.location.href = `/login?username=${encodeURIComponent(adminUsername)}&email=${encodeURIComponent(adminEmail)}`;
         }
 
         function editBranch(branchId) {

@@ -2314,18 +2314,19 @@
             });
             const fees = fullData.fees.filter(f => String(f.branchId) === bid);
             const bus = fullData.busSubscriptions.filter(b => String(b.branchId) === bid);
+            const attendance = fullData.attendance.filter(a => String(a.branchId) === bid);
             let revenue = 0;
-            fees.forEach(f => { revenue += Number(f.paid) || Number(f.total) || Number(f.amount) || 0; });
-            bus.forEach(b => { revenue += Number(b.paid) || Number(b.monthlyFee) || 0; });
+            fees.forEach(f => { revenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0; });
+            bus.forEach(b => { revenue += Number(b.monthlyFee) || Number(b.paid) || 0; });
             
             // Calculate teacher salary totals
             let totalSalaryPaid = 0;
             teacherSalaries.forEach(ts => { totalSalaryPaid += Number(ts.paid) || 0; });
             
-            // Calculate attendance rate
+            // Calculate attendance rate (student attendance)
             const today = new Date().toISOString().split('T')[0];
-            const todayAttendance = teacherAttendance.filter(ta => ta.date === today);
-            const presentCount = todayAttendance.filter(ta => ta.status === 'present').length;
+            const todayAttendance = attendance.filter(a => a.date === today);
+            const presentCount = todayAttendance.filter(a => a.status === 'present').length;
             const attendanceRate = todayAttendance.length > 0 ? Math.round((presentCount / todayAttendance.length) * 100) : 0;
             
             return {
@@ -2404,8 +2405,8 @@
         function updateStats() {
             const totalStudents = fullData.students.length;
             let totalRevenue = 0;
-            fullData.fees.forEach(f => { totalRevenue += Number(f.paid) || Number(f.total) || Number(f.amount) || 0; });
-            fullData.busSubscriptions.forEach(b => { totalRevenue += Number(b.paid) || Number(b.monthlyFee) || 0; });
+            fullData.fees.forEach(f => { totalRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0; });
+            fullData.busSubscriptions.forEach(b => { totalRevenue += Number(b.monthlyFee) || Number(b.paid) || 0; });
             const totalTeachers = fullData.teachers.length;
             const totalBranches = branches.filter(b => !b.status || b.status !== 'inactive').length;
 

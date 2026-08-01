@@ -2319,6 +2319,22 @@
             fees.forEach(f => { revenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0; });
             bus.forEach(b => { revenue += Number(b.monthlyFee) || Number(b.paid) || 0; });
             
+            // Calculate monthly revenue (current month)
+            const now = new Date();
+            const currentMonth = now.toLocaleString('en-US', { month: 'long' });
+            const currentYear = now.getFullYear();
+            let monthlyRevenue = 0;
+            fees.forEach(f => {
+                if (f.month === currentMonth) {
+                    monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
+                }
+            });
+            bus.forEach(b => {
+                if (b.year === currentYear && b.month === currentMonth) {
+                    monthlyRevenue += Number(b.monthlyFee) || Number(b.paid) || 0;
+                }
+            });
+            
             // Calculate teacher salary totals
             let totalSalaryPaid = 0;
             teacherSalaries.forEach(ts => { totalSalaryPaid += Number(ts.paid) || 0; });
@@ -2336,7 +2352,8 @@
                 teacherSalaries: teacherSalaries.length,
                 totalSalaryPaid: totalSalaryPaid,
                 attendanceRate: attendanceRate,
-                revenue: revenue
+                revenue: revenue,
+                monthlyRevenue: monthlyRevenue
             };
         }
 
@@ -2365,6 +2382,10 @@
                         <div class="branch-stat">
                             <div class="branch-stat-label">Revenue</div>
                             <div class="branch-stat-value">$${stats.revenue.toLocaleString()}</div>
+                        </div>
+                        <div class="branch-stat">
+                            <div class="branch-stat-label">Monthly Revenue</div>
+                            <div class="branch-stat-value">$${stats.monthlyRevenue.toLocaleString()}</div>
                         </div>
                         <div class="branch-stat">
                             <div class="branch-stat-label">Teachers</div>

@@ -229,7 +229,7 @@ function isValidRole(role) {
 }
 
 function requireAuth(role = null) {
-    return (req, res, next) => {
+    return async (req, res, next) => {
         if (!req.session || !req.session.authenticated) {
             // Always return JSON for API endpoints
             if (req.path.startsWith('/api/')) {
@@ -237,6 +237,27 @@ function requireAuth(role = null) {
             }
             return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Unauthorized' });
         }
+        
+        // Check if user account is still active
+        try {
+            const users = await getCollection('users', { id: req.session.userId });
+            const user = users[0];
+            
+            if (!user || user.isActive === false) {
+                // Account is disabled or doesn't exist - destroy session
+                req.session.destroy(() => {
+                    if (req.path.startsWith('/api/')) {
+                        return res.status(401).json({ error: 'Account disabled' });
+                    }
+                    return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Account disabled' });
+                });
+                return;
+            }
+        } catch (e) {
+            console.error('Error checking user status:', e);
+            // On error, allow the request to proceed to avoid blocking legitimate users
+        }
+        
         if (role && req.session.role !== role) {
             return res.status(403).json({ error: 'Forbidden: insufficient permissions' });
         }
@@ -245,7 +266,7 @@ function requireAuth(role = null) {
 }
 
 function requireAnyRole(roles = []) {
-    return (req, res, next) => {
+    return async (req, res, next) => {
         if (!req.session || !req.session.authenticated) {
             // Always return JSON for API endpoints
             if (req.path.startsWith('/api/')) {
@@ -253,6 +274,27 @@ function requireAnyRole(roles = []) {
             }
             return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Unauthorized' });
         }
+        
+        // Check if user account is still active
+        try {
+            const users = await getCollection('users', { id: req.session.userId });
+            const user = users[0];
+            
+            if (!user || user.isActive === false) {
+                // Account is disabled or doesn't exist - destroy session
+                req.session.destroy(() => {
+                    if (req.path.startsWith('/api/')) {
+                        return res.status(401).json({ error: 'Account disabled' });
+                    }
+                    return req.accepts('html') ? res.redirect('/login') : res.status(401).json({ error: 'Account disabled' });
+                });
+                return;
+            }
+        } catch (e) {
+            console.error('Error checking user status:', e);
+            // On error, allow the request to proceed to avoid blocking legitimate users
+        }
+        
         if (!roles.includes(req.session.role)) {
             return res.status(403).json({ error: 'Forbidden: insufficient permissions' });
         }
@@ -391,11 +433,16 @@ app.post('/login', loginLimiter, async (req, res) => {
         return res.status(400).json({ success: false, error: 'Username and password are required.' });
     }
 
-    const users = await getCollection('users', { username, isActive: true });
+    const users = await getCollection('users', { username });
     const user = users[0];
 
     if (!user) {
         return res.status(401).json({ success: false, error: 'Invalid credentials.' });
+    }
+
+    // Check if account is disabled
+    if (user.isActive === false) {
+        return res.status(403).json({ success: false, error: 'Account has been disabled. Please contact administrator.' });
     }
 
     let ok = false;

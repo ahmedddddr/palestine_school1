@@ -1943,11 +1943,63 @@
                 populateBranchFilters();
                 loadBranches();
                 updateStats();
+                await checkExpiredFees();
             } catch (e) {
                 console.error('Failed to load data:', e);
                 if (!branches.length) {
                     const grid = document.getElementById('branches-grid');
                     if (grid) grid.innerHTML = '<div style="color:#fff;padding:16px;">Failed to load data. Please refresh and login again.</div>';
+                }
+            }
+        }
+
+        async function checkExpiredFees() {
+            const now = new Date();
+            const currentMonth = now.toLocaleString('en-US', { month: 'long' });
+            const currentYear = now.getFullYear();
+            
+            const expiredFees = fullData.fees.filter(fee => {
+                if (!fee.month) return false;
+                
+                // Parse month name to get month number
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                   'July', 'August', 'September', 'October', 'November', 'December'];
+                const feeMonthIndex = monthNames.indexOf(fee.month);
+                
+                if (feeMonthIndex === -1) return false;
+                
+                // If fee has a date, check if it's from a previous month/year
+                if (fee.paymentDate || fee.date) {
+                    const feeDate = new Date(fee.paymentDate || fee.date);
+                    const feeMonth = feeDate.getMonth();
+                    const feeYear = feeDate.getFullYear();
+                    
+                    // Delete if fee is from a previous month or previous year
+                    if (feeYear < currentYear) return true;
+                    if (feeYear === currentYear && feeMonth < now.getMonth()) return true;
+                }
+                
+                return false;
+            });
+            
+            // Delete expired fees
+            for (const fee of expiredFees) {
+                try {
+                    await fetch('/api/fees/' + encodeURIComponent(fee.id), {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                } catch (err) {
+                    console.error('Failed to delete expired fee:', err);
+                }
+            }
+            
+            // Reload data if any fees were deleted
+            if (expiredFees.length > 0) {
+                const res = await fetch('/api/data', { credentials: 'include' });
+                if (res.ok) {
+                    const data = await res.json();
+                    fullData.fees = Array.isArray(data.fees) ? data.fees : [];
                 }
             }
         }

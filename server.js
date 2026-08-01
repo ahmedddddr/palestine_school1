@@ -781,8 +781,9 @@ app.get('/api/data', async (req, res) => {
         const fees = filteredByScope(await getCollection('fees'), req.branchScope);
         const busSubscriptions = filteredByScope(await getCollection('busSubscriptions'), req.branchScope);
         const teacherSalaries = filteredByScope(await getCollection('teacherSalaries'), req.branchScope);
+        const routes = filteredByScope(await getCollection('routes'), req.branchScope);
         const branches = req.branchScope === null ? await getCollection('branches') : (await getCollection('branches')).filter(b => String(b.id) === String(req.branchScope));
-        res.json({ students, teachers, attendance, teacherAttendance, fees, busSubscriptions, teacherSalaries, branches, currentBranchId: req.branchScope });
+        res.json({ students, teachers, attendance, teacherAttendance, fees, busSubscriptions, teacherSalaries, routes, branches, currentBranchId: req.branchScope });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to load data' });
@@ -1218,6 +1219,63 @@ app.delete('/api/bus/:id', requireAnyRole(['super_admin', 'branch_admin']), asyn
     }
     all.splice(idx, 1);
     await saveCollection('busSubscriptions', all);
+    res.json({ success: true });
+});
+
+app.get('/api/routes', async (req, res) => {
+    res.json(filteredByScope(await getCollection('routes'), req.branchScope));
+});
+
+app.post('/api/routes', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
+    const all = await getCollection('routes');
+    const body = req.body;
+    const branchId = req.branchScope || Number(body.branchId) || 1;
+    const nextId = all.reduce((m, r) => Math.max(m, Number(r.id) || 0), 0) + 1;
+    const record = {
+        id: nextId,
+        name: sanitizeString(body.name, 150),
+        area: sanitizeString(body.area, 150),
+        stops: Array.isArray(body.stops) ? body.stops.map(s => sanitizeString(s, 100)) : [],
+        fee: Number(body.fee) || 0,
+        branchId: Number(branchId),
+        createdAt: new Date().toISOString()
+    };
+    all.push(record);
+    await saveCollection('routes', all);
+    res.json({ success: true, data: record });
+});
+
+app.put('/api/routes/:id', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
+    const id = Number(req.params.id);
+    const all = await getCollection('routes');
+    const idx = all.findIndex(r => Number(r.id) === id);
+    if (idx < 0) return res.status(404).json({ error: 'Not found' });
+    if (req.branchScope !== null && String(all[idx].branchId) !== String(req.branchScope)) {
+        return res.status(403).json({ error: 'Not your branch' });
+    }
+    const body = req.body;
+    all[idx] = {
+        ...all[idx],
+        name: body.name !== undefined ? sanitizeString(body.name, 150) : all[idx].name,
+        area: body.area !== undefined ? sanitizeString(body.area, 150) : all[idx].area,
+        stops: body.stops !== undefined ? (Array.isArray(body.stops) ? body.stops.map(s => sanitizeString(s, 100)) : []) : all[idx].stops,
+        fee: body.fee !== undefined ? (Number(body.fee) || 0) : all[idx].fee,
+        updatedAt: new Date().toISOString()
+    };
+    await saveCollection('routes', all);
+    res.json({ success: true, data: all[idx] });
+});
+
+app.delete('/api/routes/:id', requireAnyRole(['super_admin', 'branch_admin']), async (req, res) => {
+    const id = Number(req.params.id);
+    const all = await getCollection('routes');
+    const idx = all.findIndex(r => Number(r.id) === id);
+    if (idx < 0) return res.status(404).json({ error: 'Not found' });
+    if (req.branchScope !== null && String(all[idx].branchId) !== String(req.branchScope)) {
+        return res.status(403).json({ error: 'Not your branch' });
+    }
+    all.splice(idx, 1);
+    await saveCollection('routes', all);
     res.json({ success: true });
 });
 

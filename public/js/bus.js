@@ -1,35 +1,56 @@
-// Bus Subscription Management - Complete Rebuild
+// Bus Subscription Management - Database Integration
 document.addEventListener('DOMContentLoaded', function() {
-    // Route Manager
+    // Route Manager - Database backed
     const routeManager = {
         routes: [],
         
-        loadRoutes() {
-            const saved = localStorage.getItem('busRoutes');
-            if (saved) {
-                this.routes = JSON.parse(saved);
+        async loadRoutes() {
+            try {
+                const response = await fetch('/api/routes', { credentials: 'include' });
+                if (response.ok) {
+                    const data = await response.json();
+                    this.routes = Array.isArray(data) ? data : [];
+                } else {
+                    console.warn('Failed to load routes from database');
+                    this.routes = [];
+                }
+            } catch (e) {
+                console.error('Error loading routes:', e);
+                this.routes = [];
             }
         },
         
-        saveRoutes() {
-            localStorage.setItem('busRoutes', JSON.stringify(this.routes));
+        async addRoute(name, area) {
+            try {
+                const response = await fetch('/api/routes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ name, area })
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    await this.loadRoutes();
+                    return result.data || result;
+                }
+            } catch (e) {
+                console.error('Error adding route:', e);
+            }
         },
         
-        addRoute(name, area) {
-            const newRoute = {
-                id: Date.now(),
-                name,
-                area,
-                studentCount: 0
-            };
-            this.routes.push(newRoute);
-            this.saveRoutes();
-            return newRoute;
-        },
-        
-        deleteRoute(id) {
-            this.routes = this.routes.filter(r => r.id !== id);
-            this.saveRoutes();
+        async deleteRoute(id) {
+            try {
+                const response = await fetch(`/api/routes/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    await this.loadRoutes();
+                }
+            } catch (e) {
+                console.error('Error deleting route:', e);
+            }
         },
         
         getRoutes() {
@@ -127,6 +148,32 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add bus management methods to SchoolManagementSystem
     if (typeof SchoolManagementSystem !== 'undefined') {
+        SchoolManagementSystem.prototype.loadBusSubscriptionsFromServer = async function() {
+            try {
+                const response = await fetch('/api/bus', { credentials: 'include' });
+                if (response.ok) {
+                    const data = await response.json();
+                    this.busSubscriptions = Array.isArray(data) ? data : [];
+                    
+                    // Update student bus subscriber status
+                    if (this.students && this.students.length > 0) {
+                        this.students.forEach(student => {
+                            const hasBus = this.busSubscriptions.some(bus => bus.studentId === student.id);
+                            student.busSubscriber = hasBus;
+                        });
+                    }
+                    
+                    this.renderBusSubscriptions();
+                    this.renderStudents();
+                    this.updateDashboard();
+                } else {
+                    console.warn('Failed to load bus subscriptions from server');
+                }
+            } catch (e) {
+                console.error('Error loading bus subscriptions:', e);
+            }
+        };
+        
         SchoolManagementSystem.prototype.renderBusSubscriptions = function() {
             const tableBody = document.getElementById('bus-table');
             if (!tableBody) return;
@@ -193,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }).join('');
         };
         
-        SchoolManagementSystem.prototype.saveBusSubscription = function() {
+        SchoolManagementSystem.prototype.saveBusSubscription = async function() {
             const studentId = parseInt(document.getElementById('bus-student').value);
             const route = document.getElementById('bus-route').value.trim();
             
@@ -202,28 +249,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const newSubscription = {
-                id: this.getNextBusId(),
-                studentId,
-                route,
-                status: 'active',
-                startDate: new Date().toISOString().split('T')[0]
-            };
-            
-            this.busSubscriptions.push(newSubscription);
-            
-            // Update student's bus subscriber status
-            const student = this.students.find(s => s.id === studentId);
-            if (student) {
-                student.busSubscriber = true;
+            try {
+                const response = await fetch('/api/bus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        studentId,
+                        route,
+                        status: 'active',
+                        startDate: new Date().toISOString().split('T')[0]
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    // Update student's bus subscriber status locally
+                    const student = this.students.find(s => s.id === studentId);
+                    if (student) {
+                        student.busSubscriber = true;
+                    }
+                    
+                    closeModal('bus-modal');
+                    await this.loadBusSubscriptionsFromServer();
+                    alert('Bus subscription added successfully');
+                } else {
+                    const errorText = await response.text().catch(() => 'Unknown error');
+                    console.error('Failed to save bus subscription:', errorText);
+                    alert('Failed to save bus subscription. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error saving bus subscription:', error);
+                alert('Failed to save bus subscription. Please try again.');
             }
-            
-            this.saveDataToStorage();
-            this.renderBusSubscriptions();
-            this.renderStudents();
-            this.updateDashboard();
-            closeModal('bus-modal');
-            alert('Bus subscription added successfully');
         };
         
         SchoolManagementSystem.prototype.editBusSubscription = function(subscriptionId) {
@@ -265,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.classList.add('show');
         };
         
-        SchoolManagementSystem.prototype.updateBusSubscription = function(subscriptionId) {
+        SchoolManagementSystem.prototype.updateBusSubscription = async function(subscriptionId) {
             const studentId = parseInt(document.getElementById('bus-student').value);
             const route = document.getElementById('bus-route').value.trim();
             
@@ -274,51 +333,78 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const idx = this.busSubscriptions.findIndex(s => String(s.id) === String(subscriptionId));
-            if (idx === -1) return;
-            
-            this.busSubscriptions[idx] = {
-                ...this.busSubscriptions[idx],
-                studentId,
-                route,
-                status: this.busSubscriptions[idx].status || 'active'
-            };
-            
-            const student = this.students.find(s => String(s.id) === String(studentId));
-            if (student) student.busSubscriber = true;
-            
-            this.saveDataToStorage();
-            this.renderBusSubscriptions();
-            this.renderStudents();
-            this.updateDashboard();
-            closeModal('bus-modal');
-            alert('Bus subscription updated successfully');
+            try {
+                const response = await fetch(`/api/bus/${subscriptionId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        studentId,
+                        route,
+                        status: 'active'
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    // Update student's bus subscriber status locally
+                    const student = this.students.find(s => s.id === studentId);
+                    if (student) student.busSubscriber = true;
+                    
+                    closeModal('bus-modal');
+                    await this.loadBusSubscriptionsFromServer();
+                    alert('Bus subscription updated successfully');
+                } else {
+                    const errorText = await response.text().catch(() => 'Unknown error');
+                    console.error('Failed to update bus subscription:', errorText);
+                    alert('Failed to update bus subscription. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error updating bus subscription:', error);
+                alert('Failed to update bus subscription. Please try again.');
+            }
         };
         
-        SchoolManagementSystem.prototype.deleteBusSubscription = function(subscriptionId) {
+        SchoolManagementSystem.prototype.deleteBusSubscription = async function(subscriptionId) {
             if (!confirm('Are you sure you want to delete this bus subscription?')) {
                 return;
             }
             
-            const subscription = this.busSubscriptions.find(b => b.id === subscriptionId);
-            const studentId = subscription ? subscription.studentId : null;
-            
-            this.busSubscriptions = this.busSubscriptions.filter(b => b.id !== subscriptionId);
-            
-            // Update student's bus subscriber status
-            if (studentId) {
-                const student = this.students.find(s => s.id === studentId);
-                if (student) {
-                    const hasOtherBus = this.busSubscriptions.some(b => b.studentId === studentId);
-                    student.busSubscriber = hasOtherBus;
+            try {
+                const response = await fetch(`/api/bus/${subscriptionId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const subscription = this.busSubscriptions.find(b => b.id === subscriptionId);
+                    const studentId = subscription ? subscription.studentId : null;
+                    
+                    // Remove from local data
+                    this.busSubscriptions = this.busSubscriptions.filter(b => b.id !== subscriptionId);
+                    
+                    // Update student's bus subscriber status
+                    if (studentId) {
+                        const student = this.students.find(s => s.id === studentId);
+                        if (student) {
+                            const hasOtherBus = this.busSubscriptions.some(b => b.studentId === studentId);
+                            student.busSubscriber = hasOtherBus;
+                        }
+                    }
+                    
+                    await this.loadBusSubscriptionsFromServer();
+                    alert('Bus subscription deleted successfully');
+                } else {
+                    const errorText = await response.text().catch(() => 'Unknown error');
+                    console.error('Failed to delete bus subscription:', errorText);
+                    alert('Failed to delete bus subscription. Please try again.');
                 }
+            } catch (error) {
+                console.error('Error deleting bus subscription:', error);
+                alert('Failed to delete bus subscription. Please try again.');
             }
-            
-            this.saveDataToStorage();
-            this.renderBusSubscriptions();
-            this.renderStudents();
-            this.updateDashboard();
-            alert('Bus subscription deleted successfully');
         };
         
         SchoolManagementSystem.prototype.getNextBusId = function() {
@@ -378,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Route form submission
-    document.getElementById('route-form')?.addEventListener('submit', function(e) {
+    document.getElementById('route-form')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         const routeName = document.getElementById('route-name').value.trim();
         const routeArea = document.getElementById('route-area').value.trim();
@@ -388,13 +474,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        routeManager.addRoute(routeName, routeArea);
+        await routeManager.addRoute(routeName, routeArea);
         openRouteModal(); // Refresh the modal
         if (typeof sms !== 'undefined' && sms.renderBusSubscriptions) {
             sms.renderBusSubscriptions();
         }
         alert('Route added successfully');
     });
+    
+    // Load bus subscriptions from server when page loads
+    setTimeout(() => {
+        if (typeof sms !== 'undefined') {
+            sms.loadBusSubscriptionsFromServer();
+        }
+    }, 1000);
     
     // Make routeManager globally accessible
     window.routeManager = routeManager;

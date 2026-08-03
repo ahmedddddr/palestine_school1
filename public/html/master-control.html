@@ -2323,13 +2323,28 @@
             fees.forEach(f => { revenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0; });
             bus.forEach(b => { revenue += Number(b.monthlyFee) || Number(b.paid) || 0; });
             
-            // Calculate monthly revenue (current month) - simplified like salary
+            // Calculate monthly revenue (current month) - same logic as index page
+            const now = new Date();
+            const currentMonthName = now.toLocaleString('en-US', { month: 'long' });
+            const currentMonthNum = now.getMonth() + 1;
+            const currentYear = now.getFullYear();
             let monthlyRevenue = 0;
             fees.forEach(f => {
-                monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
-            });
-            bus.forEach(b => {
-                monthlyRevenue += Number(b.monthlyFee) || Number(b.paid) || 0;
+                if (!f) return;
+                if (f.month) {
+                    if (typeof f.month === 'string' && f.month === currentMonthName) {
+                        monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
+                    }
+                    if (Number(f.month) === currentMonthNum) {
+                        monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
+                    }
+                }
+                if (f.paymentDate || f.date) {
+                    const feeDate = new Date(f.paymentDate || f.date);
+                    if (feeDate.getMonth() + 1 === currentMonthNum && feeDate.getFullYear() === currentYear) {
+                        monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
+                    }
+                }
             });
             
             // Calculate teacher salary totals

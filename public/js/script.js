@@ -4183,7 +4183,6 @@ class SchoolManagementSystem {
                                 <th>Name</th>
                                 <th>Class</th>
                                 <th>Monthly Fee</th>
-                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -4200,7 +4199,6 @@ class SchoolManagementSystem {
                             <td>${student.name}</td>
                             <td>${this.getDisplayClassName(student.class)}</td>
                             <td>$${Number(sub.monthlyFee || 0).toFixed(2)}</td>
-                            <td><span class="status-badge status-${sub.status}">${sub.status}</span></td>
                             <td>
                                 <button class="btn btn-sm btn-primary" onclick="sms.editBusSubscription(${sub.id})">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="sms.deleteBusSubscription(${sub.id})">Delete</button>
@@ -4250,7 +4248,7 @@ class SchoolManagementSystem {
             });
 
             if (filteredSubs.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="7" class="empty-state">No bus subscriptions found</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6" class="empty-state">No bus subscriptions found</td></tr>';
                 return;
             }
 
@@ -4265,7 +4263,6 @@ class SchoolManagementSystem {
                     <td>${this.getDisplayClassName(student.class)}</td>
                     <td>${sub.route || ''}</td>
                     <td>$${Number(sub.monthlyFee || 0).toFixed(2)}</td>
-                    <td><span class="status-badge status-${sub.status}">${sub.status}</span></td>
                     <td>
                         <button class="btn btn-sm btn-primary" onclick="sms.editBusSubscription(${sub.id})">Edit</button>
                         <button class="btn btn-sm btn-danger" onclick="sms.deleteBusSubscription(${sub.id})">Delete</button>
@@ -9064,7 +9061,7 @@ const seenStudents = new Set();
             });
 
             if (filteredSubs.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="7" class="empty-state">No bus subscriptions found</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6" class="empty-state">No bus subscriptions found</td></tr>';
                 return;
             }
 
@@ -9079,7 +9076,6 @@ const seenStudents = new Set();
                     <td>${this.getDisplayClassName(student.class)}</td>
                     <td>${sub.route || ''}</td>
                     <td>$${Number(sub.monthlyFee || 0).toFixed(2)}</td>
-                    <td><span class="status-badge status-${sub.status}">${sub.status}</span></td>
                     <td>
                         <button class="btn btn-sm btn-primary" onclick="sms.editBusSubscription(${sub.id})">Edit</button>
                         <button class="btn btn-sm btn-danger" onclick="sms.deleteBusSubscription(${sub.id})">Delete</button>

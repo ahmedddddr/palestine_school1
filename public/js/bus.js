@@ -46,9 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
         SchoolManagementSystem.prototype.saveBusSubscription = async function() {
             const studentId = parseInt(document.getElementById('bus-student').value);
             const route = document.getElementById('bus-route').value.trim();
-            const monthlyFee = parseFloat(document.getElementById('bus-fee').value);
 
-            if (!studentId || !route || isNaN(monthlyFee)) {
+            if (!studentId || !route) {
                 alert('Please fill in all bus subscription fields');
                 return;
             }
@@ -61,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({
                         studentId,
                         route,
-                        monthlyFee,
                         status: 'active',
                         startDate: new Date().toISOString().split('T')[0]
                     })
@@ -150,9 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
         SchoolManagementSystem.prototype.updateBusSubscription = async function(subscriptionId) {
             const studentId = parseInt(document.getElementById('bus-student').value);
             const route = document.getElementById('bus-route').value.trim();
-            const monthlyFee = parseFloat(document.getElementById('bus-fee').value);
 
-            if (!studentId || !route || isNaN(monthlyFee)) {
+            if (!studentId || !route) {
                 alert('Please fill in all bus subscription fields');
                 return;
             }
@@ -165,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({
                         studentId,
                         route,
-                        monthlyFee,
                         status: 'active'
                     })
                 });

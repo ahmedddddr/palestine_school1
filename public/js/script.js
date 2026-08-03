@@ -5256,7 +5256,11 @@ SchoolManagementSystem.prototype.editBusSubscription = function(subscriptionId) 
     studentSelect.value = String(subscription.studentId);
     routeSelect.value = subscription.route || '';
     feeInput.value = String(subscription.monthlyFee ?? '');
-    statusSelect.value = subscription.status || 'active';
+    if (subscription.status) {
+        statusSelect.value = subscription.status;
+    } else {
+        statusSelect.value = 'active';
+    }
 
     const saveBtn = modal.querySelector('button[type="submit"]');
     if (saveBtn) {

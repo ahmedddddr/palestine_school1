@@ -2321,7 +2321,6 @@
             const attendance = fullData.attendance.filter(a => String(a.branchId) === bid);
             let revenue = 0;
             fees.forEach(f => { revenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0; });
-            bus.forEach(b => { revenue += Number(b.monthlyFee) || Number(b.paid) || 0; });
             
             // Calculate monthly revenue (current month) - same logic as index page
             const now = new Date();
@@ -2439,7 +2438,6 @@
             const totalStudents = fullData.students.length;
             let totalRevenue = 0;
             fullData.fees.forEach(f => { totalRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0; });
-            fullData.busSubscriptions.forEach(b => { totalRevenue += Number(b.monthlyFee) || Number(b.paid) || 0; });
             const totalTeachers = fullData.teachers.length;
             const totalBranches = branches.filter(b => !b.status || b.status !== 'inactive').length;
 

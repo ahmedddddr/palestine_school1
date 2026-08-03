@@ -4062,9 +4062,8 @@ class SchoolManagementSystem {
     saveBusSubscription() {
         const studentId = parseInt(document.getElementById('bus-student').value);
         const route = document.getElementById('bus-route').value.trim();
-        const monthlyFee = parseFloat(document.getElementById('bus-fee').value);
 
-        if (!studentId || !route || !monthlyFee) {
+        if (!studentId || !route) {
             alert('Please fill in all required fields');
             return;
         }
@@ -4073,7 +4072,6 @@ class SchoolManagementSystem {
             id: this.getNextBusId(),
             studentId,
             route,
-            monthlyFee,
             status: 'active'
         };
 
@@ -4182,7 +4180,7 @@ class SchoolManagementSystem {
                                 <th>Student ID</th>
                                 <th>Name</th>
                                 <th>Class</th>
-                                <th>Monthly Fee</th>
+                                <th>Route</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -4198,7 +4196,7 @@ class SchoolManagementSystem {
                             <td>${student.id}</td>
                             <td>${student.name}</td>
                             <td>${this.getDisplayClassName(student.class)}</td>
-                            <td>$${Number(sub.monthlyFee || 0).toFixed(2)}</td>
+                            <td>${sub.route || ''}</td>
                             <td>
                                 <button class="btn btn-sm btn-primary" onclick="sms.editBusSubscription(${sub.id})">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="sms.deleteBusSubscription(${sub.id})">Delete</button>
@@ -4248,7 +4246,7 @@ class SchoolManagementSystem {
             });
 
             if (filteredSubs.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" class="empty-state">No bus subscriptions found</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="5" class="empty-state">No bus subscriptions found</td></tr>';
                 return;
             }
 
@@ -4262,7 +4260,6 @@ class SchoolManagementSystem {
                     <td>${student.name}</td>
                     <td>${this.getDisplayClassName(student.class)}</td>
                     <td>${sub.route || ''}</td>
-                    <td>$${Number(sub.monthlyFee || 0).toFixed(2)}</td>
                     <td>
                         <button class="btn btn-sm btn-primary" onclick="sms.editBusSubscription(${sub.id})">Edit</button>
                         <button class="btn btn-sm btn-danger" onclick="sms.deleteBusSubscription(${sub.id})">Delete</button>
@@ -5228,8 +5225,7 @@ SchoolManagementSystem.prototype.editBusSubscription = function(subscriptionId) 
     const modal = document.getElementById('bus-modal');
     const studentSelect = document.getElementById('bus-student');
     const routeSelect = document.getElementById('bus-route');
-    const feeInput = document.getElementById('bus-fee');
-    if (!modal || !studentSelect || !routeSelect || !feeInput) return;
+    if (!modal || !studentSelect || !routeSelect) return;
 
     // Populate routes
     const routes = routeManager.getRoutes();
@@ -5250,7 +5246,6 @@ SchoolManagementSystem.prototype.editBusSubscription = function(subscriptionId) 
 
     studentSelect.value = String(subscription.studentId);
     routeSelect.value = subscription.route || '';
-    feeInput.value = String(subscription.monthlyFee ?? '');
 
     const saveBtn = modal.querySelector('button[type="submit"]');
     if (saveBtn) {
@@ -5265,9 +5260,8 @@ SchoolManagementSystem.prototype.editBusSubscription = function(subscriptionId) 
 SchoolManagementSystem.prototype.updateBusSubscription = function(subscriptionId) {
     const studentId = parseInt(document.getElementById('bus-student')?.value);
     const route = document.getElementById('bus-route')?.value?.trim();
-    const monthlyFee = parseFloat(document.getElementById('bus-fee')?.value);
 
-    if (!studentId || !route || !monthlyFee) {
+    if (!studentId || !route) {
         alert('Please fill in all required fields');
         return;
     }
@@ -5279,7 +5273,6 @@ SchoolManagementSystem.prototype.updateBusSubscription = function(subscriptionId
         ...this.busSubscriptions[idx],
         studentId,
         route,
-        monthlyFee,
         status: this.busSubscriptions[idx].status || 'active'
     };
 
@@ -8970,9 +8963,8 @@ const seenStudents = new Set();
     saveBusSubscription() {
         const studentId = parseInt(document.getElementById('bus-student').value);
         const route = document.getElementById('bus-route').value.trim();
-        const monthlyFee = parseFloat(document.getElementById('bus-fee').value);
 
-        if (!studentId || !route || !monthlyFee) {
+        if (!studentId || !route) {
             alert('Please fill in all required fields');
             return;
         }
@@ -8981,7 +8973,6 @@ const seenStudents = new Set();
             id: this.getNextBusId(),
             studentId,
             route,
-            monthlyFee,
             status: 'active'
         };
 
@@ -9061,7 +9052,7 @@ const seenStudents = new Set();
             });
 
             if (filteredSubs.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" class="empty-state">No bus subscriptions found</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="5" class="empty-state">No bus subscriptions found</td></tr>';
                 return;
             }
 
@@ -9075,7 +9066,6 @@ const seenStudents = new Set();
                     <td>${student.name}</td>
                     <td>${this.getDisplayClassName(student.class)}</td>
                     <td>${sub.route || ''}</td>
-                    <td>$${Number(sub.monthlyFee || 0).toFixed(2)}</td>
                     <td>
                         <button class="btn btn-sm btn-primary" onclick="sms.editBusSubscription(${sub.id})">Edit</button>
                         <button class="btn btn-sm btn-danger" onclick="sms.deleteBusSubscription(${sub.id})">Delete</button>

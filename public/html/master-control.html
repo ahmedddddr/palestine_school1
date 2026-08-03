@@ -2323,42 +2323,13 @@
             fees.forEach(f => { revenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0; });
             bus.forEach(b => { revenue += Number(b.monthlyFee) || Number(b.paid) || 0; });
             
-            // Calculate monthly revenue (current month)
-            const now = new Date();
-            const currentMonthName = now.toLocaleString('en-US', { month: 'long' });
-            const currentMonthNum = now.getMonth() + 1;
-            const currentYear = now.getFullYear();
+            // Calculate monthly revenue (current month) - simplified like salary
             let monthlyRevenue = 0;
             fees.forEach(f => {
-                // Check if fee is from current month by month field or by date
-                if (f.month) {
-                    // Handle month name (e.g., "January")
-                    if (typeof f.month === 'string' && f.month === currentMonthName) {
-                        monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
-                    }
-                    // Handle month number
-                    else if (Number(f.month) === currentMonthNum) {
-                        monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
-                    }
-                } else if (f.paymentDate || f.date) {
-                    const feeDate = new Date(f.paymentDate || f.date);
-                    if (feeDate.getMonth() === now.getMonth() && feeDate.getFullYear() === currentYear) {
-                        monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
-                    }
-                }
+                monthlyRevenue += Number(f.amount) || Number(f.total) || Number(f.paid) || 0;
             });
             bus.forEach(b => {
-                // Check if bus subscription is from current month
-                if (b.month) {
-                    // Handle month name
-                    if (typeof b.month === 'string' && b.month === currentMonthName && (!b.year || b.year === currentYear)) {
-                        monthlyRevenue += Number(b.monthlyFee) || Number(b.paid) || 0;
-                    }
-                    // Handle month number
-                    else if (Number(b.month) === currentMonthNum && (!b.year || b.year === currentYear)) {
-                        monthlyRevenue += Number(b.monthlyFee) || Number(b.paid) || 0;
-                    }
-                }
+                monthlyRevenue += Number(b.monthlyFee) || Number(b.paid) || 0;
             });
             
             // Calculate teacher salary totals

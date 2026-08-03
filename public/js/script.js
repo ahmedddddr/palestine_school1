@@ -4063,6 +4063,7 @@ class SchoolManagementSystem {
         const studentId = parseInt(document.getElementById('bus-student').value);
         const route = document.getElementById('bus-route').value.trim();
         const monthlyFee = parseFloat(document.getElementById('bus-fee').value);
+        const status = document.getElementById('bus-status').value;
 
         if (!studentId || !route || !monthlyFee) {
             alert('Please fill in all required fields');
@@ -4074,7 +4075,7 @@ class SchoolManagementSystem {
             studentId,
             route,
             monthlyFee,
-            status: 'active'
+            status: status || 'active'
         };
 
         this.busSubscriptions.push(newSubscription);
@@ -5232,7 +5233,8 @@ SchoolManagementSystem.prototype.editBusSubscription = function(subscriptionId) 
     const studentSelect = document.getElementById('bus-student');
     const routeSelect = document.getElementById('bus-route');
     const feeInput = document.getElementById('bus-fee');
-    if (!modal || !studentSelect || !routeSelect || !feeInput) return;
+    const statusSelect = document.getElementById('bus-status');
+    if (!modal || !studentSelect || !routeSelect || !feeInput || !statusSelect) return;
 
     // Populate routes
     const routes = routeManager.getRoutes();
@@ -5254,6 +5256,7 @@ SchoolManagementSystem.prototype.editBusSubscription = function(subscriptionId) 
     studentSelect.value = String(subscription.studentId);
     routeSelect.value = subscription.route || '';
     feeInput.value = String(subscription.monthlyFee ?? '');
+    statusSelect.value = subscription.status || 'active';
 
     const saveBtn = modal.querySelector('button[type="submit"]');
     if (saveBtn) {
@@ -5269,6 +5272,7 @@ SchoolManagementSystem.prototype.updateBusSubscription = function(subscriptionId
     const studentId = parseInt(document.getElementById('bus-student')?.value);
     const route = document.getElementById('bus-route')?.value?.trim();
     const monthlyFee = parseFloat(document.getElementById('bus-fee')?.value);
+    const status = document.getElementById('bus-status')?.value;
 
     if (!studentId || !route || !monthlyFee) {
         alert('Please fill in all required fields');
@@ -5283,7 +5287,7 @@ SchoolManagementSystem.prototype.updateBusSubscription = function(subscriptionId
         studentId,
         route,
         monthlyFee,
-        status: this.busSubscriptions[idx].status || 'active'
+        status: status || 'active'
     };
 
     const student = (Array.isArray(this.students) ? this.students : []).find(s => String(s.id) === String(studentId));
@@ -8974,6 +8978,7 @@ const seenStudents = new Set();
         const studentId = parseInt(document.getElementById('bus-student').value);
         const route = document.getElementById('bus-route').value.trim();
         const monthlyFee = parseFloat(document.getElementById('bus-fee').value);
+        const status = document.getElementById('bus-status').value;
 
         if (!studentId || !route || !monthlyFee) {
             alert('Please fill in all required fields');
@@ -8985,7 +8990,7 @@ const seenStudents = new Set();
             studentId,
             route,
             monthlyFee,
-            status: 'active'
+            status: status || 'active'
         };
 
         this.busSubscriptions.push(newSubscription);

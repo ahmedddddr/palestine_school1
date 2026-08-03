@@ -266,21 +266,6 @@
                 
                 <div class="filters">
                     <input type="text" id="teacher-search" placeholder="Search by name..." class="search-input">
-                    <select id="teacher-subject-filter" class="filter-select">
-                        <option value="">All Subjects</option>
-                        <option value="Math">Math</option>
-                        <option value="Science">Science</option>
-                        <option value="English">English</option>
-                        <option value="Arabic">Arabic</option>
-                        <option value="History">History</option>
-                        <option value="Geography">Geography</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Biology">Biology</option>
-                        <option value="Art">Art</option>
-                        <option value="Physical Education">Physical Education</option>
-                        <option value="Computer Science">Computer Science</option>
-                    </select>
                 </div>
 
                 <div class="table-container">
@@ -289,8 +274,6 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Subject</th>
-                                <th>Classes</th>
                                 <th>Phone</th>
                                 <th>Salary</th>
                                 <th>Actions</th>
@@ -447,21 +430,6 @@
                 <div class="filters">
                     <input type="date" id="teacher-attendance-date" class="date-input">
                     <input type="text" id="teacher-attendance-search" placeholder="Search by teacher name..." class="search-input">
-                    <select id="teacher-attendance-subject-filter" class="filter-select">
-                        <option value="">All Subjects</option>
-                        <option value="Math">Math</option>
-                        <option value="Science">Science</option>
-                        <option value="English">English</option>
-                        <option value="Arabic">Arabic</option>
-                        <option value="History">History</option>
-                        <option value="Geography">Geography</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Biology">Biology</option>
-                        <option value="Art">Art</option>
-                        <option value="Physical Education">Physical Education</option>
-                        <option value="Computer Science">Computer Science</option>
-                    </select>
                     <div class="bulk-actions">
                         <button class="btn btn-sm btn-success" onclick="markAllTeachersPresent()">✅ All Present</button>
                         <button class="btn btn-sm btn-danger" onclick="markAllTeachersAbsent()">❌ All Absent</button>
@@ -591,7 +559,6 @@
                         <thead>
                             <tr>
                                 <th>Teacher</th>
-                                <th>Subject</th>
                                 <th>Month</th>
                                 <th>Base Salary</th>
                                 <th>Bonus</th>
@@ -802,28 +769,6 @@
                 <div class="form-group">
                     <label for="teacher-name">Full Name</label>
                     <input type="text" id="teacher-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="teacher-subject">Subject</label>
-                    <select id="teacher-subject" required>
-                        <option value="">Select Subject</option>
-                        <option value="Math">Math</option>
-                        <option value="Science">Science</option>
-                        <option value="English">English</option>
-                        <option value="Arabic">Arabic</option>
-                        <option value="History">History</option>
-                        <option value="Geography">Geography</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Biology">Biology</option>
-                        <option value="Art">Art</option>
-                        <option value="Physical Education">Physical Education</option>
-                        <option value="Computer Science">Computer Science</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="teacher-classes">Classes (comma-separated)</label>
-                    <input type="text" id="teacher-classes" placeholder="e.g., Grade 1, Grade 2, Grade 3">
                 </div>
                 <div class="form-group">
                     <label for="teacher-phone">Phone</label>

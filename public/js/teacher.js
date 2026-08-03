@@ -58,7 +58,7 @@ window.openTeacherSalaryModal = function() {
     
     if (typeof sms !== 'undefined' && sms.teachers && sms.teachers.length > 0) {
         sms.teachers.forEach(teacher => {
-            teacherSelect.innerHTML += `<option value="${teacher.id}">${teacher.name} - ${teacher.subject}</option>`;
+            teacherSelect.innerHTML += `<option value="${teacher.id}">${teacher.name}</option>`;
         });
     } else {
         teacherSelect.innerHTML = '<option value="">No teachers available</option>';
@@ -90,8 +90,6 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         if (teacherId) {
             const teacher = this.teachers.find(t => t.id === teacherId);
             document.getElementById('teacher-name').value = teacher.name;
-            document.getElementById('teacher-subject').value = teacher.subject;
-            document.getElementById('teacher-classes').value = teacher.classes;
             document.getElementById('teacher-phone').value = teacher.phone;
             document.getElementById('teacher-salary').value = teacher.salary;
         } else {
@@ -103,13 +101,11 @@ if (typeof SchoolManagementSystem !== 'undefined') {
 
     SchoolManagementSystem.prototype.saveTeacher = async function() {
         const name = document.getElementById('teacher-name').value.trim();
-        const subject = document.getElementById('teacher-subject').value;
-        const classes = document.getElementById('teacher-classes').value.trim();
         const phone = document.getElementById('teacher-phone').value.trim();
         const salary = parseFloat(document.getElementById('teacher-salary').value);
 
-        if (!name || !subject) {
-            alert('Please fill in teacher name and subject');
+        if (!name) {
+            alert('Please fill in teacher name');
             return;
         }
 
@@ -120,7 +116,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
-                    body: JSON.stringify({ name, subject, classes, phone: phone || 'Not provided', salary })
+                    body: JSON.stringify({ name, phone: phone || 'Not provided', salary })
                 });
                 
                 if (response.ok) {
@@ -143,7 +139,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
-                    body: JSON.stringify({ name, subject, classes, phone: phone || 'Not provided', salary })
+                    body: JSON.stringify({ name, phone: phone || 'Not provided', salary })
                 });
                 
                 if (response.ok) {
@@ -194,24 +190,22 @@ if (typeof SchoolManagementSystem !== 'undefined') {
 
     SchoolManagementSystem.prototype.renderTeachers = function() {
         const searchTerm = document.getElementById('teacher-search')?.value.toLowerCase() || '';
-        const subjectFilter = document.getElementById('teacher-subject-filter')?.value || '';
 
         // Ensure teachers array exists
         if (!this.teachers || !Array.isArray(this.teachers)) {
-            this.teachers = [];
+            return;
         }
 
         let filteredTeachers = this.teachers.filter(teacher => {
             const matchesSearch = teacher.name.toLowerCase().includes(searchTerm);
-            const matchesSubject = !subjectFilter || teacher.subject === subjectFilter;
-            return matchesSearch && matchesSubject;
+            return matchesSearch;
         });
 
         const tbody = document.getElementById('teachers-table');
         if (!tbody) return;
 
         if (filteredTeachers.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No teachers found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No teachers found</td></tr>';
             return;
         }
 
@@ -219,8 +213,6 @@ if (typeof SchoolManagementSystem !== 'undefined') {
             <tr>
                 <td>${teacher.id}</td>
                 <td>${teacher.name}</td>
-                <td>${teacher.subject}</td>
-                <td>${teacher.classes || 'N/A'}</td>
                 <td>${teacher.phone}</td>
                 <td>$${teacher.salary.toFixed(2)}</td>
                 <td>
@@ -241,20 +233,15 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         const dateInput = document.getElementById('teacher-attendance-date');
         const selectedDate = dateInput?.value || new Date().toISOString().split('T')[0];
         const searchTerm = document.getElementById('teacher-attendance-search')?.value.toLowerCase() || '';
-        const subjectFilter = document.getElementById('teacher-attendance-subject-filter')?.value || '';
 
         // Ensure teachers and teacherAttendance arrays exist
         if (!this.teachers || !Array.isArray(this.teachers)) {
-            this.teachers = [];
-        }
-        if (!this.teacherAttendance || !Array.isArray(this.teacherAttendance)) {
-            this.teacherAttendance = [];
+            return;
         }
 
         let filteredTeachers = this.teachers.filter(teacher => {
             const matchesSearch = teacher.name.toLowerCase().includes(searchTerm);
-            const matchesSubject = !subjectFilter || teacher.subject === subjectFilter;
-            return matchesSearch && matchesSubject;
+            return matchesSearch;
         });
 
         const grid = document.getElementById('teacher-attendance-grid');
@@ -287,7 +274,6 @@ if (typeof SchoolManagementSystem !== 'undefined') {
                 <div class="attendance-card ${status}">
                     <div class="attendance-info">
                         <h4>${teacher.name}</h4>
-                        <p>${teacher.subject}</p>
                     </div>
                     <div class="attendance-actions">
                         <button class="btn btn-sm ${status === 'present' ? 'btn-success' : 'btn-secondary'}" 
@@ -454,7 +440,7 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         }
 
         if (this.teacherSalaries.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;">No salary records found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;">No salary records found</td></tr>';
             return;
         }
 
@@ -464,7 +450,6 @@ if (typeof SchoolManagementSystem !== 'undefined') {
         tbody.innerHTML = this.teacherSalaries.map(salary => {
             const teacher = this.teachers.find(t => t.id === salary.teacherId);
             const teacherName = teacher ? teacher.name : 'Unknown';
-            const subject = teacher ? teacher.subject : 'Unknown';
             const baseSalary = salary.baseSalary || 0;
             const bonus = salary.bonus || 0;
             const deductions = salary.deductions || 0;
@@ -478,7 +463,6 @@ if (typeof SchoolManagementSystem !== 'undefined') {
             return `
                 <tr>
                     <td>${teacherName}</td>
-                    <td>${subject}</td>
                     <td>${monthNames[salary.month] || salary.month}</td>
                     <td>$${baseSalary.toFixed(2)}</td>
                     <td>$${bonus.toFixed(2)}</td>
@@ -523,10 +507,10 @@ if (typeof SchoolManagementSystem !== 'undefined') {
 
     SchoolManagementSystem.prototype.exportTeacherAttendance = function() {
         const csvContent = "data:text/csv;charset=utf-8," 
-            + "Teacher ID,Teacher Name,Subject,Date,Status,Notes\n"
+            + "Teacher ID,Teacher Name,Date,Status,Notes\n"
             + this.teacherAttendance.map(a => {
                 const teacher = this.teachers.find(t => t.id === a.teacherId);
-                return `${a.teacherId},"${teacher?.name || 'Unknown'}","${teacher?.subject || 'Unknown'}",${a.date},${a.status},"${a.notes || ''}"`;
+                return `${a.teacherId},"${teacher?.name || 'Unknown'}",${a.date},${a.status},"${a.notes || ''}"`;
             }).join("\n");
 
         const encodedUri = encodeURI(csvContent);
@@ -627,15 +611,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const teacherSubjectFilter = document.getElementById('teacher-subject-filter');
-    if (teacherSubjectFilter) {
-        teacherSubjectFilter.addEventListener('change', function() {
-            if (typeof sms !== 'undefined') {
-                sms.renderTeachers();
-            }
-        });
-    }
-
     // Teacher attendance event handlers
     const teacherAttendanceDate = document.getElementById('teacher-attendance-date');
     if (teacherAttendanceDate) {
@@ -649,15 +624,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const teacherAttendanceSearch = document.getElementById('teacher-attendance-search');
     if (teacherAttendanceSearch) {
         teacherAttendanceSearch.addEventListener('input', function() {
-            if (typeof sms !== 'undefined') {
-                sms.renderTeacherAttendance();
-            }
-        });
-    }
-
-    const teacherAttendanceSubjectFilter = document.getElementById('teacher-attendance-subject-filter');
-    if (teacherAttendanceSubjectFilter) {
-        teacherAttendanceSubjectFilter.addEventListener('change', function() {
             if (typeof sms !== 'undefined') {
                 sms.renderTeacherAttendance();
             }

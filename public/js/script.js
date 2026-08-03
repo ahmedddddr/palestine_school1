@@ -4514,13 +4514,20 @@ class SchoolManagementSystem {
         const currentMonth = now.getMonth() + 1;
         const currentYear = now.getFullYear();
         const monthlyFees = (Array.isArray(this.feePayments) ? this.feePayments : []).filter(f => {
-            if (!f || f.status !== 'paid') return false;
-            const fallbackDate = f.paymentDate ? new Date(f.paymentDate) : null;
-            const m = Number(f.month ?? (fallbackDate ? (fallbackDate.getMonth() + 1) : NaN));
-            const y = Number(f.year ?? (fallbackDate ? fallbackDate.getFullYear() : NaN));
-            return m === currentMonth && y === currentYear;
+            if (!f) return false;
+            const currentMonthName = now.toLocaleString('en-US', { month: 'long' });
+            const currentMonthNum = now.getMonth() + 1;
+            if (f.month) {
+                if (typeof f.month === 'string' && f.month === currentMonthName) return true;
+                if (Number(f.month) === currentMonthNum) return true;
+            }
+            if (f.paymentDate || f.date) {
+                const feeDate = new Date(f.paymentDate || f.date);
+                if (feeDate.getMonth() + 1 === currentMonthNum && feeDate.getFullYear() === currentYear) return true;
+            }
+            return false;
         });
-        const totalCollected = monthlyFees.reduce((sum, fee) => sum + Number(fee.total || 0), 0);
+        const totalCollected = monthlyFees.reduce((sum, fee) => sum + Number(fee.amount || fee.total || fee.paid || 0), 0);
         const feeCollectionEl = document.getElementById('fee-collection');
         if (feeCollectionEl) feeCollectionEl.textContent = `$${totalCollected.toFixed(2)}`;
 
@@ -4679,7 +4686,7 @@ class SchoolManagementSystem {
                 const y = Number(f.year ?? (fallbackDate ? fallbackDate.getFullYear() : NaN));
                 return m === currentMonth && y === currentYear;
             })
-            .reduce((sum, fee) => sum + Number(fee.total || 0), 0);
+            .reduce((sum, fee) => sum + Number(fee.amount || fee.total || fee.paid || 0), 0);
 
         // Calculate percentage
         const percentage = expectedFees > 0 ? Math.round((collectedFees / expectedFees) * 100) : 0;
@@ -9587,13 +9594,20 @@ function saveRoute() {
         const currentMonth = now.getMonth() + 1;
         const currentYear = now.getFullYear();
         const monthlyFees = (Array.isArray(this.feePayments) ? this.feePayments : []).filter(f => {
-            if (!f || f.status !== 'paid') return false;
-            const fallbackDate = f.paymentDate ? new Date(f.paymentDate) : null;
-            const m = Number(f.month ?? (fallbackDate ? (fallbackDate.getMonth() + 1) : NaN));
-            const y = Number(f.year ?? (fallbackDate ? fallbackDate.getFullYear() : NaN));
-            return m === currentMonth && y === currentYear;
+            if (!f) return false;
+            const currentMonthName = now.toLocaleString('en-US', { month: 'long' });
+            const currentMonthNum = now.getMonth() + 1;
+            if (f.month) {
+                if (typeof f.month === 'string' && f.month === currentMonthName) return true;
+                if (Number(f.month) === currentMonthNum) return true;
+            }
+            if (f.paymentDate || f.date) {
+                const feeDate = new Date(f.paymentDate || f.date);
+                if (feeDate.getMonth() + 1 === currentMonthNum && feeDate.getFullYear() === currentYear) return true;
+            }
+            return false;
         });
-        const totalCollected = monthlyFees.reduce((sum, fee) => sum + Number(fee.total || 0), 0);
+        const totalCollected = monthlyFees.reduce((sum, fee) => sum + Number(fee.amount || fee.total || fee.paid || 0), 0);
         const feeCollectionEl = document.getElementById('fee-collection');
         if (feeCollectionEl) feeCollectionEl.textContent = `$${totalCollected.toFixed(2)}`;
 
@@ -9752,7 +9766,7 @@ function saveRoute() {
                 const y = Number(f.year ?? (fallbackDate ? fallbackDate.getFullYear() : NaN));
                 return m === currentMonth && y === currentYear;
             })
-            .reduce((sum, fee) => sum + Number(fee.total || 0), 0);
+            .reduce((sum, fee) => sum + Number(fee.amount || fee.total || fee.paid || 0), 0);
 
         // Calculate percentage
         const percentage = expectedFees > 0 ? Math.round((collectedFees / expectedFees) * 100) : 0;
@@ -10272,4 +10286,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log('School Management System initialized');
 });
+
+
 
